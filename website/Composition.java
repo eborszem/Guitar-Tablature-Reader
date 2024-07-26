@@ -1,9 +1,12 @@
 package project;
 public class Composition {
     String key;
+    int beat;  // the beat note: 4-whole note, 2-half note, 1-quarter note, .5-eighth note
+    int beatsPerMeasure;
     Measure measure;
     Composition next;
-    public Composition(String key, Measure measure) {
+    // note: each measure's number of beats must equal beat * beatsPerMeasure
+    public Composition(String key, int beat, int beatsPerMeasure, Measure measure) {
         this.measure = measure;
         this.next = null;
     }

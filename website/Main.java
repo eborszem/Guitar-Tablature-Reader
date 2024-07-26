@@ -1,29 +1,36 @@
 package project;
+
+import java.util.Random;
+
 public class Main {
     public static void main(String[] args) {
         Note note = new Note(0, 0);
         Chord chord = new Chord(note);
         Measure m = new Measure(null);
         Measure mm = m;
-        // creates 4 measures for the composition
+        // creates 4 measures with random chords for the composition
         for (int i = 0; i < 4; i++) {
             Chord cc = chord;
-            // creates 4 chords with 1 beat each
+            // creates 4 random chords with 1 beat each
             for (int j = 1; j < 16; j += 4) {
-                int k = j;
+                Random rand = new Random();
+                int k = rand.nextInt(8) + 1;
+                if (k == -1 || k == 0)
+                    k = 1;
+                //int k = j;
                 // the three while loops keep us within valid musical intervals 1 through 7 when creating a new note
                 while (k > 7) {
                     k -= 7;
                 }
-                Note root = new Note(i+k, 1);
+                Note root = new Note(k, 1);
                 while ((k + 2) > 7) {
                     k -= 7;
                 }
-                Note third = new Note(i+k + 2, 1);
+                Note third = new Note(k + 2, 1);
                 while ((k + 4) > 7) {
                     k -= 7;
                 }
-                Note fifth = new Note(i+k + 4, 1);
+                Note fifth = new Note(k + 4, 1);
 
                 //System.out.println(root.interval + "," + third.interval + "," + fifth.interval);
                 Note dummy = root;
@@ -48,7 +55,7 @@ public class Main {
         //Measure m = new Measure(tmp);
         //m.printMeasure(m);
         
-        Composition c = new Composition("C", mm);
+        Composition c = new Composition("C", 1, 4, mm);
         c.printCompositon(c);
 
 
