@@ -1,4 +1,4 @@
-package project;
+package com.noteproject.demo.Model;
 public class Composition {
     String key;
     int beat;  // the beat note: 4-whole note, 2-half note, 1-quarter note, .5-eighth note
@@ -12,27 +12,34 @@ public class Composition {
     }
 
     // note to self: this function moves the heads of the lists, resulting in them becoming null after this is called
-    public void printCompositon(Composition c) {
+    // function to return composition as String
+    public String printCompositon(Composition c) {
+        String s = "";
         // print measures, with each chord seperated by a bar 
         while (c.measure != null) {
             while (c.measure.chord != null) {
                 int duration = c.measure.chord.note.duration;
                 while (c.measure.chord.note != null) {
                     System.out.print(c.measure.chord.note.interval);
+                    s = s.concat(String.valueOf(c.measure.chord.note.interval));
                     c.measure.chord.note = c.measure.chord.note.next;
                 }
-                if (c.measure.chord.next == null && c.measure.next == null)
-                System.out.print(":" + duration);
-                else if (c.measure.chord.next == null)
+                if (c.measure.chord.next == null && c.measure.next == null) {
+                    System.out.print(":" + duration);
+                    s = s.concat(":" + String.valueOf(duration));
+                } else if (c.measure.chord.next == null) {
                     System.out.print(":" + duration + " | ");
-                else
+                    s = s.concat(":" + String.valueOf(duration) + " | ");
+                } else {
                     System.out.print(":" + duration + ", ");
+                    s = s.concat(":" + String.valueOf(duration) + ", ");
+                }
                 c.measure.chord = c.measure.chord.next;
             }
             c.measure = c.measure.next;
         }
         System.out.println();
-        
+        return s;
     }
 
 }

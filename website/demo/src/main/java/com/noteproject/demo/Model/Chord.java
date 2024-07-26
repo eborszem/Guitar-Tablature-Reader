@@ -1,7 +1,7 @@
-package project;
+package com.noteproject.demo.Model;
 public class Chord {
     Note note;  // notes in the chord
-    Chord next;
+    public Chord next;
     Chord prev;
     //Chord prev;
     public Chord(Note note) {

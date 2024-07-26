@@ -1,7 +1,7 @@
-package project;
+package com.noteproject.demo.Model;
 public class Measure {
     Chord chord;  // chords in the measure
-    Measure next;
+    public Measure next;
 	//Measure prev;
 	int noteBeat;  // which note gets the beat. Quarter, half, etc.
 	int numNoteBeatsPerMeasure;  // how many note beats are present in the measure
