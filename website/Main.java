@@ -1,5 +1,4 @@
 package project;
-
 public class Main {
     public static void main(String[] args) {
         Note note = new Note(0, 0);
