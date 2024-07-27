@@ -2,24 +2,28 @@ package com.noteproject.demo;
 
 import java.util.Random;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Note;
 
-@RestController
+import org.springframework.ui.Model;
+@Controller
 public class DemoController {
-    @RequestMapping("/hello")
-    public String hello() {
+    //@RequestMapping("/hello")
+    @GetMapping("/test")
+    public String randomComposition(Model model) {
         Note note = new Note(0, 0);
         Chord chord = new Chord(note);
         Measure m = new Measure(null);
         Measure mm = m;
         // creates 4 measures with random chords for the composition
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 4; i++) {
             Chord cc = chord;
             // creates 4 random chords with 1 beat each
             for (int j = 1; j < 16; j += 4) {
@@ -67,6 +71,7 @@ public class DemoController {
         
         Composition c = new Composition("C", 1, 4, mm);
         String s = c.printCompositon(c);
-        return s;
+        model.addAttribute("composition", s);
+        return "test";
     }
 }
