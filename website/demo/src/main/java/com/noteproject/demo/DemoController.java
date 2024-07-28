@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 
@@ -18,7 +19,7 @@ public class DemoController {
     //@RequestMapping("/hello")
     @GetMapping("/test")
     public String randomComposition(Model model) {
-        Note note = new Note(0, 0);
+        Note note = new Note(0, 0, false);
         Chord chord = new Chord(note);
         Measure m = new Measure(null);
         Measure mm = m;
@@ -36,15 +37,15 @@ public class DemoController {
                 while (k > 7) {
                     k -= 7;
                 }
-                Note root = new Note(k, 1);
+                Note root = new Note(k, 1, false);
                 while ((k + 2) > 7) {
                     k -= 7;
                 }
-                Note third = new Note(k + 2, 1);
+                Note third = new Note(k + 2, 1, false);
                 while ((k + 4) > 7) {
                     k -= 7;
                 }
-                Note fifth = new Note(k + 4, 1);
+                Note fifth = new Note(k + 4, 1, false);
 
                 //System.out.println(root.interval + "," + third.interval + "," + fifth.interval);
                 Note dummy = root;
@@ -73,5 +74,26 @@ public class DemoController {
         String s = c.printCompositon(c);
         model.addAttribute("composition", s);
         return "test";
+    }
+
+    @GetMapping("/test2")
+    public String test2(Model model) {
+        Note n = new Note(1, 2, false);
+        Note n2 = new Note(5, 2, false);
+        n.next = n2;
+        Chord c = new Chord(n);
+        Measure m = new Measure(c);
+        System.out.println("HELLO");
+        System.out.println(m.getChord().getNote().getInterval());
+        System.out.println(m.getChord().getNote().getNext().getInterval());
+        System.out.println("BYE");
+        Composition co = new Composition("C", 4, 4, m);
+        model.addAttribute("composition", co);
+        model.addAttribute("measure", m);
+        return "test2";
+    }
+    @PostMapping("/posttest")
+    public String createMeasure(Model model) {
+        return "test2";
     }
 }

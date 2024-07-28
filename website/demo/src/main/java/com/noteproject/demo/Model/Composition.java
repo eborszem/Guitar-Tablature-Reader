@@ -4,7 +4,7 @@ public class Composition {
     int beat;  // the beat note: 4-whole note, 2-half note, 1-quarter note, .5-eighth note
     int beatsPerMeasure;
     Measure measure;
-    Composition next;
+    public Composition next;
     // note: each measure's number of beats must equal beat * beatsPerMeasure
     public Composition(String key, int beat, int beatsPerMeasure, Measure measure) {
         this.measure = measure;
@@ -41,5 +41,47 @@ public class Composition {
         System.out.println();
         return s;
     }
+
+
+    public String getKey() {
+        return this.key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public int getBeat() {
+        return this.beat;
+    }
+
+    public void setBeat(int beat) {
+        this.beat = beat;
+    }
+
+    public int getBeatsPerMeasure() {
+        return this.beatsPerMeasure;
+    }
+
+    public void setBeatsPerMeasure(int beatsPerMeasure) {
+        this.beatsPerMeasure = beatsPerMeasure;
+    }
+
+    public Measure getMeasure() {
+        return this.measure;
+    }
+
+    public void setMeasure(Measure measure) {
+        this.measure = measure;
+    }
+
+    public Composition getNext() {
+        return this.next;
+    }
+
+    public void setNext(Composition next) {
+        this.next = next;
+    }
+
 
 }

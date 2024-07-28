@@ -35,5 +35,47 @@ public class Measure {
         System.out.println("1="+m.chord.next.next.note.next.next.interval);
         */
     }
+    
+
+    public Chord getChord() {
+        return this.chord;
+    }
+
+    public void setChord(Chord chord) {
+        this.chord = chord;
+    }
+
+    public Measure getNext() {
+        return this.next;
+    }
+
+    public void setNext(Measure next) {
+        this.next = next;
+    }
+
+    public int getNoteBeat() {
+        return this.noteBeat;
+    }
+
+    public void setNoteBeat(int noteBeat) {
+        this.noteBeat = noteBeat;
+    }
+
+    public int getNumNoteBeatsPerMeasure() {
+        return this.numNoteBeatsPerMeasure;
+    }
+
+    public void setNumNoteBeatsPerMeasure(int numNoteBeatsPerMeasure) {
+        this.numNoteBeatsPerMeasure = numNoteBeatsPerMeasure;
+    }
+
+    public int getNumBeats() {
+        return this.numBeats;
+    }
+
+    public void setNumBeats(int numBeats) {
+        this.numBeats = numBeats;
+    }
+
 
 }
