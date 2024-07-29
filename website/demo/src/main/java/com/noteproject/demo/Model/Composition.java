@@ -1,4 +1,8 @@
 package com.noteproject.demo.Model;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Composition {
     String key;
     int beat;  // the beat note: 4-whole note, 2-half note, 1-quarter note, .5-eighth note
@@ -83,5 +87,18 @@ public class Composition {
         this.next = next;
     }
 
+    public List<Measure> getAllMeasures() {
+        List<Measure> measures = new ArrayList<>();
+        Measure m = this.measure;
+        System.out.println("measures start");
+        System.out.println(m);
+        System.out.println(m.next);
+        while (m != null) {
+            measures.add(m);
+            m = m.next;
+        }
+        System.out.println("measures end");
+        return measures;
+    }
 
 }

@@ -1,6 +1,10 @@
 package com.noteproject.demo.Model;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Measure {
-    Chord chord;  // chords in the measure
+    public Chord chord;  // chords in the measure
     public Measure next;
 	//Measure prev;
 	int noteBeat;  // which note gets the beat. Quarter, half, etc.
@@ -77,5 +81,29 @@ public class Measure {
         this.numBeats = numBeats;
     }
 
+    public List<Chord> getAllChords() {
+        List<Chord> chords = new ArrayList<>();
+        Chord c = this.chord;
+        System.out.println("chord");
+        System.out.println(c);
+        System.out.println(c.next);
+        System.out.println("chord end");
+        while (c != null) {
+            chords.add(c);
+            c = c.next;
+        }
+        return chords;
+    }
+
+    // All measures can be accessed linearly via the first measure in the composition
+    public List<Measure> getAllMeasures() {
+        List<Measure> measures = new ArrayList<>();
+        Measure m = this;
+        while (m != null) {
+            measures.add(m);
+            m = m.next;
+        }
+        return measures;
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.noteproject.demo;
 
 import java.util.Random;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Note;
 
 import org.springframework.ui.Model;
+
 @Controller
 public class DemoController {
     //@RequestMapping("/hello")
@@ -76,24 +78,114 @@ public class DemoController {
         return "test";
     }
 
-    @GetMapping("/test2")
+    @GetMapping("/page")
     public String test2(Model model) {
-        Note n = new Note(1, 2, false);
-        Note n2 = new Note(5, 2, false);
+        System.out.println("start of getmapping");
+        // populating measures for testing
+        // measure 1 chord 1
+        Note n = new Note(1, 1, false);
+        Note n2 = new Note(3, 1, false);
+        Note n3 = new Note(5, 1, false);
         n.next = n2;
+        n2.next = n3;
+        n3.next = null;
         Chord c = new Chord(n);
+        
+        // measure 1 chord 2
+        Note n4 = new Note(5, 3, false);
+        Note n5 = new Note(7, 3, false);
+        Note n6 = new Note(2, 3, false);
+        n4.next = n5;
+        n5.next = n6;
+        n6.next = null;
+        Chord c2 = new Chord(n4);
+        
+        // measure 2 chord 1
+        Note n7 = new Note(2, 2, false);
+        Note n8 = new Note(4, 2, false);
+        Note n9 = new Note(6, 2, false);
+        n7.next = n8;
+        n8.next = n9;
+        n9.next = null;
+        Chord c3 = new Chord(n7);
+       
+        
+        // measure 2 chord 2
+        Note n10 = new Note(4, 2, false);
+        Note n11 = new Note(6, 2, false);
+        Note n12 = new Note(1, 2, false);
+        n10.next = n11;
+        n11.next = n12;
+        n12.next = null;
+        Chord c4 = new Chord(n10);
+        
+
+        // measure 3 chord 1
+        /*Note n13 = new Note(1, 4, false);
+        Note n14 = new Note(3, 4, false);
+        Note n15 = new Note(5, 4, false);
+        n13.next = n13;
+        n14.next = n15;
+        n15.next = null;
+        Chord c5 = new Chord(n13);*/
+        /*
+        System.out.println(1);
+        System.out.println(c.getAllNoteIntervals().toString());
+        System.out.println(2);
+        System.out.println(c2.getAllNoteIntervals().toString());
+        System.out.println(3);
+        System.out.println(c3.getAllNoteIntervals().toString());
+        System.out.println(4);
+        System.out.println(c4.getAllNoteIntervals().toString());
+        System.out.println(5);
+        System.out.println(c5.getAllNoteIntervals().toString());
+        */
+
+        c.next = c2;
+        c2.next = null;
+        c3.next = c4;
+        c4.next = null;
+        //c4.next = c5;
         Measure m = new Measure(c);
-        System.out.println("HELLO");
+        Measure m2 = new Measure(c3);
+        m.next = m2;
+        
+        System.out.println(m + "...." + m.getAllChords() + "....");
+
+        /*System.out.println("HELLO");
         System.out.println(m.getChord().getNote().getInterval());
         System.out.println(m.getChord().getNote().getNext().getInterval());
-        System.out.println("BYE");
+        System.out.println("BYE");*/
         Composition co = new Composition("C", 4, 4, m);
-        model.addAttribute("composition", co);
+
+        Composition co2 = co;
+        System.out.println("ENTERING");
+        for (Measure mm : co2.getAllMeasures()) {
+            System.out.println("\t->"+mm);
+            System.out.println("\t\t->"+mm.chord);
+            System.out.println("\t\t\t->"+mm.chord.next);
+            for (Chord cc : mm.getAllChords()) {
+                for (Note nn : cc.getAllNotes()) {
+                    System.out.print(nn.getInterval());
+                }
+                System.out.println();
+                System.out.println("test");
+            }
+            System.out.println("test2");
+            System.out.println("------------");
+        }
+        System.out.println("EXITING");
+        System.out.println("HELLO");
         model.addAttribute("measure", m);
-        return "test2";
+        System.out.println(m.getAllChords().toString());
+        //co.printCompositon(co);
+        System.out.println("BYE");
+        System.out.println("end of getmapping");
+        return "page";
     }
-    @PostMapping("/posttest")
+
+    /*@PostMapping("/posttest")
     public String createMeasure(Model model) {
-        return "test2";
-    }
+        return "page";
+    }*/
 }

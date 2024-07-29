@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/css/page.css}">
+    <!--may want to move this into a script block instead-->
+    <script type="text/javascript" th:src="@{/js/page.js}" defer></script>
+</head>
+<body>
+    <p>page</p>
+    <button id="new-measure" class="submit">Add measure</button>
+    <!--note in chord in measure in composition-->
+    <!--<p th:text="${measure}">Default text</p>-->
+    <!--currently trying to print out all the notes in the first chord of the composition-->
+    <!--<li th:each="note : ${composition.measure.chord.allNotes}" th:text="${note.interval}"></li>-->
+
+    <p>before loop</p>
+    <div th:each="measure1 : ${measure.allMeasures}">
+        <div class="measure-box">
+            <p th:text="'measure = ' + ${measure1}"></p>
+            <div class="chord-box">
+                <div th:each="chord1 : ${measure1.allChords}">
+                    <p th:text="'chord = ' + ${chord1}"></p>
+                    <div th:each="note1 : ${measure1.chord.allNotes}">
+                        <div class="note-box">
+                            <p th:text="${note1.interval}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>after loop</p>
+    
+</body>
+</html>
