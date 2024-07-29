@@ -121,13 +121,13 @@ public class DemoController {
         
 
         // measure 3 chord 1
-        /*Note n13 = new Note(1, 4, false);
+        Note n13 = new Note(1, 4, false);
         Note n14 = new Note(3, 4, false);
         Note n15 = new Note(5, 4, false);
-        n13.next = n13;
+        n13.next = n14;
         n14.next = n15;
         n15.next = null;
-        Chord c5 = new Chord(n13);*/
+        Chord c5 = new Chord(n13);
         /*
         System.out.println(1);
         System.out.println(c.getAllNoteIntervals().toString());
@@ -145,12 +145,14 @@ public class DemoController {
         c2.next = null;
         c3.next = c4;
         c4.next = null;
-        //c4.next = c5;
+
         Measure m = new Measure(c);
         Measure m2 = new Measure(c3);
+        Measure m3 = new Measure(c5);
         m.next = m2;
+        m2.next = m3;
         
-        System.out.println(m + "...." + m.getAllChords() + "....");
+        //System.out.println(m + "...." + m.getAllChords() + "....");
 
         /*System.out.println("HELLO");
         System.out.println(m.getChord().getNote().getInterval());
@@ -177,7 +179,7 @@ public class DemoController {
         System.out.println("EXITING");
         System.out.println("HELLO");
         model.addAttribute("measure", m);
-        System.out.println(m.getAllChords().toString());
+        //System.out.println(m.getAllChords().toString());
         //co.printCompositon(co);
         System.out.println("BYE");
         System.out.println("end of getmapping");

@@ -23,7 +23,7 @@
             <div class="chord-box">
                 <div th:each="chord1 : ${measure1.allChords}">
                     <p th:text="'chord = ' + ${chord1}"></p>
-                    <div th:each="note1 : ${measure1.chord.allNotes}">
+                    <div th:each="note1 : ${chord1.allNotes}">
                         <div class="note-box">
                             <p th:text="${note1.interval}"></p>
                         </div>
