@@ -88,7 +88,6 @@ public class DemoController {
         Note n3 = new Note(5, 1, false);
         n.next = n2;
         n2.next = n3;
-        n3.next = null;
         Chord c = new Chord(n);
         
         // measure 1 chord 2
@@ -97,8 +96,25 @@ public class DemoController {
         Note n6 = new Note(2, 3, false);
         n4.next = n5;
         n5.next = n6;
-        n6.next = null;
         Chord c2 = new Chord(n4);
+
+        // measure 1 chord 3
+        Note note = new Note(5, 3, false);
+        Note note2 = new Note(7, 3, false);
+        Note note3 = new Note(2, 3, false);
+        note.next = note2;
+        note2.next = note3;
+        Chord c6 = new Chord(note);
+
+
+        // measure 1 chord 4
+        Note note4 = new Note(5, 3, false);
+        Note note5 = new Note(7, 3, false);
+        Note note6 = new Note(2, 3, false);
+        note4.next = note5;
+        note5.next = note6;
+        Chord c7 = new Chord(note4);
+        
         
         // measure 2 chord 1
         Note n7 = new Note(2, 2, false);
@@ -106,7 +122,6 @@ public class DemoController {
         Note n9 = new Note(6, 2, false);
         n7.next = n8;
         n8.next = n9;
-        n9.next = null;
         Chord c3 = new Chord(n7);
        
         
@@ -116,7 +131,6 @@ public class DemoController {
         Note n12 = new Note(1, 2, false);
         n10.next = n11;
         n11.next = n12;
-        n12.next = null;
         Chord c4 = new Chord(n10);
         
 
@@ -126,7 +140,6 @@ public class DemoController {
         Note n15 = new Note(5, 4, false);
         n13.next = n14;
         n14.next = n15;
-        n15.next = null;
         Chord c5 = new Chord(n13);
         /*
         System.out.println(1);
@@ -142,13 +155,15 @@ public class DemoController {
         */
 
         c.next = c2;
-        c2.next = null;
+        c2.next = c6;
+        c6.next = c7;
+
         c3.next = c4;
-        c4.next = null;
 
         Measure m = new Measure(c);
         Measure m2 = new Measure(c3);
         Measure m3 = new Measure(c5);
+        
         m.next = m2;
         m2.next = m3;
         

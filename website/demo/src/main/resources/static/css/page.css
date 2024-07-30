@@ -4,13 +4,6 @@ body {
 
 body p {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 20;
-    font-weight: bold;
-}
-
-li {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 50;
     font-weight: bold;
 }
 
@@ -19,22 +12,61 @@ button {
     color: white;
 }
 
-.note-box {
-   border: 1px dashed gray;
-   margin: 5px;
-   padding: 10px;
-   padding-right: 100px;
-}
-
-.chord-box p {
+.measure-box {
     border: 1px dashed gray;
     margin: 5px;
     padding: 10px;
-    padding-right: 100px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    min-height: 80px;
+    max-height: 80px;
+    min-width: 320px;
+    max-width: 320px;
+    position: relative;
  }
  
-.measure-box p {
-    border: 1px black;
-    margin: 10px;
+.composition-box {
+    border: 2px solid rgb(0, 0, 0);
+    margin: 5px;
     padding: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.chord-name {
+    font-size: 10px;
+}
+
+.string {
+    width: 100%;
+    height: 2px;
+    background-color: black;
+    position: absolute;
+}
+
+.string:nth-child(1) {
+    top: 15%;
+}
+
+.string:nth-child(2) {
+    top: 29%
+}
+
+.string:nth-child(3) {
+    top: 43%;
+}
+
+.string:nth-child(4) {
+    top: 57%;
+}
+
+.string:nth-child(5) {
+    top: 71%;
+}
+
+.string:nth-child(6) {
+    top: 85%;
 }

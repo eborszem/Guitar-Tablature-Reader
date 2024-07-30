@@ -17,16 +17,21 @@
     <!--<li th:each="note : ${composition.measure.chord.allNotes}" th:text="${note.interval}"></li>-->
 
     <p>before loop</p>
-    <div th:each="measure1 : ${measure.allMeasures}">
-        <div class="measure-box">
-            <p th:text="'measure = ' + ${measure1}"></p>
-            <div class="chord-box">
+    <div class="composition-box">
+        <div th:each="measure1 : ${measure.allMeasures}">
+            <!-- <p th:text="'measure = ' + ${measure1}"></p> -->
+            <p>1</p>
+            <div class="measure-box">
+                <div class="string"></div>
+                <div class="string"></div>
+                <div class="string"></div>
+                <div class="string"></div>
+                <div class="string"></div>
+                <div class="string"></div>
                 <div th:each="chord1 : ${measure1.allChords}">
-                    <p th:text="'chord = ' + ${chord1}"></p>
+                    <!-- <p class = "chord-name"th:text="'chord = ' + ${chord1}"></p> -->
                     <div th:each="note1 : ${chord1.allNotes}">
-                        <div class="note-box">
-                            <p th:text="${note1.interval}"></p>
-                        </div>
+                        <p th:text="${note1.interval}"></p>
                     </div>
                 </div>
             </div>
