@@ -14,15 +14,15 @@ button {
 
 .measure-box {
     border: 1px dashed gray;
-    margin: 5px;
-    padding: 10px;
+    margin: 0;
+    padding: 0;
     display: flex;
+    flex: 1;
     justify-content: space-evenly;
     align-items: center;
-    min-height: 80px;
-    max-height: 80px;
-    min-width: 320px;
-    max-width: 320px;
+    min-width: 240px;
+    max-width: 240px;
+    height: 94px;
     position: relative;
  }
  
@@ -31,13 +31,33 @@ button {
     margin: 5px;
     padding: 10px;
     display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+    margin: 0;
+    gap: 0;
+    width: 95%;
+    min-height: 500px;
     flex-wrap: wrap;
 }
 
+/* not currently used*/
 .chord-name {
     font-size: 10px;
+}
+
+.note {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    
+}
+
+.note span {
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
 }
 
 .string {
@@ -49,24 +69,30 @@ button {
 
 .string:nth-child(1) {
     top: 15%;
+    z-index: 0;
 }
 
 .string:nth-child(2) {
-    top: 29%
+    top: 29%;
+    z-index: 0;
 }
 
 .string:nth-child(3) {
     top: 43%;
+    z-index: 0;
 }
 
 .string:nth-child(4) {
     top: 57%;
+    z-index: 0;
 }
 
 .string:nth-child(5) {
     top: 71%;
+    z-index: 0;
 }
 
 .string:nth-child(6) {
     top: 85%;
+    z-index: 0;
 }

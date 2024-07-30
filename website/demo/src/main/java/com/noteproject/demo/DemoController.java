@@ -81,63 +81,114 @@ public class DemoController {
     @GetMapping("/page")
     public String test(Model model) {
         System.out.println("start of getmapping");
-        Note measure1chord1note1 = new Note(1, 1, false);
-        Note measure1chord1note2 = new Note(3, 1, false);
-        Note measure1chord1note3 = new Note(5, 1, false);
+        Random rand = new Random();
+        int r = rand.nextInt(10);
+        Note measure1chord1note1 = new Note(r, 1, false);
+        Note measure1chord1note2 = new Note(r, 1, false);
+        Note measure1chord1note3 = new Note(r + 1, 1, false);
+        Note measure1chord1note4 = new Note(r + 2, 1, false);
+        Note measure1chord1note5 = new Note(r + 2, 1, false);
+        Note measure1chord1note6 = new Note(r, 1, false);
         measure1chord1note1.next = measure1chord1note2;
         measure1chord1note2.next = measure1chord1note3;
+        measure1chord1note3.next = measure1chord1note4;
+        measure1chord1note4.next = measure1chord1note5;
+        measure1chord1note5.next = measure1chord1note6;
         Chord measure1chord1 = new Chord(measure1chord1note1);
         
+        r = rand.nextInt(10);
         // measure 1 chord 2
-        Note measure1chord2note1 = new Note(5, 3, false);
-        Note measure1chord2note2 = new Note(7, 3, false);
-        Note measure1chord2note3 = new Note(2, 3, false);
+        Note measure1chord2note1 = new Note(r, 1, false);
+        Note measure1chord2note2 = new Note(r, 1, false);
+        Note measure1chord2note3 = new Note(r + 1, 1, false);
+        Note measure1chord2note4 = new Note(r + 2, 1, false);
+        Note measure1chord2note5 = new Note(r + 2, 1, false);
+        Note measure1chord2note6 = new Note(r, 1, false);
         measure1chord2note1.next = measure1chord2note2;
         measure1chord2note2.next = measure1chord2note3;
+        measure1chord2note3.next = measure1chord2note4;
+        measure1chord2note4.next = measure1chord2note5;
+        measure1chord2note5.next = measure1chord2note6;
         Chord measure1chord2 = new Chord(measure1chord2note1);
 
+
+        r = rand.nextInt(10);
         // measure 1 chord 3
-        Note measure1chord3note1 = new Note(5, 3, false);
-        Note measure1chord3note2 = new Note(7, 3, false);
-        Note measure1chord3note3 = new Note(2, 3, false);
+        Note measure1chord3note1 = new Note(r, 1, false);
+        Note measure1chord3note2 = new Note(r, 1, false);
+        Note measure1chord3note3 = new Note(r + 1, 1, false);
+        Note measure1chord3note4 = new Note(r + 2, 1, false);
+        Note measure1chord3note5 = new Note(r + 2, 1, false);
+        Note measure1chord3note6 = new Note(r, 1, false);
         measure1chord3note1.next = measure1chord3note2;
         measure1chord3note2.next = measure1chord3note3;
+        measure1chord3note3.next = measure1chord3note4;
+        measure1chord3note4.next = measure1chord3note5;
+        measure1chord3note5.next = measure1chord3note6;
         Chord measure1chord3 = new Chord(measure1chord3note1);
 
 
+        r = rand.nextInt(10);
         // measure 1 chord 4
-        Note measure1chord4note1 = new Note(5, 3, false);
-        Note measure1chord4note2 = new Note(7, 3, false);
-        Note measure1chord4note3 = new Note(2, 3, false);
+        Note measure1chord4note1 = new Note(r, 1, false);
+        Note measure1chord4note2 = new Note(r, 1, false);
+        Note measure1chord4note3 = new Note(r + 1, 1, false);
+        Note measure1chord4note4 = new Note(r + 2, 1, false);
+        Note measure1chord4note5 = new Note(r + 2, 1, false);
+        Note measure1chord4note6 = new Note(r, 1, false);
         measure1chord4note1.next = measure1chord4note2;
         measure1chord4note2.next = measure1chord4note3;
+        measure1chord4note3.next = measure1chord4note4;
+        measure1chord4note4.next = measure1chord4note5;
+        measure1chord4note5.next = measure1chord4note6;
         Chord measure1chord4 = new Chord(measure1chord4note1);
         
         
+        r = rand.nextInt(10);
         // measure 2 chord 1
-        Note measure2chord1note1 = new Note(2, 2, false);
-        Note measure2chord1note2 = new Note(4, 2, false);
-        Note measure2chord1note3 = new Note(6, 2, false);
+        Note measure2chord1note1 = new Note(r, 2, false);
+        Note measure2chord1note2 = new Note(r, 2, false);
+        Note measure2chord1note3 = new Note(r + 1, 2, false);
+        Note measure2chord1note4 = new Note(r + 2, 2, false);
+        Note measure2chord1note5 = new Note(r + 2, 2, false);
+        Note measure2chord1note6 = new Note(r, 2, false);
         measure2chord1note1.next = measure2chord1note2;
         measure2chord1note2.next = measure2chord1note3;
+        measure2chord1note3.next = measure2chord1note4;
+        measure2chord1note4.next = measure2chord1note5;
+        measure2chord1note5.next = measure2chord1note6;
         Chord measure2chord1 = new Chord(measure2chord1note1);
        
         
+        r = rand.nextInt(10);
         // measure 2 chord 2
-        Note measure2chord2note1 = new Note(4, 2, false);
-        Note measure2chord2note2 = new Note(6, 2, false);
-        Note measure2chord2note3 = new Note(1, 2, false);
+        Note measure2chord2note1 = new Note(r, 2, false);
+        Note measure2chord2note2 = new Note(r, 2, false);
+        Note measure2chord2note3 = new Note(r + 1, 2, false);
+        Note measure2chord2note4 = new Note(r + 2, 2, false);
+        Note measure2chord2note5 = new Note(r + 2, 2, false);
+        Note measure2chord2note6 = new Note(r, 2, false);
         measure2chord2note1.next = measure2chord2note2;
         measure2chord2note2.next = measure2chord2note3;
+        measure2chord2note3.next = measure2chord2note4;
+        measure2chord2note4.next = measure2chord2note5;
+        measure2chord2note5.next = measure2chord2note6;
         Chord measure2chord2 = new Chord(measure2chord2note1);
         
 
+        r = rand.nextInt(10);
         // measure 3 chord 1
-        Note measure3chord1note1 = new Note(1, 4, false);
-        Note measure3chord1note2 = new Note(3, 4, false);
-        Note measure3chord1note3 = new Note(5, 4, false);
+        Note measure3chord1note1 = new Note(r, 2, false);
+        Note measure3chord1note2 = new Note(r, 2, false);
+        Note measure3chord1note3 = new Note(r + 1, 2, false);
+        Note measure3chord1note4 = new Note(r + 2, 2, false);
+        Note measure3chord1note5 = new Note(r + 2, 2, false);
+        Note measure3chord1note6 = new Note(r, 2, false);
         measure3chord1note1.next = measure3chord1note2;
         measure3chord1note2.next = measure3chord1note3;
+        measure3chord1note3.next = measure3chord1note4;
+        measure3chord1note4.next = measure3chord1note5;
+        measure3chord1note5.next = measure3chord1note6;
         Chord measure3chord1 = new Chord(measure3chord1note1);
 
         // Now linking the chords into measures.

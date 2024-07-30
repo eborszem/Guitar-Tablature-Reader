@@ -20,7 +20,7 @@
     <div class="composition-box">
         <div th:each="measure1 : ${measure.allMeasures}">
             <!-- <p th:text="'measure = ' + ${measure1}"></p> -->
-            <p>1</p>
+            <!-- <p>1</p> -->
             <div class="measure-box">
                 <div class="string"></div>
                 <div class="string"></div>
@@ -31,7 +31,9 @@
                 <div th:each="chord1 : ${measure1.allChords}">
                     <!-- <p class = "chord-name"th:text="'chord = ' + ${chord1}"></p> -->
                     <div th:each="note1 : ${chord1.allNotes}">
-                        <p th:text="${note1.interval}"></p>
+                        <p class="note">
+                            <span th:text="${note1.interval}"></span>
+                        </p>
                     </div>
                 </div>
             </div>
