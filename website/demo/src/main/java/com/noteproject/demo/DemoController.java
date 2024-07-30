@@ -19,7 +19,7 @@ import org.springframework.ui.Model;
 @Controller
 public class DemoController {
     //@RequestMapping("/hello")
-    @GetMapping("/test")
+    @GetMapping("/test2")
     public String randomComposition(Model model) {
         Note note = new Note(0, 0, false);
         Chord chord = new Chord(note);
@@ -79,7 +79,7 @@ public class DemoController {
     }
 
     @GetMapping("/page")
-    public String test2(Model model) {
+    public String test(Model model) {
         System.out.println("start of getmapping");
         Note measure1chord1note1 = new Note(1, 1, false);
         Note measure1chord1note2 = new Note(3, 1, false);
@@ -183,9 +183,4 @@ public class DemoController {
         System.out.println("end of getmapping");
         return "page";
     }
-
-    /*@PostMapping("/posttest")
-    public String createMeasure(Model model) {
-        return "page";
-    }*/
 }
