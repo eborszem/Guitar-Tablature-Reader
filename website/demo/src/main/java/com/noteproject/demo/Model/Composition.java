@@ -90,14 +90,10 @@ public class Composition {
     public List<Measure> getAllMeasures() {
         List<Measure> measures = new ArrayList<>();
         Measure m = this.measure;
-        System.out.println("measures start");
-        System.out.println(m);
-        System.out.println(m.next);
         while (m != null) {
             measures.add(m);
             m = m.next;
         }
-        System.out.println("measures end");
         return measures;
     }
 

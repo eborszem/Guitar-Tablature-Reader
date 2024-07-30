@@ -31,18 +31,9 @@ public class Chord {
     public List<Note> getAllNotes() {
         List<Note> notes = new ArrayList<>();
         Note n = this.note;
-
-        if (n != null) System.out.println("n.interval="+n.interval);
-        else System.out.println("fail 1");
-        if (n.next != null) System.out.println("n.next.interval="+n.next.interval);
-        else System.out.println("fail 2");
-        if (n.next.next != null) System.out.println("n.next.next.interval="+n.next.next.interval);
-        else System.out.println("fail 3");
-        
         while (n != null) {
             notes.add(n);
-            System.out.println("interval="+n.interval);
-            n = n.next;//this.note.next;
+            n = n.next;
         }
         return notes;
     }

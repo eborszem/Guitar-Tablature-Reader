@@ -81,91 +81,82 @@ public class DemoController {
     @GetMapping("/page")
     public String test2(Model model) {
         System.out.println("start of getmapping");
-        // populating measures for testing
-        // measure 1 chord 1
-        Note n = new Note(1, 1, false);
-        Note n2 = new Note(3, 1, false);
-        Note n3 = new Note(5, 1, false);
-        n.next = n2;
-        n2.next = n3;
-        Chord c = new Chord(n);
+        Note measure1chord1note1 = new Note(1, 1, false);
+        Note measure1chord1note2 = new Note(3, 1, false);
+        Note measure1chord1note3 = new Note(5, 1, false);
+        measure1chord1note1.next = measure1chord1note2;
+        measure1chord1note2.next = measure1chord1note3;
+        Chord measure1chord1 = new Chord(measure1chord1note1);
         
         // measure 1 chord 2
-        Note n4 = new Note(5, 3, false);
-        Note n5 = new Note(7, 3, false);
-        Note n6 = new Note(2, 3, false);
-        n4.next = n5;
-        n5.next = n6;
-        Chord c2 = new Chord(n4);
+        Note measure1chord2note1 = new Note(5, 3, false);
+        Note measure1chord2note2 = new Note(7, 3, false);
+        Note measure1chord2note3 = new Note(2, 3, false);
+        measure1chord2note1.next = measure1chord2note2;
+        measure1chord2note2.next = measure1chord2note3;
+        Chord measure1chord2 = new Chord(measure1chord2note1);
 
         // measure 1 chord 3
-        Note note = new Note(5, 3, false);
-        Note note2 = new Note(7, 3, false);
-        Note note3 = new Note(2, 3, false);
-        note.next = note2;
-        note2.next = note3;
-        Chord c6 = new Chord(note);
+        Note measure1chord3note1 = new Note(5, 3, false);
+        Note measure1chord3note2 = new Note(7, 3, false);
+        Note measure1chord3note3 = new Note(2, 3, false);
+        measure1chord3note1.next = measure1chord3note2;
+        measure1chord3note2.next = measure1chord3note3;
+        Chord measure1chord3 = new Chord(measure1chord3note1);
 
 
         // measure 1 chord 4
-        Note note4 = new Note(5, 3, false);
-        Note note5 = new Note(7, 3, false);
-        Note note6 = new Note(2, 3, false);
-        note4.next = note5;
-        note5.next = note6;
-        Chord c7 = new Chord(note4);
+        Note measure1chord4note1 = new Note(5, 3, false);
+        Note measure1chord4note2 = new Note(7, 3, false);
+        Note measure1chord4note3 = new Note(2, 3, false);
+        measure1chord4note1.next = measure1chord4note2;
+        measure1chord4note2.next = measure1chord4note3;
+        Chord measure1chord4 = new Chord(measure1chord4note1);
         
         
         // measure 2 chord 1
-        Note n7 = new Note(2, 2, false);
-        Note n8 = new Note(4, 2, false);
-        Note n9 = new Note(6, 2, false);
-        n7.next = n8;
-        n8.next = n9;
-        Chord c3 = new Chord(n7);
+        Note measure2chord1note1 = new Note(2, 2, false);
+        Note measure2chord1note2 = new Note(4, 2, false);
+        Note measure2chord1note3 = new Note(6, 2, false);
+        measure2chord1note1.next = measure2chord1note2;
+        measure2chord1note2.next = measure2chord1note3;
+        Chord measure2chord1 = new Chord(measure2chord1note1);
        
         
         // measure 2 chord 2
-        Note n10 = new Note(4, 2, false);
-        Note n11 = new Note(6, 2, false);
-        Note n12 = new Note(1, 2, false);
-        n10.next = n11;
-        n11.next = n12;
-        Chord c4 = new Chord(n10);
+        Note measure2chord2note1 = new Note(4, 2, false);
+        Note measure2chord2note2 = new Note(6, 2, false);
+        Note measure2chord2note3 = new Note(1, 2, false);
+        measure2chord2note1.next = measure2chord2note2;
+        measure2chord2note2.next = measure2chord2note3;
+        Chord measure2chord2 = new Chord(measure2chord2note1);
         
 
         // measure 3 chord 1
-        Note n13 = new Note(1, 4, false);
-        Note n14 = new Note(3, 4, false);
-        Note n15 = new Note(5, 4, false);
-        n13.next = n14;
-        n14.next = n15;
-        Chord c5 = new Chord(n13);
-        /*
-        System.out.println(1);
-        System.out.println(c.getAllNoteIntervals().toString());
-        System.out.println(2);
-        System.out.println(c2.getAllNoteIntervals().toString());
-        System.out.println(3);
-        System.out.println(c3.getAllNoteIntervals().toString());
-        System.out.println(4);
-        System.out.println(c4.getAllNoteIntervals().toString());
-        System.out.println(5);
-        System.out.println(c5.getAllNoteIntervals().toString());
-        */
+        Note measure3chord1note1 = new Note(1, 4, false);
+        Note measure3chord1note2 = new Note(3, 4, false);
+        Note measure3chord1note3 = new Note(5, 4, false);
+        measure3chord1note1.next = measure3chord1note2;
+        measure3chord1note2.next = measure3chord1note3;
+        Chord measure3chord1 = new Chord(measure3chord1note1);
 
-        c.next = c2;
-        c2.next = c6;
-        c6.next = c7;
+        // Now linking the chords into measures.
+        // The first chord of a measure points to all other chords in that measure
+        measure1chord1.next = measure1chord2;
+        measure1chord2.next = measure1chord3;
+        measure1chord3.next = measure1chord4;
+        Measure measure1 = new Measure(measure1chord1);
 
-        c3.next = c4;
-
-        Measure m = new Measure(c);
-        Measure m2 = new Measure(c3);
-        Measure m3 = new Measure(c5);
         
-        m.next = m2;
-        m2.next = m3;
+        measure2chord1.next = measure2chord2;
+        Measure measure2 = new Measure(measure2chord1);
+
+        Measure measure3 = new Measure(measure3chord1);
+
+
+        
+        measure1.next = measure2;
+        measure2.next = measure3;
         
         //System.out.println(m + "...." + m.getAllChords() + "....");
 
@@ -173,30 +164,22 @@ public class DemoController {
         System.out.println(m.getChord().getNote().getInterval());
         System.out.println(m.getChord().getNote().getNext().getInterval());
         System.out.println("BYE");*/
-        Composition co = new Composition("C", 4, 4, m);
+        Composition composition = new Composition("C", 4, 4, measure1);
 
-        Composition co2 = co;
+        Composition composition2 = composition;
+
+        // Prints out composition for testing
         System.out.println("ENTERING");
-        for (Measure mm : co2.getAllMeasures()) {
-            System.out.println("\t->"+mm);
-            System.out.println("\t\t->"+mm.chord);
-            System.out.println("\t\t\t->"+mm.chord.next);
+        for (Measure mm : composition2.getAllMeasures()) {
             for (Chord cc : mm.getAllChords()) {
                 for (Note nn : cc.getAllNotes()) {
                     System.out.print(nn.getInterval());
                 }
                 System.out.println();
-                System.out.println("test");
             }
-            System.out.println("test2");
             System.out.println("------------");
         }
-        System.out.println("EXITING");
-        System.out.println("HELLO");
-        model.addAttribute("measure", m);
-        //System.out.println(m.getAllChords().toString());
-        //co.printCompositon(co);
-        System.out.println("BYE");
+        model.addAttribute("measure", measure1);
         System.out.println("end of getmapping");
         return "page";
     }

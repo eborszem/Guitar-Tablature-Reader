@@ -84,10 +84,6 @@ public class Measure {
     public List<Chord> getAllChords() {
         List<Chord> chords = new ArrayList<>();
         Chord c = this.chord;
-        System.out.println("chord");
-        System.out.println(c);
-        System.out.println(c.next);
-        System.out.println("chord end");
         while (c != null) {
             chords.add(c);
             c = c.next;
