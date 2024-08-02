@@ -111,39 +111,41 @@ public class Composition {
     
     public Composition readComposition(String compositionString) {
         String[] compositionArr = compositionString.split("\n");
-        Note tempNote = new Note(0, 0, true); 
+        Note tempNote = new Note(100, 0, true);
         Chord chord = new Chord(tempNote);
         Chord cDummy = chord;  // chordDummy is used to traverse note list without losing head of chord
 
         Measure measure = new Measure(chord);
         Measure mDummy = measure;  // chordDummy is used to traverse note list without losing head of measure
-        System.out.println("zero print");
-        for (int i = 0; i < compositionArr.length; i++) {
+
+        // iterate one extra time so if statement occurs for last measure
+        for (int i = 0; i <= compositionArr.length; i++) {
             // if line is empty or is the last line, then we know a measure will be created
-            if (compositionArr[i].isEmpty() || i == compositionArr.length - 1) {
+            if (i == compositionArr.length || compositionArr[i].isEmpty()) {
                 System.out.println("line" + i + " is empty");
-                mDummy.next = new Measure(chord);
+                mDummy.next = new Measure(chord.next);
                 mDummy = mDummy.next;
                 chord = new Chord(tempNote);
                 cDummy = chord;
                 continue;
             }
             String[] noteInts = compositionArr[i].split(",");
-            Note note = new Note(Integer.valueOf(noteInts[0]), 1, false);
+            Note note = new Note(Integer.valueOf(noteInts[0]), 1, false);  // get head of note list
             Note nDummy = note;  // noteDummy is used to traverse note list without losing head of note
+            System.out.println("noteints="+compositionArr[i]);
+            System.out.println("inter"+i);
             for (String n : noteInts) {
                 nDummy.next = new Note(Integer.valueOf(n), 1, false);
                 nDummy = nDummy.next;
             }
-            System.out.println("inter"+i);
-            cDummy.next = new Chord(note);
+            cDummy.next = new Chord(note); // note.next avoids first empty note in measure
             cDummy = cDummy.next;
             // blank line found, implies measure ends
 
         }
-        Composition composition = new Composition(compositionString, 1, 4, measure);
+        Composition composition = new Composition(compositionString, 1, 4, measure.next); // measure.next avoids duplicating measure 1
         // m1
-        System.out.println("m1");
+        /*System.out.println("m1");
         composition.getMeasure().getChord().printAllNotes();
         composition.getMeasure().getChord().next.printAllNotes();
         composition.getMeasure().getChord().next.next.next.printAllNotes();
@@ -153,7 +155,7 @@ public class Composition {
         composition.getMeasure().next.getChord().next.printAllNotes();
         // m3
         System.out.println("m3");
-        composition.getMeasure().next.next.getChord().printAllNotes();
+        composition.getMeasure().next.next.getChord().printAllNotes();*/
         return composition;
     }
     

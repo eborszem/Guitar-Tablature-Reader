@@ -98,7 +98,7 @@ public class DemoController {
         //composition.printComposition(composition);
         System.out.println("END COMPOSITION PRINT");
         model.addAttribute("measure", composition.getMeasure());
-        System.out.println(composition.getMeasure())
+        System.out.println("1st measure object="+composition.getMeasure());
         return "page";
     }
 
@@ -107,6 +107,6 @@ public class DemoController {
     public String createNewMeasure(Model model) {
         System.out.println("reached create new measure post mapping");
         fileService.writeToFile("composition.txt");
-        return "page";
+        return "redirect:/page";
     }
 }

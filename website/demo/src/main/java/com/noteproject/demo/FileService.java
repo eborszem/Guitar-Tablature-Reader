@@ -33,8 +33,9 @@ public class FileService {
             Path path = resource.getFile().toPath();
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toFile(), true))) {
-                writer.newLine();  // new line indicates new measure
-                writer.write("0,0,0,0,0,0");  // empty chord of new measure
+                writer.newLine();  // creates new line on last line in file
+                writer.newLine();  // empty new line indicates new measure
+                writer.write("0,0,0,0,0,0");  // empty first chord of new measure
             }
         } catch (IOException e) {
             throw new RuntimeException("error writing to file " + file, e);

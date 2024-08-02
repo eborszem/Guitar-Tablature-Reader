@@ -92,6 +92,7 @@ public class Measure {
             measures.add(m);
             m = m.next;
         }
+        System.out.println("measure object val="+this);
         return measures;
     }
 
