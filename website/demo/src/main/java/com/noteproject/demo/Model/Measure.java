@@ -15,6 +15,10 @@ public class Measure {
 		this.chord = chord;
         this.next = null;
 	}
+    
+    public Measure() {
+        
+    }
 
     // note to self: this function moves the heads of the lists, resulting in them becoming null after this is called
     public void printMeasure(Measure m) {

@@ -6,11 +6,11 @@
     <title>Document</title>
     <link rel="stylesheet" th:href="@{/css/page.css}">
     <!--may want to move this into a script block instead-->
-    <script type="text/javascript" th:src="@{/js/page.js}" defer></script>
+    <script type="text/javascript" th:src="@{/js/page.js}"></script>
 </head>
 <body>
     <p>page</p>
-    <button id="new-measure" class="submit">Add measure</button>
+    <button id="add-new-measure" class="submit">Add measure</button>
     <!--note in chord in measure in composition-->
     <!--<p th:text="${measure}">Default text</p>-->
     <!--currently trying to print out all the notes in the first chord of the composition-->
@@ -30,10 +30,12 @@
                 <div class="string"></div>
                 <div th:each="chord1 : ${measure1.allChords}">
                     <!-- <p class = "chord-name"th:text="'chord = ' + ${chord1}"></p> -->
-                    <div th:each="note1 : ${chord1.allNotes}">
-                        <p class="note">
-                            <span th:text="${note1.interval}"></span>
-                        </p>
+                    <div class="chord-box" onclick="chordClicked()">
+                        <div th:each="note1 : ${chord1.allNotes}">
+                            <p class="note">
+                                <span th:text="${note1.interval}"></span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -42,4 +44,26 @@
     <p>after loop</p>
     
 </body>
+<script>
+    function chordClicked() {
+        console.log("clicked")
+        let userInput = prompt("Enter a chord")
+    }
+
+    var newMeasure = document.getElementById("add-new-measure")
+    newMeasure.addEventListener("click", function() {
+        console.log("test")
+        let userInput = prompt("Enter a chord")
+        // create new measure filled with empty chords/notes
+        // blank measure appears on screen
+        // user can select it
+        // here, send info to controller -> controller, update composition -> update page, refresh
+        const response = fetch("/createNewMeasure", {
+                method : "POST",
+            }).then((response) => response.json());
+        // is there a better way to make the new measure appear?
+        location.reload();
+    });
+</script>
 </html>
+
