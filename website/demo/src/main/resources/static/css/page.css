@@ -7,10 +7,29 @@ body p {
     font-weight: bold;
 }
 
-button {
-    background-color: cadetblue;
-    color: white;
+.interface {
+    padding: 5px;
 }
+
+.button-container {
+    border: 2px solid rgb(0, 0, 0);
+    padding: 2px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+}
+
+.button {
+    background-color: rgb(107, 107, 107);
+    color: rgb(214, 214, 214);
+    font-size: 20px;
+    font-weight: bold;
+    height: 75px;
+    width: 100px;
+}
+
 
 .measure-box {
     border: 1px dashed gray;

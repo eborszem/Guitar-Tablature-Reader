@@ -138,14 +138,14 @@ public class Composition {
                 nDummy.next = new Note(Integer.valueOf(n), 1, false);
                 nDummy = nDummy.next;
             }
-            cDummy.next = new Chord(note); // note.next avoids first empty note in measure
+            cDummy.next = new Chord(note.next); // note.next avoids first empty note in measure
             cDummy = cDummy.next;
             // blank line found, implies measure ends
 
         }
         Composition composition = new Composition(compositionString, 1, 4, measure.next); // measure.next avoids duplicating measure 1
         // m1
-        /*System.out.println("m1");
+        System.out.println("m1");
         composition.getMeasure().getChord().printAllNotes();
         composition.getMeasure().getChord().next.printAllNotes();
         composition.getMeasure().getChord().next.next.next.printAllNotes();
@@ -155,7 +155,7 @@ public class Composition {
         composition.getMeasure().next.getChord().next.printAllNotes();
         // m3
         System.out.println("m3");
-        composition.getMeasure().next.next.getChord().printAllNotes();*/
+        composition.getMeasure().next.next.getChord().printAllNotes();
         return composition;
     }
     
