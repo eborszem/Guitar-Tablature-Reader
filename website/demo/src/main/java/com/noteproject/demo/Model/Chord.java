@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Chord {
     Note note;  // notes in the chord
-    public Chord next;
+    Chord next;
 
     public Chord(Note note) {
         this.note = note;

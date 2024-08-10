@@ -7,8 +7,9 @@ public class Note {
     boolean rest;
 	String noteName;
     public Note next;
-    public Note(int interval, int duration, boolean rest) {
-        this.interval = interval;
+    public Note(int fretNumber, int stringNumber, int duration, boolean rest) {
+        this.stringNumber = stringNumber;
+        this.fretNumber = fretNumber;
         this.duration = duration;
         this.rest = rest;
         this.next = null;

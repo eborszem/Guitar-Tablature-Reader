@@ -28,6 +28,7 @@ body p {
     font-weight: bold;
     height: 75px;
     width: 100px;
+    cursor: pointer;
 }
 
 

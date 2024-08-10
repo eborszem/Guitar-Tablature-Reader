@@ -108,10 +108,31 @@ public class Composition {
         return measures;
     }
 
-    
+    /*
+     * File is formatted like so:
+     * 
+     * 6/1,6/1,7/1,8/1,8/1,6/1
+     * 2/1,12/1,3/1,4/1,4/1,2/1
+     * 7/1,7/1,8/1,9/1,9/1,7/1
+     * 9/1,9/1,10/1,11/1,11/1,9/1
+     * (empty line)
+     * 5/2,5/2,6/2,7/2,7/2,5/2
+     * 8/2,8/2,9/2,10/2,10/2,8/2
+     * (empty line)
+     * 0/4,0/4,1/4,2/4,2/4,0/4
+     * (empty line)
+     * 
+     * The first number is which fret the user selects. 1 = 1st fret, 2 = 2nd fret, etc.
+     * The "/" separates the fret number and duration.
+     * The second number is the duration.
+     * .25 = 16th note, .5 = 8th note, 1 = quarter note, 2 = half note, 4 = whole note
+     * The "," separates notes
+     * New empty lines separate measures
+     * 
+     */
     public Composition readComposition(String compositionString) {
         String[] compositionArr = compositionString.split("\n");
-        Note tempNote = new Note(100, 0, true);
+        Note tempNote = new Note(1, 1, 1, true);
         Chord chord = new Chord(tempNote);
         Chord cDummy = chord;  // chordDummy is used to traverse note list without losing head of chord
 
@@ -129,13 +150,22 @@ public class Composition {
                 cDummy = chord;
                 continue;
             }
-            String[] noteInts = compositionArr[i].split(",");
-            Note note = new Note(Integer.valueOf(noteInts[0]), 1, false);  // get head of note list
+            String[] notesWithDurations = compositionArr[i].split(",");
+            String[] noteAndDuration = notesWithDurations[0].split("/");
+            int fretNum = Integer.valueOf(noteAndDuration[0]);
+            int dur = Integer.valueOf(noteAndDuration[1]);
+            // String 6 = low E, String 1 = high E
+            Note note = new Note(fretNum, 1, dur, false);  // get head of note list
             Note nDummy = note;  // noteDummy is used to traverse note list without losing head of note
             System.out.println("noteints="+compositionArr[i]);
             System.out.println("inter"+i);
-            for (String n : noteInts) {
-                nDummy.next = new Note(Integer.valueOf(n), 1, false);
+            int stringNum = 1;  // Already added high E string (1). Start on B string (2), go to low E string (6)
+            for (String n : notesWithDurations) {
+                noteAndDuration = n.split("/");
+                fretNum = Integer.valueOf(noteAndDuration[0]);
+                dur = Integer.valueOf(noteAndDuration[1]);
+                nDummy.next = new Note(fretNum, stringNum, dur, false);
+                stringNum++;
                 nDummy = nDummy.next;
             }
             cDummy.next = new Chord(note.next); // note.next avoids first empty note in measure
@@ -145,7 +175,7 @@ public class Composition {
         }
         Composition composition = new Composition(compositionString, 1, 4, measure.next); // measure.next avoids duplicating measure 1
         // m1
-        System.out.println("m1");
+        /*System.out.println("m1");
         composition.getMeasure().getChord().printAllNotes();
         composition.getMeasure().getChord().next.printAllNotes();
         composition.getMeasure().getChord().next.next.next.printAllNotes();
@@ -155,10 +185,12 @@ public class Composition {
         composition.getMeasure().next.getChord().next.printAllNotes();
         // m3
         System.out.println("m3");
-        composition.getMeasure().next.next.getChord().printAllNotes();
+        composition.getMeasure().next.next.getChord().printAllNotes();*/
         return composition;
     }
     
+    /*
+
     public Composition generateComposition() {
         Random rand = new Random();
         int r = rand.nextInt(10);
@@ -288,10 +320,6 @@ public class Composition {
         
         //System.out.println(m + "...." + m.getAllChords() + "....");
 
-        /*System.out.println("HELLO");
-        System.out.println(m.getChord().getNote().getInterval());
-        System.out.println(m.getChord().getNote().getNext().getInterval());
-        System.out.println("BYE");*/
         Composition composition = new Composition("C", 4, 4, measure1);
 
         Composition composition2 = composition;
@@ -311,5 +339,6 @@ public class Composition {
         System.out.println("end of getmapping");
         return composition;
     }
-
+    
+    */
 }
