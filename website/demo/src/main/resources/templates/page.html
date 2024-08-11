@@ -18,7 +18,7 @@
         <p>Tab reader</p>
         <div class="button-container">
             <button id="add-new-measure" class="button">Add measure</button>
-            <button id="old-play-btn" class="button">Test</button>
+            <button id="add-chord" class="button">Add chord</button>
             <button id="play-btn" class="button">Play</button>
         </div>
         <!--note in chord in measure in composition-->
@@ -42,7 +42,7 @@
                         <div class="chord-box" onclick="chordClicked()">
                             <div th:each="note1 : ${chord1.allNotes}">
                                 <p class="note">
-                                    <span th:text="${note1.interval}"></span>
+                                    <span th:text="${note1.fretNumber}"></span>
                                 </p>
                             </div>
                         </div>
@@ -101,7 +101,14 @@
                         console.log("TEST--chords[0]=");
                         console.log(chords[0]);
                         let dur = chordData[0][2];  // first note dur = every note dur
+                        if (dur == 50)
+                            dur = .5
+                        if (dur == 25)
+                            dur = .25
+                        if (dur == 125)
+                            dur = .125
                         let str = getDurationAsString(dur);
+
                         //let chordArray = getChord(chordData);
                         
                         let chordArray = [];
@@ -120,7 +127,7 @@
                         chord: chordArray,
                         duration: str
                         });
-                        t += (dur * 1.5)
+                        t += (dur * .9)
                     }
 
                     /*function getChord(notes) {
@@ -136,9 +143,9 @@
 
                     function getDurationAsString(dur) {
                         switch (dur) {
-                        case 0.125: return "32n";
-                        case 0.25: return "16n";
-                        case 0.5: return "8n";
+                        case .125: return "32n";
+                        case .25: return "16n";
+                        case .5: return "8n";
                         case 1: return "4n";
                         case 2: return "2n";
                         case 4: return "1n";

@@ -35,8 +35,8 @@ public class Composition {
                     break;
                 int duration = c.measure.chord.note.duration;
                 while (c.measure.chord.note != null) {
-                    System.out.print(c.measure.chord.note.interval);
-                    s = s.concat(String.valueOf(c.measure.chord.note.interval));
+                    System.out.print("["+c.measure.chord.note.stringNumber + ", " + c.measure.chord.note.fretNumber + "]");
+                    s = s.concat(String.valueOf("["+c.measure.chord.note.stringNumber + ", " + c.measure.chord.note.fretNumber + "]"));
                     c.measure.chord.note = c.measure.chord.note.next;
                 }
                 if (c.measure.chord.next == null && c.measure.next == null) {
@@ -108,7 +108,8 @@ public class Composition {
         return measures;
     }
 
-    /*
+    /* Function to read String compositionString (gotten from file) and format it into a Composition object
+
      * File is formatted like so:
      * 
      * 6/1,6/1,7/1,8/1,8/1,6/1
@@ -174,18 +175,6 @@ public class Composition {
 
         }
         Composition composition = new Composition(compositionString, 1, 4, measure.next); // measure.next avoids duplicating measure 1
-        // m1
-        /*System.out.println("m1");
-        composition.getMeasure().getChord().printAllNotes();
-        composition.getMeasure().getChord().next.printAllNotes();
-        composition.getMeasure().getChord().next.next.next.printAllNotes();
-        // m2
-        System.out.println("m2");
-        composition.getMeasure().next.getChord().printAllNotes();
-        composition.getMeasure().next.getChord().next.printAllNotes();
-        // m3
-        System.out.println("m3");
-        composition.getMeasure().next.next.getChord().printAllNotes();*/
         return composition;
     }
     

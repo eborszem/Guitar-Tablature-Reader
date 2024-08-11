@@ -19,4 +19,15 @@ document.addEventListener("DOMContentLoaded", function() {
         location.reload();
     });
     
-});
+    
+    
+    var addChord = document.getElementById("add-chord")
+    addChord.addEventListener("click", function() {
+        console.log("hello")
+    });
+    
+
+    
+});    
+
+
