@@ -151,21 +151,20 @@ public class Composition {
                 cDummy = chord;
                 continue;
             }
-            String[] notesWithDurations = compositionArr[i].split(",");
-            String[] noteAndDuration = notesWithDurations[0].split("/");
-            int fretNum = Integer.valueOf(noteAndDuration[0]);
-            int dur = Integer.valueOf(noteAndDuration[1]);
+            String[] durationAndNotesInChord = compositionArr[i].split(":");
+            int duration = Integer.parseInt(durationAndNotesInChord[0]);
+            String notesInChord = durationAndNotesInChord[1];
+            String[] notesOnFrets = notesInChord.split(",");
+            int fretNum = Integer.valueOf(notesOnFrets[0]);
             // String 6 = low E, String 1 = high E
-            Note note = new Note(fretNum, 1, dur, false);  // get head of note list
+            Note note = new Note(fretNum, 1, duration, false);  // get head of note list
             Note nDummy = note;  // noteDummy is used to traverse note list without losing head of note
             System.out.println("noteints="+compositionArr[i]);
             System.out.println("inter"+i);
             int stringNum = 1;  // Already added high E string (1). Start on B string (2), go to low E string (6)
-            for (String n : notesWithDurations) {
-                noteAndDuration = n.split("/");
-                fretNum = Integer.valueOf(noteAndDuration[0]);
-                dur = Integer.valueOf(noteAndDuration[1]);
-                nDummy.next = new Note(fretNum, stringNum, dur, false);
+            for (String n : notesOnFrets) {
+                fretNum = Integer.valueOf(n);
+                nDummy.next = new Note(fretNum, stringNum, duration, false);
                 stringNum++;
                 nDummy = nDummy.next;
             }
