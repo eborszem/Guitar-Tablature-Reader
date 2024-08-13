@@ -80,7 +80,9 @@
         
                 function play(chords) {
                     console.log(chords)
-                    const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+                    const synth = new Tone.PolySynth(Tone.Synth, {
+                        volume: -40,
+                    }).toDestination();
                     // Define note values
                     const WHOLE_NOTE = 4;
                     const HALF_NOTE = 2;
@@ -133,7 +135,7 @@
                         chord: chordArray,
                         duration: str
                         });
-                        t += (dur * .9)
+                        t += (dur);  // MULTIPLIER HERE DETERMINES TEMPO
                     }
 
                     /*function getChord(notes) {
@@ -162,8 +164,15 @@
                     pianoPart = new Tone.Part(function(time, val) {
                         synth.triggerAttackRelease(val.chord, val.duration, time);  // 4n means play for quarter note duration. 2n -> half, 1n -> whole, etc
                     }, array);
-                    console.log("final array=");
-                    console.log(array);
+
+                    let j = 1;
+                    for (let i = 0; i < array.length; i++) {
+                        if (i % 4 == 0) {
+                            console.log("new measure " + j);
+                            j++;
+                        }
+                        console.log(array[i]);
+                    }
                 }
             });
 
