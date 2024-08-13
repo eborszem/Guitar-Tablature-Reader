@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="interface">
-        <p>Tab reader</p>
+        <p class="title">TAB READER</p>
         <div class="button-container">
             <button id="add-new-measure" class="button">Add measure</button>
             <button id="add-chord" class="button">Add chord</button>
@@ -27,7 +27,7 @@
         <!--<li th:each="note : ${composition.measure.chord.allNotes}" th:text="${note.interval}"></li>-->
         
         <div class="composition-box">
-            <div th:each="measure1 : ${measure.allMeasures}">
+            <div th:each="measure1, measureStat : ${measure.allMeasures}">
                 <!-- <p th:text="'measure = ' + ${measure1}"></p> -->
                 <!-- <p>1</p> -->
                 <div class="measure-box">
@@ -37,9 +37,9 @@
                     <div class="string"></div>
                     <div class="string"></div>
                     <div class="string"></div>
-                    <div th:each="chord1 : ${measure1.allChords}">
+                    <div th:each="chord1, chord1stat : ${measure1.allChords}">
                         <!-- <p class = "chord-name"th:text="'chord = ' + ${chord1}"></p> -->
-                        <div class="chord-box" onclick="chordClicked()">
+                        <div class="chord-box" th:id="'measure' + ${measureStat.index} + 'chord' + ${chord1stat.index}" th:onclick="'chordClicked(' + ${measureStat.index} + ','+ ${chord1stat.index} + ')'">
                             <div th:each="note1 : ${chord1.allNotes}">
                                 <p class="note">
                                     <span th:text="${note1.fretNumber}"></span>
@@ -50,14 +50,20 @@
                 </div>
             </div>
         </div>
+
+        <div id="chordModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p id="notesDisplay"></p>
+            </div>
+        </div>
+
     </div>
     
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        
-
         document.addEventListener("DOMContentLoaded", () => {
             
             $(document).ready(function() {
@@ -169,6 +175,8 @@
             });
 
         })
+
+        
     </script>
 
 </body>

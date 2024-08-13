@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.*;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -33,6 +35,8 @@ public class DemoRestController {
                 Note note = chord.getNote();
                 ArrayList<int[]> notesInChord = new ArrayList<>(); // one note per string
                 while (note != null) {
+                    // read in fret number and string number to turn them into specific note
+                    // read in duration to play for certain period of time
                     notesInChord.add(new int[]{note.getFretNumber(), note.getStringNumber(), note.getDuration()});
                     note = note.next;
                 }
@@ -43,6 +47,11 @@ public class DemoRestController {
         }
         System.out.println(allChords.toString());
         return allChords;
+    }
+    
+    @GetMapping("/editChord")
+    public void changeChord(@RequestParam String param) {
+        
     }
     
     
