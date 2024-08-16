@@ -113,6 +113,10 @@ body p {
     cursor: pointer;
 }
 
+.chordModal {
+
+}
+
 .string {
     width: 100%;
     height: 2px;
@@ -183,4 +187,39 @@ body p {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+#row-1 {
+    background-color: aqua;
+}
+
+#row-2 {
+    background-color: red;
+}
+
+#row-3 {
+    background-color: rgb(0, 255, 13);
+}
+
+#row-4 {
+    background-color: rgb(89, 212, 219);
+}
+
+#row-5 {
+    background-color: rgb(255, 0, 144);
+}
+
+#row-6 {
+    background-color: rgb(27, 20, 220);
+}
+
+.string-rows {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centers rows horizontally */
+}
+
+.string-rows div {
+    display: flex;
+    padding: 5px;
 }
