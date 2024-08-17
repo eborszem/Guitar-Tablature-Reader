@@ -26,17 +26,20 @@ document.addEventListener("DOMContentLoaded", function() {
     // Chord creation
     const modal = document.getElementById("chordModal");
     const span = document.getElementsByClassName("close")[0];
-    const notesDisplay = document.getElementById("notesDisplay");
+    const notesDisplay = document.getElementById('notesDisplay');
 
     function chordClicked(chordElement) {
         const notes = [];
         const noteElements = chordElement.querySelectorAll('.note span');
         noteElements.forEach(function(noteElement) {
-            notes.push(noteElement.textContent);
+            notes.push(noteElement.textContent.trim());
         });
-
+        // Reverse notes array to match order of strings
+        notes.reverse();
         // Display notes in the modal
-        notesDisplay.textContent = 'Chord notes: ' + notes.join(', ');
+        const notesDisplay = document.getElementById('notesDisplay');
+        notesDisplay.textContent = 'Chord notes: ' + notes.reverse().join(', ');
+        const modal = document.getElementById('chordModal');
         modal.style.display = "block";
     }
 
@@ -59,6 +62,22 @@ document.addEventListener("DOMContentLoaded", function() {
             modal.style.display = "none";
         }
     };
+
+    // Clicking notes on fretboard to construct a chord
+    document.querySelector('.string-rows').addEventListener('click', function(event) {
+        if (event.target.classList.contains('note-btn')) {
+            const string = event.target.getAttribute('data-string');
+            const fret = event.target.getAttribute('data-fret');
+            const row = event.target.closest('div');
+            console.log("str=" + string + ", fret=" + fret);
+            // only one note can be played per string
+            row.querySelectorAll('.note-btn').forEach(button => {
+                button.classList.remove('pressed');
+            });
+            event.target.classList.toggle('pressed');
+        }
+        
+    });
 
 
     
