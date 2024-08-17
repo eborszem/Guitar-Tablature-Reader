@@ -57,7 +57,7 @@
                 <div class="string-rows">
                     <div th:each="i : ${#numbers.sequence(1, 6)}" th:id="'row-' + ${i}">
                         <span th:each="j : ${#numbers.sequence(0, 12)}">
-                            <button th:text="${i} + ' ' + ${j}"></button>
+                            <button th:text="${i} + '-' + ${j}" class="note-btn" th:attr="data-string=${i}, data-fret=${j}"></button>
                         </span>
                     </div>
                     <p id="notesDisplay"></p>

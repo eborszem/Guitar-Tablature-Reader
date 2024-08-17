@@ -189,6 +189,8 @@ body p {
     cursor: pointer;
 }
 
+
+/* for fretboard that appears when user clicks chord */
 #row-1 {
     background-color: aqua;
 }
@@ -222,4 +224,9 @@ body p {
 .string-rows div {
     display: flex;
     padding: 5px;
+}
+
+.note-btn.pressed {
+    background: blue;
+    color: white;
 }
