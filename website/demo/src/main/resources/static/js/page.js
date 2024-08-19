@@ -39,8 +39,25 @@ document.addEventListener("DOMContentLoaded", function() {
         // Display notes in the modal
         const notesDisplay = document.getElementById('notesDisplay');
         notesDisplay.textContent = 'Chord notes: ' + notes.reverse().join(', ');
+        
         const modal = document.getElementById('chordModal');
+        prepopulateBtns(notes);
         modal.style.display = "block";
+    }
+
+    function prepopulateBtns(notes) {
+        document.querySelectorAll('.note-btn').forEach(button => {
+            button.classList.remove('pressed');
+        });
+        const notesFormatted = notes.map((note, index) => (index + 1) + '-' + note);
+        notesFormatted.forEach(note => {
+            document.querySelectorAll('.note-btn').forEach(button => {
+                console.log("->"+note + " " + button.textContent.trim());
+                if (button.textContent.trim() === note) {
+                    button.classList.add('pressed');
+                }
+            });
+        });
     }
 
     const chordBoxes = document.querySelectorAll('.chord-box');
