@@ -35,7 +35,7 @@ public class Composition {
                     break;
                 int duration = c.measure.chord.note.duration;
                 while (c.measure.chord.note != null) {
-                    System.out.print("["+c.measure.chord.note.stringNumber + ", " + c.measure.chord.note.fretNumber + "]");
+                    System.out.print(c.measure.chord.note.fretNumber + ",");
                     s = s.concat(String.valueOf("["+c.measure.chord.note.stringNumber + ", " + c.measure.chord.note.fretNumber + "]"));
                     c.measure.chord.note = c.measure.chord.note.next;
                 }
@@ -46,7 +46,7 @@ public class Composition {
                     System.out.print(":" + duration + " | ");
                     s = s.concat(":" + String.valueOf(duration) + " | ");
                 } else {
-                    System.out.print(":" + duration + ", ");
+                    System.out.print(":" + duration + " ... ");
                     s = s.concat(":" + String.valueOf(duration) + ", ");
                 }
                 c.measure.chord = c.measure.chord.next;

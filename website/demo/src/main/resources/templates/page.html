@@ -29,7 +29,7 @@
         <!--<li th:each="note : ${composition.measure.chord.allNotes}" th:text="${note.interval}"></li>-->
         
         <div class="composition-box">
-            <div th:each="measure1, measureStat : ${measure.allMeasures}">
+            <div th:each="measure1, measureStat : ${allMeasures}">
                 <!-- <p th:text="'measure = ' + ${measure1}"></p> -->
                 <!-- <p>1</p> -->
                 <div class="measure-box">
