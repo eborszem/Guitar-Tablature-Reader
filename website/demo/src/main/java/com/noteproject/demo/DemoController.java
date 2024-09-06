@@ -26,7 +26,7 @@ import org.springframework.ui.Model;
 
 @Controller
 public class DemoController {
-    int index = 0;
+    //int index = 0;
     @Autowired
     CompositionRepository cr;
 
@@ -36,8 +36,8 @@ public class DemoController {
     }
 
     @GetMapping("/page")
-    public String test(Model model) {
-        cr.insertRecord(++index);
+    public List<Measure> test(Model model) {
+        //cr.insertRecord(++index);
         /*Composition dummy = new Composition();
         Composition c = dummy.readComposition("/a.txt");
         System.out.println("start of getmapping");
@@ -63,7 +63,10 @@ public class DemoController {
             System.out.println("duration=" + highE.getDuration()); // duration is accessed through notes
             System.out.println("id=" + c.getId() + ", measure id=" + c.getMeasureId());
         }
-        return "page";
+        //model.addAttribute("measure", cr.getFirstMeasure());
+        //Composition temp = new Composition("C", 4, 4, cr.formatComposition());
+        //temp.printComposition(temp);
+        return cr.getMeasures();
     }
 
 

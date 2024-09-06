@@ -7,9 +7,13 @@ public class Measure {
     Chord chord;  // chords in the measure
     public Measure next;
 	//Measure prev;
-	int noteBeat;  // which note gets the beat. Quarter, half, etc.
-	int numNoteBeatsPerMeasure;  // how many note beats are present in the measure
-	int numBeats = noteBeat * numNoteBeatsPerMeasure;
+	private int noteBeat;  // which note gets the beat. Quarter, half, etc.
+	private int numNoteBeatsPerMeasure;  // how many note beats are present in the measure
+	private int numBeats = noteBeat * numNoteBeatsPerMeasure;
+    private int id;
+    private int measureNumber;
+    private int compositionId;
+
 	// time signature is numBeats over noteBeat
 	public Measure(Chord chord) {
 		this.chord = chord;
@@ -94,6 +98,30 @@ public class Measure {
         }
         System.out.println("measure object val="+this);
         return measures;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCompositionId() {
+        return this.compositionId;
+    }
+
+    public void setCompositionId(int setCompositionId) {
+        this.compositionId = setCompositionId;
+    }
+
+    public int getMeasureNumber() {
+        return this.measureNumber;
+    }
+
+    public void setMeasureNumber(int measureNumber) {
+        this.measureNumber = measureNumber;
     }
 
 }
