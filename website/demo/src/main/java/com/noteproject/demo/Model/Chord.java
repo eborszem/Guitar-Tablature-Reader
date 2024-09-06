@@ -6,10 +6,17 @@ import java.util.List;
 public class Chord {
     Note note;  // notes in the chord
     Chord next;
+    private int id;
+    private int measureId;
+
+   
 
     public Chord(Note note) {
         this.note = note;
         this.next = null;
+    }
+    public Chord() {
+
     }
 
     public Note getNote() {
@@ -26,6 +33,22 @@ public class Chord {
 
     public void setNext(Chord next) {
         this.next = next;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getMeasureId() {
+        return this.measureId;
+    }
+
+    public void setMeasureId(int measureId) {
+        this.measureId = measureId;
     }
 
     public List<Note> getAllNotes() {
