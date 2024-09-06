@@ -30,7 +30,7 @@ public class DemoRestController {
         Measure m = measure;
         ArrayList<ArrayList<int[]>> allChords = new ArrayList<>();
         while (m != null) {
-            Chord chord = m.chord;
+            Chord chord = m.getChord();
             while (chord != null) {
                 Note note = chord.getNote();
                 ArrayList<int[]> notesInChord = new ArrayList<>(); // one note per string

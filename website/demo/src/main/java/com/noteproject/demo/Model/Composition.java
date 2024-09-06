@@ -28,7 +28,7 @@ public class Composition {
     public String printComposition(Composition composition) {
         Composition c = composition;  // dummy variable to avoid composition head becoming null
         String s = "";
-        // print measures, with each chord seperated by a bar 
+        // print measures, with each chord separated by a bar
         while (c.measure != null) {
             while (c.measure.chord != null) {
                 if (c.measure.chord.note == null)

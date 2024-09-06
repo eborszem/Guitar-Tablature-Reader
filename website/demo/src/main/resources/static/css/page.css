@@ -110,7 +110,13 @@ body p {
 }
 
 .chord-box {
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
     cursor: pointer;
+}
+
+.chord-box.active {
+    opacity: 1;
 }
 
 .chordModal {
@@ -191,28 +197,8 @@ body p {
 
 
 /* for fretboard that appears when user clicks chord */
-#row-1 {
-    background-color: aqua;
-}
-
-#row-2 {
-    background-color: red;
-}
-
-#row-3 {
-    background-color: rgb(0, 255, 13);
-}
-
-#row-4 {
-    background-color: rgb(89, 212, 219);
-}
-
-#row-5 {
-    background-color: rgb(255, 0, 144);
-}
-
-#row-6 {
-    background-color: rgb(27, 20, 220);
+#row {
+    background-color: darkgray;
 }
 
 .string-rows {
@@ -223,10 +209,26 @@ body p {
 
 .string-rows div {
     display: flex;
-    padding: 5px;
+    padding: 2px;
+    border: solid;
 }
 
 .note-btn.pressed {
     background: blue;
     color: white;
+    opacity: 1;
+    border: none;
+    border-radius: 100px;
+}
+
+.note-btn {
+    background-color: darkgray;
+    opacity: 0;
+    height: 50px;
+    width: 50px;
+}
+
+.note-btn-div {
+    border: 5px solid;
+    border-color: red;
 }

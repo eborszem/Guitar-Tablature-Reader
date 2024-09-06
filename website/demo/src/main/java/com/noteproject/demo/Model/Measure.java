@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Measure {
-    public Chord chord;  // chords in the measure
+    Chord chord;  // chords in the measure
     public Measure next;
 	//Measure prev;
 	int noteBeat;  // which note gets the beat. Quarter, half, etc.

@@ -18,8 +18,10 @@
         <p class="title">TAB READER</p>
         <div class="button-container">
             <button id="add-new-measure" class="button">Add measure</button>
-            <button id="add-chord" class="button">Add chord</button>
             <button id="play-btn" class="button">Play</button>
+            <button id="pause-btn" class="button">Pause</button>
+            <!-- currently need add-chord button so chord popup works as intended -->
+            <button id="add-chord" class="button">Add chord</button> 
         </div>
         <!--note in chord in measure in composition-->
         <!--<p th:text="${measure}">Default text</p>-->
@@ -56,12 +58,15 @@
                 <span class="close">&times;</span>
                 <div class="string-rows">
                     <div th:each="i : ${#numbers.sequence(1, 6)}" th:id="'row-' + ${i}">
-                        <span th:each="j : ${#numbers.sequence(0, 12)}">
-                            <button th:text="${i} + '-' + ${j}" class="note-btn" th:attr="data-string=${i}, data-fret=${j}"></button>
-                        </span>
+                        <div class="note-btn-div">
+                            <span th:each="j : ${#numbers.sequence(0, 12)}">
+                                <button th:text="${i} + '-' + ${j}" class="note-btn" th:attr="data-string=${i}, data-fret=${j}"></button>
+                            </span>
+                        </div>
                     </div>
                     <p id="notesDisplay"></p>
                 </div>
+                <button id="confirm-btn" class="button">Confirm</button>
             </div>
         </div>
 
@@ -69,8 +74,10 @@
     
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    
     <script>
+        // an array storing real time (tone js: 0:0, 0:1, etc.), notes arr, and duration (4n, 2n, 1n, etc.) of a chord
+        const array = [];
         document.addEventListener("DOMContentLoaded", () => {
             
             $(document).ready(function() {
@@ -84,12 +91,12 @@
                         console.log('Error:', error);
                     }
                 });
-        
                 function play(chords) {
-                    console.log(chords)
+                    console.log("chords="+chords);
                     const synth = new Tone.PolySynth(Tone.Synth, {
-                        volume: -40,
+                        volume: -40, // volume control
                     }).toDestination();
+                    synth.maxPolyphony = 1000; // prevents chords being skipped when composition is played fast
                     // Define note values
                     const WHOLE_NOTE = 4;
                     const HALF_NOTE = 2;
@@ -108,7 +115,7 @@
                     ]
 
                     // An array which will be passed as a parameter
-                    const array = [];
+                    //const array = [];
 
                     let t = 0;
                     for (let i = 0; i < chords.length; i++) {
@@ -117,11 +124,9 @@
                         console.log(chords[0]);
                         let dur = chordData[0][2];  // first note dur = every note dur
                         if (dur == 50)
-                            dur = .5
+                            dur = EIGHTH_NOTE;
                         if (dur == 25)
-                            dur = .25
-                        if (dur == 125)
-                            dur = .125
+                            dur = SIXTEENTH_NOTE;
                         let str = getDurationAsString(dur);
 
                         //let chordArray = getChord(chordData);
@@ -136,13 +141,16 @@
                             chordArray.push(FRETBOARD[string - 1][fret]);  // STRINGS ARE ZERO BASED
                         }
                         console.log("chord array=" + chordArray)
-
+                        
                         array.push({
-                        time: `0:${t}`, 
-                        chord: chordArray,
-                        duration: str
+                            time: `0:${t}`, 
+                            chord: chordArray,
+                            duration: str
                         });
                         t += (dur);  // MULTIPLIER HERE DETERMINES TEMPO
+                        // time in tone js:
+                        // default tempo = 120 beats per minute
+                        // so, t / 2 = the current second in the song
                     }
 
                     /*function getChord(notes) {
@@ -158,13 +166,12 @@
 
                     function getDurationAsString(dur) {
                         switch (dur) {
-                        case .125: return "32n";
-                        case .25: return "16n";
-                        case .5: return "8n";
-                        case 1: return "4n";
-                        case 2: return "2n";
-                        case 4: return "1n";
-                        default: return "4n"; // default to quarter note
+                            case SIXTEENTH_NOTE: return "16n";
+                            case EIGHTH_NOTE: return "8n";
+                            case QUARTER_NOTE: return "4n";
+                            case HALF_NOTE: return "2n";
+                            case WHOLE_NOTE: return "1n";
+                            default: return "4n"; // default to quarter note
                         }
                     }
                     
@@ -182,15 +189,87 @@
                     }
                 }
             });
+            /*------------------------------------------------------------------------------------
+            // moving beam
+            let curIndex = 0;
+            const chordBoxes = document.querySelectorAll('.chord-box');
+            function highlightChordBox(index) {
+                chordBoxes.forEach((box, i) => {
+                    box.classList.toggle("active", i == index);
+                    // debugging info
+                    if (i == index) {
+                        console.log(i + ", " + array[i]);
+                    }
+                });
+            }
+
+            function durToInt(d) {
+                switch (d) {
+                    case "16n": return .25;
+                    case "8n": return .5;
+                    case "4n": return 1;
+                    case "2n": return 2;
+                    case "1n": return 4;
+                    default: return 1; // default to quarter note
+                }
+            }
+            let isPaused = false; // pause button (as opposed to resume button) is disabled
+            
+            function cycleChordBoxes() {
+                if (curIndex >= array.length)
+                    return;
+                if (isPaused)
+                    return;
+                const durInteger = durToInt(array[curIndex].duration);
+                highlightChordBox(curIndex);
+                console.log("dur=" + durInteger + ", " + array[curIndex].time);
+                setTimeout(() => {
+                    cycleChordBoxes();
+                }, durInteger * 1000 / 2); // convert to milliseconds
+                // currently must divide by 2 to accommodate for 120 beats per minute == 1 beat every 2 seconds
+                // without halving it, a quarter note for example would be one second (two beats) instead of 0.5 seconds (one beat)
+                curIndex++;
+            }*/
+            // end moving beam
 
             const playBtn = document.getElementById("play-btn");
-            playBtn.addEventListener("click", async () => {
-                await Tone.start();  // make sure audio is started
-                Tone.Transport.start(); // start transport
-                pianoPart.start(); // start part
+            const pauseBtn = document.getElementById("pause-btn");
+            let currentTime = 0;
+            pauseBtn.addEventListener("click", async () => {
+                setTimeout (() => {
+                    if (isPaused) { // means we have clicked the button to resume
+                        //cycleChordBoxes();
+                        isPaused = false; 
+                        Tone.Transport.start();
+                        pianoPart.start("+0.1", currentTime); // start playing again from the paused time
+                        pauseBtn.textContent = "Pause";
+                    } else { // means we have clicked the button to pause
+                        isPaused = true;
+                        currentTime = Tone.Transport.seconds;
+                        Tone.Transport.pause();
+                        pianoPart.stop();
+                        
+                        pauseBtn.textContent = "Resume";
+                    }
+                }, 750); // arbitrary number
             });
 
-        })
+            playBtn.addEventListener("click", async () => {
+                await Tone.start(); // make sure audio is started
+                // setTimeout (() => {
+                    Tone.Transport.stop();
+                    pianoPart.stop();
+                    // curIndex = 0;
+                    isPaused = false;
+                    currentTime = 0;
+                    // cycleChordBoxes();
+                    pianoPart.start(0); // start part
+                    Tone.Transport.start(); // start transport
+                    pauseBtn.textContent = "Pause";
+                // }, 750); // arbitrary number
+            });
+
+        });
 
         
     </script>
