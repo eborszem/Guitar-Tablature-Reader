@@ -49,10 +49,11 @@ public class DemoRestController {
         return allChords;
     }
     
-    @GetMapping("/editChord")
-    public void changeChord(@RequestParam String param) {
+    /*// editing a chord
+    @GetMapping("/updateChord")
+    public void updateChord(@RequestParam String param) {
         
-    }
+    }*/
     
     
 }

@@ -2,6 +2,8 @@ package com.noteproject.demo.Repositories;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -16,6 +18,7 @@ import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Note;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 
 @Repository
 public class CompositionRepository {
-
+    private int measureId;
     private final JdbcTemplate jdbcTemplate;
 
     public CompositionRepository(JdbcTemplate jdbcTemplate) {
@@ -40,6 +43,10 @@ public class CompositionRepository {
         return jdbcTemplate.update(sql, val);
     }*/
 
+    public int getMeasureId() {
+        return this.measureId;
+    }
+
     public void addMeasureToRepo(Measure m) {
         // Retrieve the current max measure number for composition_id 0
         String sql = "SELECT MAX(measure_number) FROM Measures WHERE composition_id = 1"; // TODO: uses 1 as value for composition id
@@ -50,6 +57,7 @@ public class CompositionRepository {
         } else {
             numMeasures = 0;
         }
+        measureId = val;
 
         // Create a KeyHolder to capture the auto-generated key for the measure ID
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -73,14 +81,15 @@ public class CompositionRepository {
         }
         int measureIdInt = measureId.intValue();
         
-        String sql3 = "INSERT INTO Chords (measure_id, low_e_string, a_string, d_string, g_string, b_string, high_e_string) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql3 = "INSERT INTO Chords (measure_id, low_e_string, a_string, d_string, g_string, b_string, high_e_string, duration, chord_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Note low_e_string = m.getChord().getNote();
         Note a_string = low_e_string.next;
         Note d_string = a_string.next;
         Note g_string = d_string.next;
         Note b_string = g_string.next;
         Note high_e_string = b_string.next;
-        jdbcTemplate.update(sql3, measureIdInt, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber());
+        int duration = low_e_string.getDuration();
+        jdbcTemplate.update(sql3, measureIdInt, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, 0);
     }
 
    public List<Chord> findChordsByCompositionId(int compositionId) {
@@ -162,6 +171,41 @@ public class CompositionRepository {
     }
 
     public List<Measure> getMeasures() {
-        return null;
+        List<Measure> measures = new ArrayList<>();
+        Measure dummy = formatComposition();
+        Measure m = dummy;
+        while (m != null) {
+            measures.add(m);
+            m = m.getNext();
+        }
+        System.out.println("MEASURES ARRAY="+measures.toString());
+        return measures;
+    }
+
+    public void updateChord(Chord c, int measureId, int chordNum) {
+        String sql = "UPDATE chords SET low_e_string = ?, a_string = ?, d_string = ?, g_string = ?, b_string = ?, high_e_string = ? WHERE measure_id = ? AND chord_number = ?";
+        Note high_e = c.getNote();
+        Note b = high_e.getNext();
+        Note g = b.getNext();
+        Note d = g.getNext();
+        Note a = d.getNext();
+        Note low_e = a.getNext();
+        System.out.println("==============PRINTING NOTES E to e==============");
+        System.out.println(low_e.getFretNumber() + ", " + a.getFretNumber() + ", " + d.getFretNumber() + ", " + g.getFretNumber() + ", " + b.getFretNumber() + ", " + high_e.getFretNumber());
+        System.out.println("==============DONE PRINTING NOTES E to e==============");
+        jdbcTemplate.update(sql, new PreparedStatementSetter() {
+            @Override
+            public void setValues(java.sql.PreparedStatement ps) throws SQLException {
+                ps.setObject(1, low_e.getFretNumber());
+                ps.setObject(2, a.getFretNumber());
+                ps.setObject(3, d.getFretNumber());
+                ps.setObject(4, g.getFretNumber());
+                ps.setObject(5, b.getFretNumber());
+                ps.setObject(6, high_e.getFretNumber());
+                ps.setInt(7, measureId);
+                ps.setInt(8, chordNum);
+            }
+        });
+        
     }
 }

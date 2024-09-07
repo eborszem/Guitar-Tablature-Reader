@@ -26,6 +26,7 @@ public class ChordRowMapper implements RowMapper<Chord> {
         a.next = lowE;
         Chord chord = new Chord(highE);
         chord.setId(rs.getInt("id"));
+        chord.setChordNumber(rs.getInt("chord_number"));
         chord.setMeasureId(rs.getInt("measure_id"));
         return chord;
     }
