@@ -8,6 +8,7 @@ public class Chord {
     Chord next;
     private int id;
     private int measureId;
+    private int chordNumber;
 
    
 
@@ -49,6 +50,14 @@ public class Chord {
 
     public void setMeasureId(int measureId) {
         this.measureId = measureId;
+    }
+
+    public int getChordNumber() {
+        return this.chordNumber;
+    }
+
+    public void setChordNumber(int chordNumber) {
+        this.chordNumber = chordNumber;
     }
 
     public List<Note> getAllNotes() {

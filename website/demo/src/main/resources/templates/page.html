@@ -41,9 +41,12 @@
                     <div class="string"></div>
                     <div th:each="chord1, chord1stat : ${measure1.allChords}">
                         <!-- <p class = "chord-name"th:text="'chord = ' + ${chord1}"></p> -->
-                        <div class="chord-box" th:id="'measure' + ${measureStat.index} + 'chord' + ${chord1stat.index}" th:onclick="'chordClicked(' + ${measureStat.index} + ','+ ${chord1stat.index} + ')'">
+                        <div class="chord-box"
+                            th:id="'measure' + ${measureStat.index} + 'chord' + ${chord1stat.index}"
+                            th:attr="data-measure-id=${chord1.measureId},data-chord-num=${chord1.chordNumber}" 
+                            th:onclick="'chordClicked(' + ${measureStat.index} + ','+ ${chord1stat.index} + ')'">
                             <div th:each="note1 : ${chord1.allNotes}">
-                                <p class="note">
+                                <p class="note" th:attr="data-duration=${note1.duration}">
                                     <span th:text="${note1.fretNumber}"></span>
                                 </p>
                             </div>

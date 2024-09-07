@@ -4,20 +4,26 @@ function chordClicked(chordElement) {
 
 document.addEventListener("DOMContentLoaded", function() {
     
-    var newMeasure = document.getElementById("add-new-measure")
+    var newMeasure = document.getElementById("add-new-measure");
     newMeasure.addEventListener("click", function() {
-        console.log("test")
-        //let userInput = prompt("Enter a chord")
-        // create new measure filled with empty chords/notes
-        // blank measure appears on screen
-        // user can select it
-        // here, send info to controller -> controller, update composition -> update page, refresh
-        const response = fetch("/createNewMeasure", {
-            method : "POST",
-        }).then((response) => response.json());
-        // is there a better way to make the new measure appear?
-        location.reload();
+        console.log("test");
+
+        fetch("/createNewMeasure", {
+            method: "POST",
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Received JSON:", data);  // Log the JSON to console
+            // Update the page with the new measure without reloading
+            // You can iterate over the response and dynamically add the new measure to the DOM
+            data.forEach(chord => {
+                console.log("frets:", chord.fretNumbers, "dur:", chord.duration, "measureId:", chord.measureId);
+                // TODO
+            });
+        })
+        .catch(error => console.error("Error fetching new measure:", error));
     });
+    
     var addChord = document.getElementById("add-chord")
     addChord.addEventListener("click", function() {
         console.log("hello")
@@ -28,14 +34,22 @@ document.addEventListener("DOMContentLoaded", function() {
     const span = document.getElementsByClassName("close")[0];
     const notesDisplay = document.getElementById('notesDisplay');
 
-    notes = [];
+    let notes = [];
+    let chord_duration = 0;
+    let measureId = -1;
+    let chordNum = -1;
     function chordClicked(chordElement) {
-        const noteElements = chordElement.querySelectorAll('.note span');
+        measureId = chordElement.getAttribute('data-measure-id');
+        console.log("DATABASE MEASURE ID ==="+measureId);
+        chordNum = chordElement.getAttribute('data-chord-num');
+        const noteElements = chordElement.querySelectorAll('.note');
         noteElements.forEach(function(noteElement) {
             notes.push(noteElement.textContent.trim());
         });
         // Reverse notes array to match order of strings
         notes.reverse();
+        const duration = noteElements[0].getAttribute('data-duration');
+        console.log("DURATION TEST==="+duration);
         // Display notes in the modal
         const notesDisplay = document.getElementById('notesDisplay');
         notesDisplay.textContent = 'Chord notes: ' + notes.reverse().join(', ');
@@ -82,12 +96,20 @@ document.addEventListener("DOMContentLoaded", function() {
     // Close when "x" is pressed on the popup
     span.onclick = function() {
         modal.style.display = "none";
+        notes = [];
+        chord_duration = 0;
+        measureId = -1;
+        chordNum = -1;
     };
 
     // Close when clicking outside the popup
     window.onclick = function(event) {
         if (event.target === modal) {
             modal.style.display = "none";
+            notes = [];
+            chord_duration = 0;
+            measureId = -1;
+            chordNum = -1;
         }
     };
 
@@ -104,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log("notes array in confirm ="+notes);
         $.ajax({
             type: "POST",
-            url: "/editChord",
+            url: "/updateChord",
             data: {
                 low_e_string: low_e_string,
                 a_string: a_string,
@@ -112,8 +134,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 g_string: g_string,
                 b_string: b_string,
                 high_e_string: high_e_string,
+                measureId: measureId,
                 measure: measureAndChord[0],
                 chord: measureAndChord[1],
+                chordNum: chordNum,
+                duration: chord_duration,
                 original_l_e: parseInt(notes[5], 10),
                 original_a: parseInt(notes[4], 10),
                 original_d: parseInt(notes[3], 10),
@@ -131,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error("Error updating chord:", textStatus, errorThrown);
             }
         });
-        //location.reload();
+        location.reload();
         // reset strings
         low_e_string = -1;
         a_string = -1;
@@ -140,6 +165,9 @@ document.addEventListener("DOMContentLoaded", function() {
         b_string = -1;
         high_e_string = -1;
         notes = [];
+        chord_duration = 0;
+        measureId = -1;
+        chordNum = -1;
     });
 
     // Clicking notes on fretboard to construct a chord
