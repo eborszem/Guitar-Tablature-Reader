@@ -3,7 +3,7 @@ function chordClicked(chordElement) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    
+    const UNINITIALIZED = "";
     var newMeasure = document.getElementById("add-new-measure");
     newMeasure.addEventListener("click", function() {
         console.log("test");
@@ -83,15 +83,30 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    /* Dropdowns which determine duration of chord/note/rest (quarter note, half note, etc. )and type (rest/not rest) */ 
+    const durationDropdown = document.getElementById("duration-dropdown");
+    let newDur = UNINITIALIZED;
+    durationDropdown.addEventListener('change', function() {
+        newDur = durationDropdown.value;
+        console.log(newDur + " was selected.")
+    });
+    
+    const typeDropdown = document.getElementById("type-dropdown");
+    let newType = UNINITIALIZED;
+    typeDropdown.addEventListener('change', function() {
+        newType = typeDropdown.value;
+        console.log(newType + " was selected.")
+    });
+
     // 6 arrays which store the fret numbers being changed on the chord (strings implicitly stored)
     // no values in an array = user did not change string
     // 3 values in an array = user clicked three notes on string
-    low_e_string = -1;
-    a_string = -1;
-    d_string = -1;
-    g_string = -1;
-    b_string = -1;
-    high_e_string = -1;
+    let low_e_string = -1;
+    let a_string = -1;
+    let d_string = -1;
+    let g_string = -1;
+    let b_string = -1;
+    let high_e_string = -1;
 
     // Close when "x" is pressed on the popup
     span.onclick = function() {
@@ -100,6 +115,8 @@ document.addEventListener("DOMContentLoaded", function() {
         chord_duration = 0;
         measureId = -1;
         chordNum = -1;
+        newDur = UNINITIALIZED;
+        newType = UNINITIALIZED;
     };
 
     // Close when clicking outside the popup
@@ -110,6 +127,8 @@ document.addEventListener("DOMContentLoaded", function() {
             chord_duration = 0;
             measureId = -1;
             chordNum = -1;
+            newDur = UNINITIALIZED;
+            newType = UNINITIALIZED;
         }
     };
 
@@ -123,7 +142,29 @@ document.addEventListener("DOMContentLoaded", function() {
         let measureAndChordStrs = curChord.match(/\d+/g);
         let measureAndChord = measureAndChordStrs.map(Number);
         //console.log(measureAndChord);
+        console.log(newDur + "dur was selected.")
+        console.log(newType + "type was selected.")
         console.log("notes array in confirm ="+notes);
+        let durData = 0;
+        if (newDur === "sixteenth") {
+            durData = 16;
+        } else if (newDur === "eighth") {
+            durData = 8;
+        } else if (newDur === "quarter") {
+            durData = 1;
+        } else if (newDur === "half") {
+            durData = 2;
+        } else if (newDur === "whole") {
+            durData = 4;
+        }
+        
+        let typeData = 0;
+        if (newType === "note-option") {
+            typeData = 0;
+        } else if (newType === "rest-option") {
+            typeData = 1;
+        }
+
         $.ajax({
             type: "POST",
             url: "/updateChord",
@@ -139,6 +180,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 chord: measureAndChord[1],
                 chordNum: chordNum,
                 duration: chord_duration,
+                newDuration: durData,
+                newType: typeData,
                 original_l_e: parseInt(notes[5], 10),
                 original_a: parseInt(notes[4], 10),
                 original_d: parseInt(notes[3], 10),
@@ -157,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
         location.reload();
-        // reset strings
+        // reset strings + other variables
         low_e_string = -1;
         a_string = -1;
         d_string = -1;
@@ -168,6 +211,8 @@ document.addEventListener("DOMContentLoaded", function() {
         chord_duration = 0;
         measureId = -1;
         chordNum = -1;
+        newDur = UNINITIALIZED;
+        newType = UNINITIALIZED;
     });
 
     // Clicking notes on fretboard to construct a chord
@@ -191,13 +236,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
             event.target.classList.add('pressed');
 
-        }
-
-        
+        } 
     });
-
-   
-
-
-    
 });

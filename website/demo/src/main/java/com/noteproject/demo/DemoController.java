@@ -48,13 +48,13 @@ public class DemoController {
         Measure m = c.getMeasure();
         model.addAttribute("measure", m);*/
         String compositionString = fileService.readFile("composition.txt");
-        System.out.println("composition as a string="+compositionString);
+        //System.out.println("composition as a string="+compositionString);
         Composition composition = new Composition().readComposition(compositionString);
         System.out.println("START COMPOSITION PRINT");
         //composition.printComposition(composition);
         System.out.println("END COMPOSITION PRINT");
         model.addAttribute("allMeasures", cr.getMeasures());
-        System.out.println("1st measure object="+composition.getMeasure());
+        //System.out.println("1st measure object="+composition.getMeasure());
         List<Chord> chords = cr.findChordsByCompositionId(1);
         for (Chord c : chords) {
             Note highE = c.getNote();
@@ -129,6 +129,8 @@ public class DemoController {
                                             @RequestParam("chord") int chord,
                                             @RequestParam("chordNum") int chordNum,
                                             @RequestParam("duration") int duration,
+                                            @RequestParam("newDuration") int newDuration,
+                                            @RequestParam("newType") int newType,
                                             @RequestParam("original_l_e") int original_l_e,
                                             @RequestParam("original_a") int original_a,
                                             @RequestParam("original_d") int original_d,
@@ -138,7 +140,6 @@ public class DemoController {
         System.out.println("changed string values=" + low_e_string + " " + a_string + " " + d_string + " " + g_string + " " + b_string + " " + high_e_string);
         System.out.println("original string values=" + original_l_e + " " + original_a + " " + original_d + " " + original_g + " " + original_b + " " + original_h_e);
         System.out.println("measure=" + measure + ", chord=" + chord + ", duration=" + duration);
-        
         Measure measures = cr.formatComposition();
         // navigate to the chord in the composition
         for (int i = 0; i < measure; i++) {
@@ -148,44 +149,57 @@ public class DemoController {
         for (int i = 0; i < chord; i++) {
             chords = chords.getNext();
         }
+        
+        // duration must be accessed via a note
+        int dur = chords.getNote().getDuration();
+        if (newDuration != 16 && newDuration != 8 && newDuration != 4 && newDuration != 2 && newDuration != 1) {
+            newDuration = dur; // default to current duration
+        }
+        // 0 = chord/note, 1 = rest
+        if (newType != 0 && newType != 1) {
+            newType = 0; // default to chord/note
+        }
+        System.out.println("TEST======="+chords.getNote().getDuration());
+        System.out.println("new dur=" + newDuration);
+        System.out.println("new type=" + newType);
+        // change duration, if it was changed
+        if (newDuration != dur)
+            dur = newDuration;
         /* Call it here, modify the values, and then update in the html */
         int val = high_e_string;
         if (high_e_string == -1)
             val = original_h_e;
-        // duration must be accessed via a note
-        System.out.println("TEST======="+chords.getNote().getDuration());
-        Note high_e = new Note(val, 0, chords.getNote().getDuration(), false);
+        Note high_e = new Note(val, 0, dur, false);
         val = b_string;
         if (b_string == -1)
             val = original_b;
-        Note b = new Note(val, 1, chords.getNote().getDuration(), false);
+        Note b = new Note(val, 1, dur, false);
         val = g_string;
         if (g_string == -1) {
             val = original_g;
         }
-        Note g = new Note(val, 2, chords.getNote().getDuration(), false);
+        Note g = new Note(val, 2, dur, false);
         val = d_string;
         if (d_string == -1) {
             val = original_d;
         }
-        Note d = new Note(val, 3, chords.getNote().getDuration(), false);
+        Note d = new Note(val, 3, dur, false);
         val = a_string;
         if (a_string == -1) {
             val = original_a;
         }
-        Note a = new Note(val, 4, chords.getNote().getDuration(), false);
+        Note a = new Note(val, 4, dur, false);
         val = low_e_string;
         if (low_e_string == -1) {
             val = original_l_e;
         }
-        Note low_e = new Note(val, 5, chords.getNote().getDuration(), false);
+        Note low_e = new Note(val, 5, dur, false);
 
         high_e.next = b;
         b.next = g;
         g.next = d;
         d.next = a;
         a.next = low_e;
-
         System.out.println("==============CONTROLLER PRINTING NOTES E to e==============");
         System.out.println(low_e.getFretNumber() + ", " + a.getFretNumber() + ", " + d.getFretNumber() + ", " + g.getFretNumber() + ", " + b.getFretNumber() + ", " + high_e.getFretNumber());
         System.out.println("==============CONTROLLER DONE PRINTING NOTES E to e==============");

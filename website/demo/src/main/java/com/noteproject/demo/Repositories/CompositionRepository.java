@@ -183,15 +183,16 @@ public class CompositionRepository {
     }
 
     public void updateChord(Chord c, int measureId, int chordNum) {
-        String sql = "UPDATE chords SET low_e_string = ?, a_string = ?, d_string = ?, g_string = ?, b_string = ?, high_e_string = ? WHERE measure_id = ? AND chord_number = ?";
+        String sql = "UPDATE Chords SET low_e_string = ?, a_string = ?, d_string = ?, g_string = ?, b_string = ?, high_e_string = ?, duration = ? WHERE measure_id = ? AND chord_number = ?";
         Note high_e = c.getNote();
         Note b = high_e.getNext();
         Note g = b.getNext();
         Note d = g.getNext();
         Note a = d.getNext();
         Note low_e = a.getNext();
+        int duration = high_e.getDuration();
         System.out.println("==============PRINTING NOTES E to e==============");
-        System.out.println(low_e.getFretNumber() + ", " + a.getFretNumber() + ", " + d.getFretNumber() + ", " + g.getFretNumber() + ", " + b.getFretNumber() + ", " + high_e.getFretNumber());
+        System.out.println("dur=" + duration + ": " + low_e.getFretNumber() + ", " + a.getFretNumber() + ", " + d.getFretNumber() + ", " + g.getFretNumber() + ", " + b.getFretNumber() + ", " + high_e.getFretNumber());
         System.out.println("==============DONE PRINTING NOTES E to e==============");
         jdbcTemplate.update(sql, new PreparedStatementSetter() {
             @Override
@@ -202,8 +203,9 @@ public class CompositionRepository {
                 ps.setObject(4, g.getFretNumber());
                 ps.setObject(5, b.getFretNumber());
                 ps.setObject(6, high_e.getFretNumber());
-                ps.setInt(7, measureId);
-                ps.setInt(8, chordNum);
+                ps.setObject(7, duration);
+                ps.setInt(8, measureId);
+                ps.setInt(9, chordNum);
             }
         });
         

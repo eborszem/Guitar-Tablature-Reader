@@ -6,7 +6,9 @@ import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Note;
+import com.noteproject.demo.Repositories.CompositionRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -17,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class DemoRestController {
+    
+    @Autowired
+    CompositionRepository cr;
+
     private final FileService fileService;
     public DemoRestController(FileService fileService) {
         this.fileService = fileService;
@@ -24,9 +30,10 @@ public class DemoRestController {
 
     @GetMapping("/play")
     public ArrayList<ArrayList<int[]>> play(Model model) {
-        String compositionString = fileService.readFile("composition.txt");
-        Composition composition = new Composition().readComposition(compositionString);
-        Measure measure = composition.getMeasure();
+        //String compositionString = fileService.readFile("composition.txt");
+        //Composition composition = new Composition().readComposition(compositionString);
+        //Measure measure = composition.getMeasure();
+        Measure measure = cr.formatComposition();
         Measure m = measure;
         ArrayList<ArrayList<int[]>> allChords = new ArrayList<>();
         while (m != null) {

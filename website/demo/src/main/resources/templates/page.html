@@ -70,6 +70,18 @@
                     <p id="notesDisplay"></p>
                 </div>
                 <button id="confirm-btn" class="button">Confirm</button>
+                <select id="duration-dropdown" name="duration">
+                    <option value="empty"></option>
+                    <option value="sixteenth">Sixteenth</option>
+                    <option value="eighth">Eighth</option>
+                    <option value="quarter">Quarter</option>
+                    <option value="half">Half</option>
+                    <option value="whole">Whole</option>
+                </select>
+                <select id="type-dropdown" name="type">
+                    <option value="note-option">Chord/Note</option>
+                    <option value="rest-option">Rest</option>
+                </select>
             </div>
         </div>
 
@@ -126,11 +138,14 @@
                         console.log("TEST--chords[0]=");
                         console.log(chords[0]);
                         let dur = chordData[0][2];  // first note dur = every note dur
-                        if (dur == 50)
+
+                        // TODO: MAKE SURE THIS WORKS CORRECTLY
+                        if (dur == 8)
                             dur = EIGHTH_NOTE;
-                        if (dur == 25)
+                        if (dur == 16)
                             dur = SIXTEENTH_NOTE;
                         let str = getDurationAsString(dur);
+                        /*------------------------------------*/
 
                         //let chordArray = getChord(chordData);
                         
@@ -141,7 +156,8 @@
                             let string = chordData[i][1];
                             let fret = chordData[i][0];
                             console.log("str=" + string + ", fret=" + fret);
-                            chordArray.push(FRETBOARD[string - 1][fret]);  // STRINGS ARE ZERO BASED
+
+                            chordArray.push(FRETBOARD[string][fret]);  // STRINGS ARE ZERO BASED
                         }
                         console.log("chord array=" + chordArray)
                         
