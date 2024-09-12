@@ -6,16 +6,32 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Objects;
 
 public class Composition {
     String key;
     int beat;  // the beat note: 4-whole note, 2-half note, 1-quarter note, .5-eighth note
     int beatsPerMeasure;
     Measure measure;
+    String title;
+    int id;
     public Composition next;
+
     // note: each measure's number of beats must equal beat * beatsPerMeasure
     public Composition(String key, int beat, int beatsPerMeasure, Measure measure) {
         this.measure = measure;
+        this.next = null;
+    }
+    public Composition(String key, int beat, int beatsPerMeasure, Measure measure, String title) {
+        this.measure = measure;
+        this.title = title;
+        
+        this.next = null;
+    }
+
+    public Composition(int id, String title) {
+        this.id = id;
+        this.title = title;
         this.next = null;
     }
 
@@ -96,6 +112,22 @@ public class Composition {
 
     public void setNext(Composition next) {
         this.next = next;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+    
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public List<Measure> getAllMeasures() {

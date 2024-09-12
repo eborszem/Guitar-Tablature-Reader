@@ -24,13 +24,12 @@ import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Note;
 import com.noteproject.demo.Repositories.CompositionRepository;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
-
 import org.springframework.ui.Model;
 
 @Controller
 public class DemoController {
-    //int index = 0;
+
+    static int globalCompositionId = 1; // composition 1 by default
     @Autowired
     CompositionRepository cr;
 
@@ -53,7 +52,8 @@ public class DemoController {
         System.out.println("START COMPOSITION PRINT");
         //composition.printComposition(composition);
         System.out.println("END COMPOSITION PRINT");
-        model.addAttribute("allMeasures", cr.getMeasures());
+        model.addAttribute("allMeasures", cr.getMeasures(globalCompositionId));
+        model.addAttribute("allCompositions", cr.getAllCompositions());
         //System.out.println("1st measure object="+composition.getMeasure());
         List<Chord> chords = cr.findChordsByCompositionId(1);
         for (Chord c : chords) {
@@ -79,7 +79,7 @@ public class DemoController {
         // System.out.println(list.get(2).getNext().getNext().getChord().getNext().getNote().getNext().getNext().getNext().getNext().getFretNumber());
         // System.out.println(list.get(2).getNext().getNext().getChord().getNext().getNote().getNext().getNext().getNext().getNext().getNext().getFretNumber());
         // System.out.println("-----TEST END-----");
-        return cr.getMeasures();
+        return cr.getMeasures(globalCompositionId);
     }
 
 
@@ -140,7 +140,7 @@ public class DemoController {
         System.out.println("changed string values=" + low_e_string + " " + a_string + " " + d_string + " " + g_string + " " + b_string + " " + high_e_string);
         System.out.println("original string values=" + original_l_e + " " + original_a + " " + original_d + " " + original_g + " " + original_b + " " + original_h_e);
         System.out.println("measure=" + measure + ", chord=" + chord + ", duration=" + duration);
-        Measure measures = cr.formatComposition();
+        Measure measures = cr.formatComposition(globalCompositionId);
         // navigate to the chord in the composition
         for (int i = 0; i < measure; i++) {
             measures = measures.getNext();
@@ -210,5 +210,12 @@ public class DemoController {
 
         cr.updateChord(updatedChord, measureId, chordNum);
         return new ResponseEntity<>("Chord updated", HttpStatus.OK);
+    }
+
+    @PostMapping("/changeComposition")
+    @ResponseBody
+    public void changeComposition(@RequestParam("selectedComposition") String composition) {
+        System.out.println(composition + "!!!!!...");
+        globalCompositionId = Integer.parseInt(composition);
     }
 }
