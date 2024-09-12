@@ -22,6 +22,16 @@
             <button id="pause-btn" class="button">Pause</button>
             <!-- currently need add-chord button so chord popup works as intended -->
             <button id="add-chord" class="button">Add chord</button> 
+            <form id="composition-form">
+                <label for="composition">Select song: </label>
+                <select id="composition-dropdown" name="selectedComposition">
+                    <option value="" disabled selected>Select</option>
+                    <option th:each="composition : ${allCompositions}" 
+                            th:value="${composition.id}"
+                            th:text="${composition.title}"></option>
+                </select>
+                <button type="submit">Submit</button>
+            </form>
         </div>
         <!--note in chord in measure in composition-->
         <!--<p th:text="${measure}">Default text</p>-->

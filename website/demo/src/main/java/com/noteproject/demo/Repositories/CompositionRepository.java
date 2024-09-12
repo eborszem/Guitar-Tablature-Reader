@@ -120,9 +120,16 @@ public class CompositionRepository {
         return jdbcTemplate.query(psc, rowMapper);
     }
 
-    public Measure formatComposition(/* int compositionId */) {
-        List<Chord> chords = findChordsByCompositionId(1); // for now, 1 is the only composition allowed
-        List<Measure> measures = findMeasuresByCompositionId(1); // for now, 1 is the only composition allowed
+    public List<Composition> getAllCompositions() {
+        String sql = "SELECT id, title FROM Compositions";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> 
+            new Composition(rs.getInt("id"), rs.getString("title"))
+        );
+    }
+
+    public Measure formatComposition(int compositionId) {
+        List<Chord> chords = findChordsByCompositionId(compositionId);
+        List<Measure> measures = findMeasuresByCompositionId(compositionId);
         // sort all chords by their measure id (relative position in measure)
         // sort all measures by their measure number (relative position in composition)
         // then add x chords to measure 0, then y chords to measure 1, etc.
@@ -170,9 +177,9 @@ public class CompositionRepository {
         return dummy.getNext();
     }
 
-    public List<Measure> getMeasures() {
+    public List<Measure> getMeasures(int compositionId) {
         List<Measure> measures = new ArrayList<>();
-        Measure dummy = formatComposition();
+        Measure dummy = formatComposition(compositionId);
         Measure m = dummy;
         while (m != null) {
             measures.add(m);
@@ -209,5 +216,9 @@ public class CompositionRepository {
             }
         });
         
+    }
+
+    public void changeComposition(String composition) {
+
     }
 }

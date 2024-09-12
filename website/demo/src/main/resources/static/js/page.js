@@ -238,4 +238,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
         } 
     });
+
+    // changing composition
+    document.getElementById('composition-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        const formData = new FormData(this);
+        fetch('/changeComposition', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
 });

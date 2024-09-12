@@ -33,7 +33,7 @@ public class DemoRestController {
         //String compositionString = fileService.readFile("composition.txt");
         //Composition composition = new Composition().readComposition(compositionString);
         //Measure measure = composition.getMeasure();
-        Measure measure = cr.formatComposition();
+        Measure measure = cr.formatComposition(DemoController.globalCompositionId);
         Measure m = measure;
         ArrayList<ArrayList<int[]>> allChords = new ArrayList<>();
         while (m != null) {
