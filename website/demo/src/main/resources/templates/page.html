@@ -23,14 +23,14 @@
             <!-- currently need add-chord button so chord popup works as intended -->
             <button id="add-chord" class="button">Add chord</button> 
             <form id="composition-form">
-                <label for="composition">Select song: </label>
-                <select id="composition-dropdown" name="selectedComposition">
-                    <option value="" disabled selected>Select</option>
+                <!-- <label for="composition">Select song</label> -->
+                <select id="composition-dropdown" name="selectedComposition" class="composition-dropdown">
+                    <option value="" disabled selected>Select Song</option>
                     <option th:each="composition : ${allCompositions}" 
                             th:value="${composition.id}"
                             th:text="${composition.title}"></option>
                 </select>
-                <button type="submit">Submit</button>
+                <!-- <button type="submit">Submit</button> -->
             </form>
         </div>
         <!--note in chord in measure in composition-->
@@ -39,6 +39,10 @@
         <!--<li th:each="note : ${composition.measure.chord.allNotes}" th:text="${note.interval}"></li>-->
         
         <div class="composition-box">
+            <div class="time-sig-box">
+                <span th:text="${timeSig.numNoteValuesPerMeasure}"></span>
+                <span th:text="${timeSig.noteValue}"></span>
+            </div>
             <div th:each="measure1, measureStat : ${allMeasures}">
                 <!-- <p th:text="'measure = ' + ${measure1}"></p> -->
                 <!-- <p>1</p> -->

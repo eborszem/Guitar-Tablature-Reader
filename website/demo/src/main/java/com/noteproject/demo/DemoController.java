@@ -67,6 +67,9 @@ public class DemoController {
             System.out.println("duration=" + highE.getDuration()); // duration is accessed through notes
             System.out.println("id=" + c.getId() + ", measure id=" + c.getMeasureId());
         }
+        Measure obj = cr.getTimeSignature(globalCompositionId);
+        model.addAttribute("timeSig", obj);
+        
         //model.addAttribute("measure", cr.getFirstMeasure());
         //Composition temp = new Composition("C", 4, 4, cr.formatComposition());
         //temp.printComposition(temp);
@@ -162,9 +165,12 @@ public class DemoController {
         System.out.println("TEST======="+chords.getNote().getDuration());
         System.out.println("new dur=" + newDuration);
         System.out.println("new type=" + newType);
+        boolean durUpdate = false;
         // change duration, if it was changed
-        if (newDuration != dur)
+        if (newDuration != dur) {
+            durUpdate = true;
             dur = newDuration;
+        }
         /* Call it here, modify the values, and then update in the html */
         int val = high_e_string;
         if (high_e_string == -1)
@@ -209,6 +215,9 @@ public class DemoController {
         System.out.println("CHORD NUM ====" + chordNum);
 
         cr.updateChord(updatedChord, measureId, chordNum);
+        if (durUpdate) {
+            cr.updateDurations(newDuration, dur, updatedChord, measureId, chordNum, globalCompositionId);
+        }
         return new ResponseEntity<>("Chord updated", HttpStatus.OK);
     }
 
