@@ -47,6 +47,26 @@ public class CompositionRepository {
         return this.measureId;
     }
 
+    public void addChordToMeasure() {
+        /*
+        String sql = "SELECT MAX(chord_number) FROM Measures WHERE composition_id = 1"; // TODO: uses 1 as value for composition id
+        Integer val = jdbcTemplate.queryForObject(sql, Integer.class);
+        int numMeasures;
+        if (val != null) {
+            numMeasures = val;
+        } else {
+            numMeasures = 0;
+        }
+        measureId = val;
+         */
+        // TODO:
+        // w: 4
+        // h: 2
+        // q: 1
+        // 8th: .5 
+        // 16th: .25
+    }
+
     public void addMeasureToRepo(Measure m) {
         // Retrieve the current max measure number for composition_id 0
         String sql = "SELECT MAX(measure_number) FROM Measures WHERE composition_id = 1"; // TODO: uses 1 as value for composition id
@@ -92,7 +112,7 @@ public class CompositionRepository {
         jdbcTemplate.update(sql3, measureIdInt, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, 0);
     }
 
-   public List<Chord> findChordsByCompositionId(int compositionId) {
+    public List<Chord> findChordsByCompositionId(int compositionId) {
         String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ?";
         
         PreparedStatementCreator psc = connection -> {
@@ -104,7 +124,22 @@ public class CompositionRepository {
         RowMapper<Chord> rowMapper = new ChordRowMapper();
         
         return jdbcTemplate.query(psc, rowMapper);
-   }
+    }
+
+    public List<Chord> findChordsByCompositionAndMeasureIds(int compositionId, int measureId) {
+        String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ? AND c.measure_id = ?";
+        
+        PreparedStatementCreator psc = connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, compositionId);
+            ps.setInt(1, measureId);
+            return ps;
+        };
+        
+        RowMapper<Chord> rowMapper = new ChordRowMapper();
+        
+        return jdbcTemplate.query(psc, rowMapper);
+    }
 
     public List<Measure> findMeasuresByCompositionId(int compositionId) {
         String sql = "SELECT * FROM Measures WHERE composition_id = ?";
@@ -118,6 +153,18 @@ public class CompositionRepository {
         RowMapper<Measure> rowMapper = new MeasureRowMapper();
         
         return jdbcTemplate.query(psc, rowMapper);
+    }
+
+    // no compositions = exception will occur
+    // gets a dummy measure which just tells us the composition's time signature (the note that gets the beat and how many beat notes are in a measure)
+    // example:
+    // 4 4 time: has a quarter note as its beat note and there is a duration of 4 quarter notes per measure
+    // 2 4 time: beat note: quarter note, 2 quarter notes per measure
+    public Measure getTimeSignature(int compositionId) {
+        String sql = "SELECT note_value, num_note_values_per_measure FROM Compositions WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
+            new Measure(rs.getInt("note_value"), rs.getInt("num_note_values_per_measure"))
+        );
     }
 
     public List<Composition> getAllCompositions() {
@@ -220,5 +267,50 @@ public class CompositionRepository {
 
     public void changeComposition(String composition) {
 
+    }
+
+    public void updateDurations(int newDuration, int dur, Chord updatedChord, int measureId, int chordNum, int compositionId) {
+        List<Chord> chords = findChordsByCompositionAndMeasureIds(compositionId, measureId);
+        // maintain sorted order
+        chords.sort((c1, c2) -> Integer.compare(c1.getChordNumber(), c2.getChordNumber()));
+        // w: 4
+        // h: 2
+        // q: 1
+        // 8th: .5 
+        // 16th: .25
+
+        /*
+         * Cases:
+         * newDuration < dur: chord will play for newDuration time, remaining dur - newDuration time becomes rests
+         * newDuration > dur, newDuration does NOT exceed measure: user is warned chord will overwrite future chords/rests.
+         * newDuration > dur, newDuration DOES exceed measure: user is warned chord will overwrite future chords/rests FOR EACH MEASURE.
+         *                    popup appears every measure that is being affected
+         */
+
+        // must calculate rests to be put after shorter chord
+        ArrayList<Character> remainders = new ArrayList<>();
+        if (newDuration < dur) {
+            Chord c = new Chord();
+            int remainder = dur - newDuration;
+            while (remainder > 0) {
+                if (remainder - 4 >= 0) {
+                    remainders.add('w');
+                    remainder -= 4;
+                } else if (remainder - 2 >= 0) {
+                    remainders.add('h');
+                    remainder -= 2;
+                } else if (remainder - 1 >= 0) {
+                    remainders.add('q');
+                    remainder -= 1;
+                } else if (remainder - .5 >= 0) {
+                    remainders.add('e');
+                    remainder -= .5;
+                } else if (remainder - .25 >= 0) {
+                    remainder -= .25;
+                    remainders.add('s');
+                }
+            }
+        }
+        
     }
 }

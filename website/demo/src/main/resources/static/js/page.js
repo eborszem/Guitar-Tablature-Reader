@@ -239,10 +239,17 @@ document.addEventListener("DOMContentLoaded", function() {
         } 
     });
 
+
+    const dropdown = document.getElementById('composition-dropdown');
+
+    dropdown.addEventListener('change', function() {
+        changeComposition();  // Call the function when an option is selected
+        console.log("testing");
+    });
     // changing composition
-    document.getElementById('composition-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-        const formData = new FormData(this);
+    function changeComposition() {
+        const form = document.getElementById('composition-form');
+        const formData = new FormData(form);
         fetch('/changeComposition', {
             method: 'POST',
             body: formData
@@ -254,6 +261,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => {
             console.error('Error:', error);
         });
-    });
+        location.reload();
+    }
 
 });

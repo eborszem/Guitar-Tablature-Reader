@@ -9,6 +9,11 @@ body p {
     font-weight: bold;
 }
 
+body span {
+    font-family: 'Ubuntu';
+    font-weight: bold;
+}
+
 .interface {
     padding: 25px;
     display: flex;
@@ -85,7 +90,21 @@ body p {
     max-width: 240px;
     height: 94px;
     position: relative;
+}
 
+.time-sig-box {
+    border: 1px solid black;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 60px;
+    max-width: 60px;
+    height: 94px;
+    position: relative;
 }
 
 /* not currently used*/
@@ -231,4 +250,23 @@ body p {
 .note-btn-div {
     border: 5px solid;
     border-color: red;
+}
+
+label {
+    font-family: 'Ubuntu';
+    font-weight: bold;
+}
+
+option {
+    font-family: 'Ubuntu';
+    font-weight: bold;
+}
+
+.composition-dropdown {
+    width: 100%;
+    max-width: 250px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid black;
+    border-radius: 4px;
 }

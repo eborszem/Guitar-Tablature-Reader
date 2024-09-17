@@ -7,9 +7,9 @@ public class Measure {
     Chord chord;  // chords in the measure
     public Measure next;
 	//Measure prev;
-	private int noteBeat;  // which note gets the beat. Quarter, half, etc.
-	private int numNoteBeatsPerMeasure;  // how many note beats are present in the measure
-	private int numBeats = noteBeat * numNoteBeatsPerMeasure;
+	private int noteValue;  // which note gets the beat. Quarter, half, etc.
+	private int numNoteValuesPerMeasure;  // how many note beats are present in the measure
+	private int numBeats = noteValue * numNoteValuesPerMeasure;
     private int id;
     private int measureNumber;
     private int compositionId;
@@ -36,6 +36,11 @@ public class Measure {
             m.chord = m.chord.next;
         }
     }
+
+    public Measure(int noteValue, int numNoteValuesPerMeasure) {
+        this.noteValue = noteValue;
+        this.numNoteValuesPerMeasure = numNoteValuesPerMeasure;
+    }
     
 
     public Chord getChord() {
@@ -54,28 +59,20 @@ public class Measure {
         this.next = next;
     }
 
-    public int getNoteBeat() {
-        return this.noteBeat;
+    public int getNoteValue() {
+        return this.noteValue;
     }
 
-    public void setNoteBeat(int noteBeat) {
-        this.noteBeat = noteBeat;
+    public void setNoteValue(int noteValue) {
+        this.noteValue = noteValue;
     }
 
-    public int getNumNoteBeatsPerMeasure() {
-        return this.numNoteBeatsPerMeasure;
+    public int getNumNoteValuesPerMeasure() {
+        return this.numNoteValuesPerMeasure;
     }
 
-    public void setNumNoteBeatsPerMeasure(int numNoteBeatsPerMeasure) {
-        this.numNoteBeatsPerMeasure = numNoteBeatsPerMeasure;
-    }
-
-    public int getNumBeats() {
-        return this.numBeats;
-    }
-
-    public void setNumBeats(int numBeats) {
-        this.numBeats = numBeats;
+    public void setNumNoteValuesPerMeasure(int numNoteValuesPerMeasure) {
+        this.numNoteValuesPerMeasure = numNoteValuesPerMeasure;
     }
 
     public List<Chord> getAllChords() {

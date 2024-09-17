@@ -16,6 +16,7 @@ public class Chord {
         this.note = note;
         this.next = null;
     }
+    
     public Chord() {
 
     }
