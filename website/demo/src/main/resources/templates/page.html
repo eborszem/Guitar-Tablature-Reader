@@ -17,11 +17,10 @@
     <div class="interface">
         <p class="title">TAB READER</p>
         <div class="button-container">
-            <button id="add-new-measure" class="button">Add measure</button>
+            <button id="add-new-measure" class="button">Add Measure</button>
             <button id="play-btn" class="button">Play</button>
             <button id="pause-btn" class="button">Pause</button>
-            <!-- currently need add-chord button so chord popup works as intended -->
-            <button id="add-chord" class="button">Add chord</button> 
+            <button id="new-composition" class="button">New Song</button> 
             <form id="composition-form">
                 <!-- <label for="composition">Select song</label> -->
                 <select id="composition-dropdown" name="selectedComposition" class="composition-dropdown">
@@ -158,7 +157,7 @@
                             dur = EIGHTH_NOTE;
                         if (dur == 16)
                             dur = SIXTEENTH_NOTE;
-                        let str = getDurationAsString(dur);
+                        let str = getDurationString(dur);
                         /*------------------------------------*/
 
                         //let chordArray = getChord(chordData);
@@ -197,7 +196,7 @@
                         return chordArray;
                     }*/
 
-                    function getDurationAsString(dur) {
+                    function getDurationString(dur) {
                         switch (dur) {
                             case SIXTEENTH_NOTE: return "16n";
                             case EIGHTH_NOTE: return "8n";

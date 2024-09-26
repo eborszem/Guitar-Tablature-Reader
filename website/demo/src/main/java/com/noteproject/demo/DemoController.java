@@ -29,7 +29,7 @@ import org.springframework.ui.Model;
 @Controller
 public class DemoController {
 
-    static int globalCompositionId = 1; // composition 1 by default
+    public static int globalCompositionId = 1; // composition 1 by default
     @Autowired
     CompositionRepository cr;
 
@@ -108,13 +108,13 @@ public class DemoController {
         Chord c = new Chord(wholeRest);
         Measure m = new Measure(c);
         
-        cr.addMeasureToRepo(m);
+        int measureId = cr.addMeasureToRepo(m, globalCompositionId);
 
         List<Map<String, Object>> res = new ArrayList<>();
         Map<String, Object> chord = new HashMap<>();
         chord.put("fretNumbers", List.of(-1, -1, -1, -1, -1, -1)); // default rests
-        chord.put("duration", "4");
-        chord.put("measureId", cr.getMeasureId());
+        chord.put("duration", "4"); // TODO: Hardcoded to whole note currently. Need to make it work for num of beats in measure
+        chord.put("measureId", measureId);
         res.add(chord);
 
         return res;
@@ -167,6 +167,7 @@ public class DemoController {
         System.out.println("new type=" + newType);
         boolean durUpdate = false;
         // change duration, if it was changed
+        int oldDur = dur;
         if (newDuration != dur) {
             durUpdate = true;
             dur = newDuration;
@@ -213,10 +214,14 @@ public class DemoController {
         Chord updatedChord = new Chord(high_e);
         System.out.println("MEASURE ID ====" + measureId);
         System.out.println("CHORD NUM ====" + chordNum);
+        System.out.println("durUpdate="+durUpdate);
 
-        cr.updateChord(updatedChord, measureId, chordNum);
         if (durUpdate) {
-            cr.updateDurations(newDuration, dur, updatedChord, measureId, chordNum, globalCompositionId);
+            System.out.println("newDuration="+newDuration+", oldDur="+oldDur);
+            cr.updateDurations(newDuration, oldDur, updatedChord, measureId, chordNum, globalCompositionId);
+        } else {
+            // was above if previously, moved here to avoid possible bugs
+            cr.updateChord(updatedChord, measureId, chordNum);
         }
         return new ResponseEntity<>("Chord updated", HttpStatus.OK);
     }
@@ -226,5 +231,12 @@ public class DemoController {
     public void changeComposition(@RequestParam("selectedComposition") String composition) {
         System.out.println(composition + "!!!!!...");
         globalCompositionId = Integer.parseInt(composition);
+    }
+
+    @PostMapping("/newComposition")
+    @ResponseBody
+    public void newComposition() {
+        System.out.println("NEW COMP BEING ADDED");
+        globalCompositionId = cr.addNewComposition(); // adds new comp and measure to tables
     }
 }
