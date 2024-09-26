@@ -23,12 +23,20 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => console.error("Error fetching new measure:", error));
     });
-    
-    var addChord = document.getElementById("add-chord")
-    addChord.addEventListener("click", function() {
-        console.log("hello")
-    });
 
+    // make a new composition/song
+    var newComposition = document.getElementById("new-composition");
+    newComposition.addEventListener("click", function() {
+        $.ajax({
+            type: "POST",
+            url: "/newComposition",
+            timeout: 5000,
+            success: function(response) {
+                location.reload();
+            },
+        });
+    });
+    
     // Chord creation
     const modal = document.getElementById("chordModal");
     const span = document.getElementsByClassName("close")[0];
@@ -191,15 +199,10 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             timeout: 5000,
             success: function(response) {
-                // Handle a successful response here
+                location.reload();
                 console.log("Chord updated successfully:", response);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                // Handle errors here
-                console.error("Error updating chord:", textStatus, errorThrown);
             }
         });
-        location.reload();
         // reset strings + other variables
         low_e_string = -1;
         a_string = -1;
@@ -256,12 +259,12 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.text())
         .then(data => {
+            location.reload();
             console.log(data);
         })
         .catch(error => {
             console.error('Error:', error);
         });
-        location.reload();
     }
 
 });
