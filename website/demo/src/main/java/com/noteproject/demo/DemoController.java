@@ -54,6 +54,8 @@ public class DemoController {
         System.out.println("END COMPOSITION PRINT");
         model.addAttribute("allMeasures", cr.getMeasures(globalCompositionId));
         model.addAttribute("allCompositions", cr.getAllCompositions());
+        Composition x = cr.getCompositionInfo(globalCompositionId);
+        model.addAttribute("compositionInfo", x);
         //System.out.println("1st measure object="+composition.getMeasure());
         List<Chord> chords = cr.findChordsByCompositionId(1);
         for (Chord c : chords) {

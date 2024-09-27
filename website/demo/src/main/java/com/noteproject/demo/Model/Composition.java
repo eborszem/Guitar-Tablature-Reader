@@ -3,6 +3,7 @@ package com.noteproject.demo.Model;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,6 +16,8 @@ public class Composition {
     Measure measure;
     String title;
     int id;
+    Timestamp timestamp;
+    String composer;
     public Composition next;
 
     // note: each measure's number of beats must equal beat * beatsPerMeasure
@@ -33,6 +36,12 @@ public class Composition {
         this.id = id;
         this.title = title;
         this.next = null;
+    }
+
+    public Composition(String title, String composer, Timestamp timestamp) {
+        this.title = title;
+        this.composer = composer;
+        this.timestamp = timestamp;
     }
 
     public Composition() {
@@ -121,7 +130,15 @@ public class Composition {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public String getComposer() {
+        return this.composer;
+    }
     
+    public Timestamp getTimestamp() {
+        return this.timestamp;
+    }
+
     public int getId() {
         return this.id;
     }

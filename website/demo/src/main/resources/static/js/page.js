@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.json())
         .then(data => {
+            location.reload();
             console.log("Received JSON:", data);  // Log the JSON to console
             // Update the page with the new measure without reloading
             // You can iterate over the response and dynamically add the new measure to the DOM
@@ -141,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     const confirmBtn = document.getElementById("confirm-btn");
-    confirmBtn.addEventListener("click", async () => { 
+    confirmBtn.addEventListener("click", async () => {
         modal.style.display = "none";
         res = [];
         console.log("string values="+low_e_string + " " + a_string + " " + d_string + " " + g_string + " " + b_string + " " + high_e_string);
@@ -238,6 +239,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 button.classList.remove('pressed');
             });
             event.target.classList.add('pressed');
+            event.target.textContent = fret;
 
         } 
     });

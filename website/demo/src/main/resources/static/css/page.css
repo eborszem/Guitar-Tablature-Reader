@@ -23,8 +23,15 @@ body span {
     user-select: none;
 }
 
-.title {
+.tabreader {
     font-size: 50px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.title {
+    font-size: 30px;
     text-align: center;
     margin: 0;
     padding: 0;
@@ -190,20 +197,26 @@ body span {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
+    
+
 }
 
 .modal-content {
     background-color: #fefefe;
+    top: 50%;
+    left: 50%;
+    transform: translate(0%, -10%);
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+
 }
 
 .close {
     color: #aaa;
     float: right;
-    font-size: 28px;
+    font-size: 50px;
     font-weight: bold;
 }
 
@@ -213,7 +226,6 @@ body span {
     text-decoration: none;
     cursor: pointer;
 }
-
 
 /* for fretboard that appears when user clicks chord */
 #row {
@@ -237,7 +249,7 @@ body span {
     color: white;
     opacity: 1;
     border: none;
-    border-radius: 100px;
+    border-radius: 20px;
 }
 
 .note-btn {
@@ -245,12 +257,9 @@ body span {
     opacity: 0;
     height: 50px;
     width: 50px;
+    border: 5px;
 }
 
-.note-btn-div {
-    border: 5px solid;
-    border-color: red;
-}
 
 label {
     font-family: 'Ubuntu';
