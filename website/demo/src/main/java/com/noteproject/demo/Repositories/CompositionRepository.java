@@ -95,7 +95,7 @@ public class CompositionRepository {
         return jdbcTemplate.query(psc, rowMapper);
     }
 
-    public List<Chord> findChordsByCompositionAndMeasureIds(int compositionId, int measureId) {
+    public List<Chord> findChordsByCompositionIdAndMeasureId(int compositionId, int measureId) {
         String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ? AND c.measure_id = ?";
         
         PreparedStatementCreator psc = connection -> {
@@ -294,7 +294,7 @@ public class CompositionRepository {
     }
 
     // newMeasure is a list of Chord objects (every chord points to its successor)
-    public void editMeasure(Chord newMeasure, int measureId) {
+    public void editMeasure(Chord newMeasure, int measureId, List<Chord> chords, int index) {
         // debugging
         /*while (newMeasure != null) {
             for (Note n : newMeasure.getAllNotes()) {
@@ -308,25 +308,42 @@ public class CompositionRepository {
         jdbcTemplate.update(delete, measureId);
         String sql = "INSERT INTO Chords (measure_id, low_e_string, a_string, d_string, g_string, b_string, high_e_string, duration, chord_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int i = 0;
+        System.out.println("EDITED MEASURE:");
+        // add measure (first chord up to last new rest)
         while (newMeasure != null) {
-            Note low_e_string = newMeasure.getNote();
-            Note a_string = low_e_string.next;
-            Note d_string = a_string.next;
-            Note g_string = d_string.next;
-            Note b_string = g_string.next;
-            Note high_e_string = b_string.next;
+            Note high_e_string = newMeasure.getNote();
+            Note b_string = high_e_string.next;
+            Note g_string = b_string.next;
+            Note d_string = g_string.next;
+            Note a_string = d_string.next;
+            Note low_e_string = a_string.next;
             int duration = low_e_string.getDuration();
             jdbcTemplate.update(sql, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, i);
             newMeasure = newMeasure.getNext();
-            i++;
             System.out.println(duration + ": " + low_e_string.getFretNumber() + " " + a_string.getFretNumber() + " " + d_string.getFretNumber() + " " + g_string.getFretNumber() + " " + b_string.getFretNumber() + " " + high_e_string.getFretNumber());
+            i++;
+        }
+        // now add remaining chords after the last new rest
+        System.out.println("edited measure, remaining chords: ");
+        while (index < chords.size()) {
+            Chord chord = chords.get(index);
+            Note high_e_string = chord.getNote();
+            Note b_string = high_e_string.next;
+            Note g_string = b_string.next;
+            Note d_string = g_string.next;
+            Note a_string = d_string.next;
+            Note low_e_string = a_string.next;
+            int duration = low_e_string.getDuration();
+            jdbcTemplate.update(sql, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, i);
+            System.out.println(duration + ": " + low_e_string.getFretNumber() + " " + a_string.getFretNumber() + " " + d_string.getFretNumber() + " " + g_string.getFretNumber() + " " + b_string.getFretNumber() + " " + high_e_string.getFretNumber());
+            index++;
         }
     }
 
     // TODO: current bug for case #1: new notes will always be added after all preexisting chords, when in reality no chords should move around
     // caused by getting max chord number. need to use chordNum and readd every chord after it to the repo
     public void updateDurations(int newDuration, int oldDuration, Chord updatedChord, int measureId, int chordNum, int compositionId) {
-        List<Chord> chords = findChordsByCompositionAndMeasureIds(compositionId, measureId);
+        List<Chord> chords = findChordsByCompositionIdAndMeasureId(compositionId, measureId);
         // maintain sorted order
         chords.sort((c1, c2) -> Integer.compare(c1.getChordNumber(), c2.getChordNumber()));
 
@@ -343,7 +360,7 @@ public class CompositionRepository {
         Chord newMeasure = dummy; // a chord object points to multiple chords. essentially, it is a measure linked list
         System.out.println("DURATIONTEST");
         while (counter != chordNum) {
-            //System.out.println(counter);
+            System.out.println("chord " + counter + ". high e string is " + chords.get(counter).getNote().getFretNumber());
             int durationOfChord = chords.get(counter).getNote().getDuration();
             totalBeatsUntilUpdatedChord += durationOfChord;
             dummy.setNext(chords.get(counter));
@@ -373,6 +390,7 @@ public class CompositionRepository {
         // if the newDuration is longer (aka shorter integer), then we need to overwrite chords after updatedChord
         updateChord(updatedChord, measureId, chordNum);
         if (newDur < oldDur) {
+            System.out.println("CASE #1");
             // any chord/rest added here is guaranteed to be equal to the former chord
             // so no need to account for reallocation
             double remainder = oldDur - newDur;
@@ -381,26 +399,26 @@ public class CompositionRepository {
             // 1
             // 16 
             while (remainder > 0) {
-                if (remainder - 4 >= 0) {
+                if (remainder - 4 >= 0) { // whole note
                     remainders.add(4.0);
                     remainder -= 4;
-                } else if (remainder - 2 >= 0) {
+                } else if (remainder - 2 >= 0) { // half note
                     remainders.add(2.0);
                     remainder -= 2;
-                } else if (remainder - 1 >= 0) {
+                } else if (remainder - 1 >= 0) { // quarter note
                     remainders.add(1.0);
                     remainder -= 1;
-                } else if (remainder - .5 >= 0) {
+                } else if (remainder - .5 >= 0) { // eighth note
                     remainders.add(.5);
                     remainder -= .5;
-                } else if (remainder - .25 >= 0) {
+                } else if (remainder - .25 >= 0) { // sixteenth note
                     remainders.add(.25);
                     remainder -= .25;
                 }
             }
             System.out.println("updateDurations reached100");
 
-            //updateChord(updatedChord, measureId, chordNum);
+            // now add rests too
             Chord dummy2 = new Chord();
             Chord rests = dummy2;
             for (double duration : remainders) {
@@ -424,14 +442,19 @@ public class CompositionRepository {
 
             dummy.setNext(updatedChord);
             dummy = dummy.getNext();
+
             dummy.setNext(rests.getNext());
             dummy = dummy.getNext();
 
-            editMeasure(newMeasure.getNext(), measureId);
+            
+
+
+            editMeasure(newMeasure.getNext(), measureId, chords, counter + 1); // counter + 1 is the index where the remaining chords start, as the count'th measure is the chord who is being changed
 
             // need to update this chord in chord table, then
             // need to insert new rest chords into chords table
         }
+        System.out.println("RETURNING CHANGE DURATION");
         
     }
 
@@ -482,5 +505,12 @@ public class CompositionRepository {
         addMeasureToRepo(m, compIdInt);
         System.out.println("ENDING ADDING NEW COMP");
         return compIdInt;
+    }
+
+    public Composition getCompositionInfo(int compositionId) {
+        String sql = "SELECT title, composer, time FROM Compositions WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
+            new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
+        );
     }
 }
