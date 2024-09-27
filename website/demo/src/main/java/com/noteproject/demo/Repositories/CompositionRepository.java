@@ -336,6 +336,7 @@ public class CompositionRepository {
             int duration = low_e_string.getDuration();
             jdbcTemplate.update(sql, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, i);
             System.out.println(duration + ": " + low_e_string.getFretNumber() + " " + a_string.getFretNumber() + " " + d_string.getFretNumber() + " " + g_string.getFretNumber() + " " + b_string.getFretNumber() + " " + high_e_string.getFretNumber());
+            i++; // used to update the chordNum in database
             index++;
         }
     }
@@ -367,6 +368,7 @@ public class CompositionRepository {
             dummy = dummy.getNext();
             counter++;
         }
+
         System.out.println("AFTER WHILE LOOP");
         Measure timeSig = getTimeSignature(compositionId);
         int maxBeatsPerMeasure = timeSig.getNoteValue() * timeSig.getNumNoteValuesPerMeasure();
@@ -449,7 +451,7 @@ public class CompositionRepository {
             
 
 
-            editMeasure(newMeasure.getNext(), measureId, chords, counter + 1); // counter + 1 is the index where the remaining chords start, as the count'th measure is the chord who is being changed
+            editMeasure(newMeasure.getNext(), measureId, chords, chordNum + 1); // chordNum + 1 is the index where the remaining chords start, as the count'th measure is the chord who is being changed
 
             // need to update this chord in chord table, then
             // need to insert new rest chords into chords table
