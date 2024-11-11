@@ -28,16 +28,42 @@ document.addEventListener("DOMContentLoaded", function() {
     // make a new composition/song
     var newComposition = document.getElementById("new-composition");
     newComposition.addEventListener("click", function() {
-        $.ajax({
-            type: "POST",
-            url: "/newComposition",
-            timeout: 5000,
-            success: function(response) {
-                location.reload();
-            },
-        });
+        document.getElementById("popup").style.display = "block";
     });
-    
+
+    var submitNewComposition = document.getElementById("submit");
+    var form = document.getElementById("popup");
+    submitNewComposition.addEventListener("click", function() {
+        const regex = /^.+$/;
+        var title = document.getElementById("title").value;
+        var composer = document.getElementById("composer").value;
+        if (!regex.test(title) && !regex.test(composer)) {
+            alert("Invalid title and composer");
+        } else if (!regex.test(title)) {
+            alert("Invalid title");
+        } else if (!regex.test(composer)) {
+            alert("Invalid composer");
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "/newComposition",
+                data: {
+                    title: title,
+                    composer: composer
+                },
+                timeout: 5000,
+                success: function(response) {
+                    location.reload();
+                },
+            });
+        }
+
+    });
+    var cancelNewComposition = document.getElementById("cancel");
+    cancelNewComposition.addEventListener("click", function() {
+        document.getElementById("popup").style.display = "none";
+    });
+
     // Chord creation
     const modal = document.getElementById("chordModal");
     const span = document.getElementsByClassName("close")[0];
@@ -138,6 +164,10 @@ document.addEventListener("DOMContentLoaded", function() {
             chordNum = -1;
             newDur = UNINITIALIZED;
             newType = UNINITIALIZED;
+        }
+        const newCompositionPopup = document.getElementById("popup");
+        if (event.target === newCompositionPopup) {
+            newCompositionPopup.style.display = "none";
         }
     };
 
