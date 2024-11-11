@@ -237,8 +237,8 @@ public class DemoController {
 
     @PostMapping("/newComposition")
     @ResponseBody
-    public void newComposition() {
+    public void newComposition(@RequestParam("title") String title, @RequestParam("composer") String composer) {
         System.out.println("NEW COMP BEING ADDED");
-        globalCompositionId = cr.addNewComposition(); // adds new comp and measure to tables
+        globalCompositionId = cr.addNewComposition(title, composer); // adds new comp and measure to tables
     }
 }

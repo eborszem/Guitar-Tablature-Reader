@@ -10,8 +10,6 @@ public class Chord {
     private int measureId;
     private int chordNumber;
 
-   
-
     public Chord(Note note) {
         this.note = note;
         this.next = null;
@@ -69,6 +67,17 @@ public class Chord {
             n = n.next;
         }
         return notes;
+    }
+
+    public boolean allRests() {
+        Note n = this.note;
+        while (n != null) {
+            if (n.fretNumber != -1) {
+                return false;
+            }
+            n = n.next;
+        }
+        return true;
     }
 
     public void printAllNotes() {

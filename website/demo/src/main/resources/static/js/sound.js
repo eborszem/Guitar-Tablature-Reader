@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         function play(chords) {
             console.log("chords="+chords);
             const synth = new Tone.PolySynth(Tone.Synth, {
-                volume: -40, // volume control
+                volume: -30, // volume control
             }).toDestination();
             synth.maxPolyphony = 1000; // prevents chords being skipped when composition is played fast
             // Define note values

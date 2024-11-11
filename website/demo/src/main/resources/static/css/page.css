@@ -9,6 +9,11 @@ body p {
     font-weight: bold;
 }
 
+h2 {
+    font-family: 'Ubuntu';
+    font-weight: bold;
+}
+
 body span {
     font-family: 'Ubuntu';
     font-weight: bold;
@@ -262,20 +267,53 @@ body span {
 
 
 label {
-    font-family: 'Ubuntu';
-    font-weight: bold;
+font-family: 'Ubuntu';
+font-weight: bold;
 }
 
 option {
-    font-family: 'Ubuntu';
-    font-weight: bold;
+font-family: 'Ubuntu';
+font-weight: bold;
 }
 
 .composition-dropdown {
+width: 100%;
+max-width: 250px;
+padding: 10px;
+font-size: 16px;
+border: 1px solid black;
+border-radius: 4px;
+}
+
+/* popup when making new song */
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
     width: 100%;
-    max-width: 250px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid black;
-    border-radius: 4px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+}
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    width: 300px;
+    border-radius: 8px;
+    text-align: center;
+}
+.popup input {
+    display: block;
+    width: 100%;
+    margin: 0 auto 10px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+.popup button {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-family: 'Ubuntu';
+    font-weight: bold;
 }

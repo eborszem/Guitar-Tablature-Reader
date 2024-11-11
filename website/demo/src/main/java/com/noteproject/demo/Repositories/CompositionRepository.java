@@ -1,5 +1,6 @@
 package com.noteproject.demo.Repositories;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -455,12 +456,14 @@ public class CompositionRepository {
 
             // need to update this chord in chord table, then
             // need to insert new rest chords into chords table
+        } else { // if newDur > oldDur
+
         }
         System.out.println("RETURNING CHANGE DURATION");
         
     }
 
-    public int addNewComposition() {
+    public int addNewComposition(String title, String composer) {
         Note wholeRest = new Note(-1, 0, 4, true);
         Note wholeRest2 = new Note(-1, 1, 4, true);
         Note wholeRest3 = new Note(-1, 2, 4, true);
@@ -477,9 +480,6 @@ public class CompositionRepository {
         Measure m = new Measure(c);
         String sql = "INSERT INTO Compositions (title, composer, time, note_value, num_note_values_per_measure) VALUES (?, ?, ?, ?, ?)";
 
-        /*  TODO: placeholder values   */
-        String title = "New song";
-        String composer = "Name"; 
         Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
 
         int noteValue = 4;
@@ -511,8 +511,16 @@ public class CompositionRepository {
 
     public Composition getCompositionInfo(int compositionId) {
         String sql = "SELECT title, composer, time FROM Compositions WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
-            new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
-        );
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
+                new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
+            );
+        } catch (EmptyResultDataAccessException e) {
+            System.out.println("NO COMPOSITIONS EXIST");
+            addNewComposition("placeholder title", "placeholder composer");
+            return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
+                new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
+            );
+        }
     }
 }
