@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var submitNewComposition = document.getElementById("submit");
     var form = document.getElementById("popup");
     submitNewComposition.addEventListener("click", function() {
-        const regex = /^.+$/;
+        const regex = /^.+$/; // make sure that the title and composer are not empty
         var title = document.getElementById("title").value;
         var composer = document.getElementById("composer").value;
         if (!regex.test(title) && !regex.test(composer)) {
@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let chord_duration = 0;
     let measureId = -1;
     let chordNum = -1;
+    // TODO: if note is selected and already pressed, turn it into a rest
     function chordClicked(chordElement) {
         measureId = chordElement.getAttribute('data-measure-id');
         console.log("DATABASE MEASURE ID ==="+measureId);
@@ -94,20 +95,24 @@ document.addEventListener("DOMContentLoaded", function() {
         modal.style.display = "block";
     }
 
+    let btnArr = [];
     function prepopulateBtns(notes) {
         document.querySelectorAll('.note-btn').forEach(button => {
             button.classList.remove('pressed');
         });
         const notesFormatted = notes.map((note, index) => (index + 1) + '-' + note);
-        notesFormatted.forEach(note => {
-            document.querySelectorAll('.note-btn').forEach(button => {
-                console.log("->"+note + " " + button.textContent.trim());
-                if (button.textContent.trim() === note) {
-                    button.classList.add('pressed');
-                }
-            });
+        console.log("notesFormatted="+notesFormatted);
+        notesFormatted.forEach(noteId => {
+            btnArr.push(noteId);
+            const button = document.getElementById(noteId);
+            if (button) {
+                button.classList.add('pressed');
+                console.log("NOTE ID ="+noteId);
+            }
         });
+        console.log("btnArr===="+btnArr);
     }
+
     let curChord = "";
     const chordBoxes = document.querySelectorAll('.chord-box');
     chordBoxes.forEach(function(box) {
@@ -152,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
         chordNum = -1;
         newDur = UNINITIALIZED;
         newType = UNINITIALIZED;
+        btnArr = [];
     };
 
     // Close when clicking outside the popup
@@ -164,6 +170,7 @@ document.addEventListener("DOMContentLoaded", function() {
             chordNum = -1;
             newDur = UNINITIALIZED;
             newType = UNINITIALIZED;
+            btnArr = [];
         }
         const newCompositionPopup = document.getElementById("popup");
         if (event.target === newCompositionPopup) {
@@ -176,6 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
         modal.style.display = "none";
         res = [];
         console.log("string values="+low_e_string + " " + a_string + " " + d_string + " " + g_string + " " + b_string + " " + high_e_string);
+
         console.log("curChord (confirmBtn)="+curChord);
         // converting curChord (which contains the measure and chord values) into actual integer values to pass into ajax
         let measureAndChordStrs = curChord.match(/\d+/g);
@@ -264,12 +272,47 @@ document.addEventListener("DOMContentLoaded", function() {
                 case 2: b_string = fret; console.log("----->2" + fret); break;
                 case 1: high_e_string = fret; console.log("----->1" + fret); break;
             }
+
             // only one note can be played per string
             row.querySelectorAll('.note-btn').forEach(button => {
                 button.classList.remove('pressed');
             });
-            event.target.classList.add('pressed');
-            event.target.textContent = fret;
+            let newBtnId = string + "-" + fret;
+            console.log("new button id="+newBtnId);
+            // replace button in button array
+            //if (btnArr.includes(newBtnId)) {
+            //console.log("CONTAINS NOTE ALREADY!!!!!!!!");
+            /*const button = document.getElementById(newBtnId);
+            if (btnArr.includes(button)) {
+                console.log("BUTTON WAS ALREADY CLICKED");
+            }*/
+
+            let i = 0;
+            while (btnArr[i] != newBtnId && i < btnArr.length) {
+                i++;
+            }
+            if (i < btnArr.length) { // button was already clicked, so unpress it (aka make a rest)
+                console.log("Replacing " + btnArr[i] + " with " + newBtnId + "!!!");
+                event.target.classList.remove('pressed');
+                // update string to have a rest
+                // -2 represents rest here to avoid bug involving -1 in updateChord() in DemoController
+                switch (parseInt(string, 10)) {
+                    case 6: low_e_string = -2; break;
+                    case 5: a_string = -2; break;
+                    case 4: d_string = -2; break;
+                    case 3: g_string = -2; break;
+                    case 2: b_string = -2; break;
+                    case 1: high_e_string = -2; break;
+                }
+
+                newBtnId = string + "-" + "-2";
+                btnArr[string - 1] = newBtnId;
+            } else {
+                event.target.classList.add('pressed');
+                //event.target.textContent = fret;
+                btnArr[string - 1] = newBtnId;
+            }
+            console.log("updated button array="+btnArr);
 
         } 
     });
