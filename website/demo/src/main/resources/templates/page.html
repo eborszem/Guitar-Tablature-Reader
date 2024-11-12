@@ -80,8 +80,8 @@
                 <div class="string-rows">
                     <div th:each="i : ${#numbers.sequence(1, 6)}" th:id="'row-' + ${i}">
                         <div class="note-btn-div">
-                            <span th:each="j : ${#numbers.sequence(0, 12)}">
-                                <button th:text="${i} + '-' + ${j}" class="note-btn" th:attr="data-string=${i}, data-fret=${j}"></button>
+                            <span th:each="j : ${#numbers.sequence(0, 11)}">
+                                <button th:text="${fretboard[i - 1][j]}" class="note-btn" th:id="${i} + '-' + ${j}" th:attr="data-string=${i}, data-fret=${j}"></button>
                             </span>
                         </div>
                     </div>

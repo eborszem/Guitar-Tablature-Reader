@@ -71,6 +71,16 @@ public class DemoController {
         }
         Measure obj = cr.getTimeSignature(globalCompositionId);
         model.addAttribute("timeSig", obj);
+
+        final String[][] FRETBOARD = {
+            {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#"},
+            {"B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#"},
+            {"G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#"},
+            {"D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#"},
+            {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"},
+            {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#"},
+        };
+        model.addAttribute("fretboard", FRETBOARD);
         
         //model.addAttribute("measure", cr.getFirstMeasure());
         //Composition temp = new Composition("C", 4, 4, cr.formatComposition());

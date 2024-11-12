@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ["D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4"],
                 ["A2", "A#2", "B2", "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3"],
                 ["E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", "C3", "C#3", "D3", "D#3"],
-            ]
+            ];
 
             // An array which will be passed as a parameter
             //const array = [];
@@ -46,7 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(chords[0]);
                 let dur = chordData[0][2];  // first note dur = every note dur
 
-                // TODO: MAKE SURE THIS WORKS CORRECTLY
                 if (dur == 8)
                     dur = EIGHTH_NOTE;
                 if (dur == 16)
@@ -73,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     chord: chordArray,
                     duration: str
                 });
-                t += (dur);  // MULTIPLIER HERE DETERMINES TEMPO
+                t += (dur);                                     // TODO: MULTIPLIER HERE DETERMINES TEMPO
                 // time in tone js:
                 // default tempo = 120 beats per minute
                 // so, t / 2 = the current second in the song
