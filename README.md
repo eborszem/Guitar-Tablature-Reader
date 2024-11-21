@@ -14,8 +14,14 @@ E | 0 (E)
 is an E major chord. This is how it is played:
 <p>
   <img src="https://i0.wp.com/breakthroughguitar.com/wp-content/uploads/2023/05/Hot-to-play-an-E-chord-on-guitar.png" width="500">
-  <p>From https://breakthroughguitar.com/striking-the-right-note-how-do-i-play-an-e-chord-on-guitar/</p>
+  <p>(Image from https://breakthroughguitar.com/striking-the-right-note-how-do-i-play-an-e-chord-on-guitar/)</p>
 </p>
+Every chord will have this numbering system. In the application, the below image roughly resembles the popup's appearance after you click, for example, an E chord:
+<p>
+<img src="https://github.com/user-attachments/assets/ebf4c1c1-19be-4773-850d-f0d307451061" width="500">
+  <p>(Image from https://chordbank.com/chords/e-major/)</p>
+</p>
+Notice the placement of the dots/numbers is where the fingers go when you play an E chord.
 
 (The E, A, D, G, B, and E notes on the left are the "zeroth fret" and are only there to clarify that the guitar is tuned to EADGBE.)
 ## What does this project do?
