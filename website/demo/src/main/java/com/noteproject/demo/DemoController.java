@@ -40,6 +40,9 @@ public class DemoController {
 
     @GetMapping("/page")
     public List<Measure> test(Model model) {
+        if (globalCompositionId == 1) {
+            
+        }
         //cr.insertRecord(++index);
         /*Composition dummy = new Composition();
         Composition c = dummy.readComposition("/a.txt");
