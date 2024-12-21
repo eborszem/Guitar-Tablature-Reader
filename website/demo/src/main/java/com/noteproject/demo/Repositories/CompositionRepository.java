@@ -508,19 +508,42 @@ public class CompositionRepository {
         System.out.println("ENDING ADDING NEW COMP");
         return compIdInt;
     }
-
+    
     public Composition getCompositionInfo(int compositionId) {
         String sql = "SELECT title, composer, time FROM Compositions WHERE id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
-                new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
-            );
-        } catch (EmptyResultDataAccessException e) {
-            System.out.println("NO COMPOSITIONS EXIST");
-            addNewComposition("placeholder title", "placeholder composer");
-            return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
-                new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
-            );
+
+        while (true) {
+            try {
+                return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
+                    new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
+                );
+            } catch (EmptyResultDataAccessException e) {
+                System.out.println("NO COMPOSITIONS EXIST: comp id = " + compositionId);
+                //return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
+                //    new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
+                //);
+                //return getCompositionById(addNewComposition("placeholder title", "placeholder composer"));
+                compositionId++; // increment until we find a composition
+            }
         }
     }
+
+    public Composition getCompositionById(int compIdInt) {
+        String sql = "SELECT title, composer, time FROM Compositions WHERE id = ?";
+    
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{compIdInt}, (rs, rowNum) -> {
+                // Extract only title, composer, and time
+                return new Composition(
+                    rs.getString("title"),
+                    rs.getString("composer"),
+                    rs.getTimestamp("time")
+                );
+            });
+        } catch (EmptyResultDataAccessException e) {
+            System.out.println("Composition with ID " + compIdInt + " does not exist.");
+            return null;
+        }
+    }
+    
 }
