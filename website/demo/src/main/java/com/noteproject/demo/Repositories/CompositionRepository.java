@@ -130,12 +130,13 @@ public class CompositionRepository {
     // example:
     // 4 4 time: has a quarter note as its beat note and there is a duration of 4 quarter notes per measure
     // 2 4 time: beat note: quarter note, 2 quarter notes per measure
-    public Measure getTimeSignature(int compositionId) {
-        String sql = "SELECT note_value, num_note_values_per_measure FROM Compositions WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
-            new Measure(rs.getInt("note_value"), rs.getInt("num_note_values_per_measure"))
-        );
-    }
+
+    // public Measure getTimeSignature(int compositionId) {
+    //     String sql = "SELECT note_value, num_note_values_per_measure FROM Compositions WHERE id = ?";
+    //     return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
+    //         new Measure(rs.getInt("note_value"), rs.getInt("num_note_values_per_measure"))
+    //     );
+    // }
 
     public List<Composition> getAllCompositions() {
         String sql = "SELECT id, title FROM Compositions";
@@ -371,9 +372,9 @@ public class CompositionRepository {
         }
 
         System.out.println("AFTER WHILE LOOP");
-        Measure timeSig = getTimeSignature(compositionId);
-        int maxBeatsPerMeasure = timeSig.getNoteValue() * timeSig.getNumNoteValuesPerMeasure();
-        int remainingBeats = maxBeatsPerMeasure - totalBeatsUntilUpdatedChord;
+        //Measure timeSig = getTimeSignature(compositionId);
+        //int maxBeatsPerMeasure = timeSig.getNoteValue() * timeSig.getNumNoteValuesPerMeasure();
+        //int remainingBeats = maxBeatsPerMeasure - totalBeatsUntilUpdatedChord;
         /*
          * Cases:
          * newDuration < dur: chord will play for newDuration time, remaining dur - newDuration time becomes rests

@@ -81,7 +81,7 @@ body span {
     display: flex;
     gap: .1px;
     margin: 0;
-    width: 95%;
+    width: 75%;
     min-height: 500px;
     flex-wrap: wrap;
     border-radius: 15px;
@@ -138,10 +138,11 @@ body span {
     margin: 0;
     padding: 0;
     z-index: 1;
+    min-width: 10px;
 }
 
 .chord-box {
-    opacity: 0.5;
+    opacity: 1;
     transition: opacity 0.5s ease;
     cursor: pointer;
 }
@@ -202,8 +203,13 @@ body span {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
-    
-
+}
+.virtual-fretboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 25px;
 }
 
 .modal-content {
@@ -214,11 +220,18 @@ body span {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
-
+    width: 50%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the items horizontally */
+    justify-content: center; /* Centers the items vertically */
 }
 
 .close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
     color: #aaa;
     float: right;
     font-size: 50px;
@@ -316,4 +329,17 @@ border-radius: 4px;
     cursor: pointer;
     font-family: 'Ubuntu';
     font-weight: bold;
+}
+
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.slider-class {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
 }
