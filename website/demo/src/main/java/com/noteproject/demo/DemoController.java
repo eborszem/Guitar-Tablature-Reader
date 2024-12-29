@@ -72,8 +72,9 @@ public class DemoController {
             System.out.println("duration=" + highE.getDuration()); // duration is accessed through notes
             System.out.println("id=" + c.getId() + ", measure id=" + c.getMeasureId());
         }
-        Measure obj = cr.getTimeSignature(globalCompositionId);
-        model.addAttribute("timeSig", obj);
+        
+        // Measure obj = cr.getTimeSignature(globalCompositionId);
+        // model.addAttribute("timeSig", obj);
 
         final String[][] FRETBOARD = {
             {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#"},

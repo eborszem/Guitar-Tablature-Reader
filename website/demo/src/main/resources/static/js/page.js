@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
         chordNum = chordElement.getAttribute('data-chord-num');
         const noteElements = chordElement.querySelectorAll('.note');
         noteElements.forEach(function(noteElement) {
-            notes.push(noteElement.textContent.trim());
+            notes.push(noteElement.getAttribute('data-fret-number').trim());
         });
         // Reverse notes array to match order of strings
         notes.reverse();
@@ -88,8 +88,21 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log("DURATION TEST==="+duration);
         // Display notes in the modal
         const notesDisplay = document.getElementById('notesDisplay');
-        notesDisplay.textContent = 'Chord notes: ' + notes.reverse().join(', ');
-        
+        let notesText = 'Chord notes: ';
+        //notesDisplay.textContent = 'Chord notes: ' + notes.reverse().join(', ');
+        notes.reverse();
+        for (let i = 0; i < notes.length; i++) {
+            if (notes[i] === "-1" || notes[i] === "-2") {
+                notesText += "X"; // signifies no note
+            } else {
+                notesText += notes[i];
+            }
+            if (i < notes.length - 1) {
+                notesText += ', ';
+            }
+            console.log("notesText...="+notesText);
+        }
+        notesDisplay.textContent = notesText;
         const modal = document.getElementById('chordModal');
         prepopulateBtns(notes);
         modal.style.display = "block";
@@ -178,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
+    /* Changes notes upon user confirming on virtual fretboard */
     const confirmBtn = document.getElementById("confirm-btn");
     confirmBtn.addEventListener("click", async () => {
         modal.style.display = "none";

@@ -20,10 +20,13 @@
         <span class="title" th:text="${compositionInfo.title} + ' by ' + ${compositionInfo.composer}"></span>
         <p class="timestamp" th:text="'Created ' + ${#dates.format(compositionInfo.timestamp, 'hh:mm a')} + ' on ' + ${#dates.format(compositionInfo.timestamp, 'MMMM dd, yyyy')}"></p>
         <div class="button-container">
+
             <button id="add-new-measure" class="button">Add Measure</button>
             <button id="play-btn" class="button">Play</button>
             <button id="pause-btn" class="button">Pause</button>
-            <button id="new-composition" class="button">New Song</button> 
+            <button id="new-composition" class="button">New Song</button>
+            
+
             <form id="composition-form">
                 <!-- <label for="composition">Select song</label> -->
                 <select id="composition-dropdown" name="selectedComposition" class="composition-dropdown">
@@ -35,16 +38,31 @@
                 <!-- <button type="submit">Submit</button> -->
             </form>
         </div>
+
+        <!--volume control and bpm control are separate from the other buttons-->
+        <div class="slider-container">
+            <div class="slider-class">
+                <label for="volume">Volume:</label>
+                <input type="range" id="volume" class="slider" min="0" max="100" value="50" step="1">
+                <span id="volumeValue">50</span>
+            </div>
+            <div class="slider-class">
+                <label for="bpm">BPM:</label>
+                <input type="range" id="bpm" class="slider" min="50" max="200" value="120" step="1">
+                <span id="bpmValue">120</span>
+            </div>
+        </div>
+
         <!--note in chord in measure in composition-->
         <!--<p th:text="${measure}">Default text</p>-->
         <!--currently trying to print out all the notes in the first chord of the composition-->
         <!--<li th:each="note : ${composition.measure.chord.allNotes}" th:text="${note.interval}"></li>-->
         
         <div class="composition-box">
-            <div class="time-sig-box">
+            <!-- <div class="time-sig-box">
                 <span th:text="${timeSig.numNoteValuesPerMeasure}"></span>
                 <span th:text="${timeSig.noteValue}"></span>
-            </div>
+            </div> -->
             <div th:each="measure1, measureStat : ${allMeasures}">
                 <!-- <p th:text="'measure = ' + ${measure1}"></p> -->
                 <!-- <p>1</p> -->
@@ -62,10 +80,11 @@
                             th:attr="data-measure-id=${chord1.measureId},data-chord-num=${chord1.chordNumber}" 
                             th:onclick="'chordClicked(' + ${measureStat.index} + ','+ ${chord1stat.index} + ')'">
                             <div th:each="note1 : ${chord1.allNotes}">
-                                <p class="note" th:attr="data-duration=${note1.duration}">
+                                <p class="note"
+                                   th:attr="data-duration=${note1.duration},data-fret-number=${note1.fretNumber}">
                                     <!-- if not rest -->
-                                        <span th:text="${note1.fretNumber}"></span>
-
+                                    <span th:if="${note1.fretNumber == -1 or note1.fretNumber == -2}">X</span>
+                                    <span th:unless="${note1.fretNumber == -1 or note1.fretNumber == -2}" th:text="${note1.fretNumber}"></span>
                                 </p>
                             </div>
                         </div>
@@ -77,6 +96,7 @@
         <div id="chordModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
+                <span class="virtual-fretboard">VIRTUAL FRETBOARD</span>
                 <div class="string-rows">
                     <div th:each="i : ${#numbers.sequence(1, 6)}" th:id="'row-' + ${i}">
                         <div class="note-btn-div">
@@ -87,7 +107,6 @@
                     </div>
                     <p id="notesDisplay"></p>
                 </div>
-                <button id="confirm-btn" class="button">Confirm</button>
                 <select id="duration-dropdown" name="duration">
                     <option value="empty"></option>
                     <option value="sixteenth">Sixteenth</option>
@@ -100,6 +119,7 @@
                     <option value="note-option">Chord/Note</option>
                     <option value="rest-option">Rest</option>
                 </select>
+                <button id="confirm-btn" class="button">Confirm</button>
             </div>
         </div>
 

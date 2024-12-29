@@ -1,30 +1,119 @@
 // an array storing real time (tone js: 0:0, 0:1, etc.), notes arr, and duration (4n, 2n, 1n, etc.) of a chord
 const array = [];
+let synth = new Tone.PolySynth(Tone.Synth, {
+    volume: -30 + (50 * 60) / 100, // initially volume control is 50/100
+}).toDestination();
+synth.maxPolyphony = 1000; // prevents chords being skipped when composition is played fast
+Tone.Transport.bpm.value = 120;
+// Define note values
+const WHOLE_NOTE = 4;
+const HALF_NOTE = 2;
+const QUARTER_NOTE = 1;
+const EIGHTH_NOTE = .5;
+const SIXTEENTH_NOTE = .25;
+
 document.addEventListener("DOMContentLoaded", () => {
+    /* VOLUME CONTROL */
+    // volume adjusting via volume bar
+    const volumeSlider = document.getElementById('volume');
+    const volumeValue = document.getElementById('volumeValue');
+    // either load volume or set to default (50) 
+    const savedVolume = localStorage.getItem('volume') || 50;
+    volumeSlider.value = savedVolume;
+    volumeValue.textContent = savedVolume;
+    synth.volume.value = -30 + (savedVolume * 60) / 100;
     
+    // update volume value when volume changes
+    volumeSlider.addEventListener('input', (event) => {
+        let curVolume = event.target.value;
+        volumeValue.textContent = curVolume;
+        // set volume to the slider value
+        // synth.volume.value = Tone.gainToDb(curVolume / 100);
+        if (curVolume == 0) {
+            synth.volume.value = -100;
+        } else {
+            synth.volume.value = -30 + (curVolume * 60) / 100;
+        }
+        localStorage.setItem('volume', curVolume); // save volume
+        // console.log("current volume is "+curVolume);
+    });
+
+    /* BPM (beats per minute) CONTROL */
+    const bpmSlider = document.getElementById('bpm');
+    const bpmValue = document.getElementById('bpmValue');
+    // either load bpm or set to default (120) 
+    const savedBpm = localStorage.getItem('bpm') || 120;
+    bpmSlider.value = savedBpm;
+    bpmValue.textContent = savedBpm;
+    Tone.Transport.bpm.value = savedBpm;
+    
+    // update bpm value when bpm changes
+    bpmSlider.addEventListener('input', (event) => {
+        let curBpm = event.target.value;
+        bpmValue.textContent = curBpm;
+        Tone.Transport.bpm.value = curBpm;
+        localStorage.setItem('bpm', curBpm); // save bpm
+    });
+    
+
+    /* PLAY AND PAUSE BUTTONS */
+    const playBtn = document.getElementById("play-btn");
+    let currentTime = 0;
+    playBtn.addEventListener("click", async () => {
+        await Tone.start(); // make sure audio is started
+        Tone.Transport.stop();
+        pianoPart.stop(); // stop audio if already started
+        isPaused = false;
+        currentTime = 0;
+        pianoPart.start(0); // start pianoPart at time 0
+        Tone.Transport.start(); 
+        pauseBtn.textContent = "Pause";
+    });
+
+    const pauseBtn = document.getElementById("pause-btn");
+    pauseBtn.addEventListener("click", async () => {
+        setTimeout (() => {
+            if (isPaused) { // means we have clicked the button to resume
+                //cycleChordBoxes();
+                isPaused = false; 
+                Tone.Transport.start();
+                pianoPart.start("+0.1", currentTime); // start playing again from the paused time
+                pauseBtn.textContent = "Pause";
+            } else { // means we have clicked the button to pause
+                isPaused = true;
+                currentTime = Tone.Transport.seconds;
+                Tone.Transport.pause();
+                pianoPart.stop();
+                
+                pauseBtn.textContent = "Resume";
+            }
+        }, 750); // arbitrary number
+    });
+
+    /* This code executes upon page being loaded. Sets up an array containing chords    */   
+    /* that will be played as well as durations.                                        */    
     $(document).ready(function() {
         $.ajax({
             url: '/play',
             method: 'GET',
             success: function(chords) {
+                // This function takes in an arraylist of arraylists of integer arrays. The outer arraylist represents the overall composition. The inner array list represents the measures (of which the composition is comprised of), which may contain multiple chords. A chord is represented as a six integer array. Each integer represents one of the six notes playable at once on a guitar (as it has six strings). 
                 play(chords);
             },
             error: function(error) {
                 console.log('Error:', error);
             }
         });
+
         function play(chords) {
             console.log("chords="+chords);
-            const synth = new Tone.PolySynth(Tone.Synth, {
-                volume: -30, // volume control
-            }).toDestination();
-            synth.maxPolyphony = 1000; // prevents chords being skipped when composition is played fast
-            // Define note values
-            const WHOLE_NOTE = 4;
-            const HALF_NOTE = 2;
-            const QUARTER_NOTE = 1;
-            const EIGHTH_NOTE = .5;
-            const SIXTEENTH_NOTE = .25;
+            // synth = new Tone.PolySynth(Tone.Synth, {
+            //     volume: -30 + (50 * 60) / 100, // initially volume control is 50/100
+            // }).toDestination();
+            // const filter = new Tone.Filter(1000, "lowpass").toDestination();
+            // synth.connect(filter);
+            // synth.maxPolyphony = 1000; // prevents chords being skipped when composition is played fast
+    
             // Now there is a way to convert from fretboard[string][fret] to a specific chord and pitch
             // May pad the fretboard with an empty string to make it 1-indexed
             const FRETBOARD = [
@@ -45,11 +134,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("TEST--chords[0]=");
                 console.log(chords[0]);
                 let dur = chordData[0][2];  // first note dur = every note dur
-
-                if (dur == 8)
+                if (dur == 8) {
                     dur = EIGHTH_NOTE;
-                if (dur == 16)
+                }
+                if (dur == 16) {
                     dur = SIXTEENTH_NOTE;
+                }
                 let str = getDurationString(dur);
                 /*------------------------------------*/
 
@@ -157,41 +247,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }*/
     // end moving beam
 
-    const playBtn = document.getElementById("play-btn");
-    const pauseBtn = document.getElementById("pause-btn");
-    let currentTime = 0;
-    pauseBtn.addEventListener("click", async () => {
-        setTimeout (() => {
-            if (isPaused) { // means we have clicked the button to resume
-                //cycleChordBoxes();
-                isPaused = false; 
-                Tone.Transport.start();
-                pianoPart.start("+0.1", currentTime); // start playing again from the paused time
-                pauseBtn.textContent = "Pause";
-            } else { // means we have clicked the button to pause
-                isPaused = true;
-                currentTime = Tone.Transport.seconds;
-                Tone.Transport.pause();
-                pianoPart.stop();
-                
-                pauseBtn.textContent = "Resume";
-            }
-        }, 750); // arbitrary number
-    });
-
-    playBtn.addEventListener("click", async () => {
-        await Tone.start(); // make sure audio is started
-        // setTimeout (() => {
-            Tone.Transport.stop();
-            pianoPart.stop();
-            // curIndex = 0;
-            isPaused = false;
-            currentTime = 0;
-            // cycleChordBoxes();
-            pianoPart.start(0); // start part
-            Tone.Transport.start(); // start transport
-            pauseBtn.textContent = "Pause";
-        // }, 750); // arbitrary number
-    });
 
 });
