@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
-    /* Changes notes upon user confirming on virtual fretboard */
+    /* Changes notes upon user confirming on virtual fretboard. Sends data to controller */
     const confirmBtn = document.getElementById("confirm-btn");
     confirmBtn.addEventListener("click", async () => {
         modal.style.display = "none";
