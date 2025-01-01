@@ -147,12 +147,57 @@ body span {
     cursor: pointer;
 }
 
-.chord-box.active {
-    opacity: 1;
+.chord-container {
+    position: relative;
+    display: inline-block;
 }
 
-.chordModal {
+.duration-box {
+    position: absolute;
+    top: -44px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* background-color: #171717; */
+    background-color:rgb(244, 244, 244);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    z-index: 1;
+}
 
+.duration-box .whole-note {
+    width: 15px;
+    height: auto;
+}
+
+.duration-box .half-note {
+    width: 10px;
+    height: auto;
+}
+
+.duration-box .quarter-note {
+    width: 10px;
+    height: auto;
+}
+
+.duration-box .eighth-note {
+    width: 17px;
+    height: auto;
+}
+.duration-box .sixteenth-note {
+    width: 17px;
+    height: auto;
+}
+
+.chord-box {
+    position: relative;
+    z-index: 0;
+}
+
+
+.chord-box.active {
+    opacity: 1;
 }
 
 .string {
@@ -192,18 +237,54 @@ body span {
     z-index: 0;
 }
 
+.chordModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+}
+
 /* Modal styles */
 .modal {
     display: none;
     position: fixed;
     z-index: 1;
-    left: 0;
-    top: 0;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
 }
+
+.modal-content {
+    background-color: #fefefe;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 65%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the items horizontally */
+    justify-content: center; /* Centers the items vertically */
+    border-radius: 20px;
+    border: 2px solid rgb(0, 0, 0);
+    background-color: rgb(244, 244, 244);
+}
+
+
 .virtual-fretboard {
     display: flex;
     flex-direction: column;
@@ -212,26 +293,10 @@ body span {
     font-size: 25px;
 }
 
-.modal-content {
-    background-color: #fefefe;
-    top: 50%;
-    left: 50%;
-    transform: translate(0%, -10%);
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%;
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers the items horizontally */
-    justify-content: center; /* Centers the items vertically */
-}
-
 .close {
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: -16px;
+    right: 3px;
     color: #aaa;
     float: right;
     font-size: 50px;

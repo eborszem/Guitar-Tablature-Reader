@@ -48,7 +48,7 @@
             </div>
             <div class="slider-class">
                 <label for="bpm">BPM:</label>
-                <input type="range" id="bpm" class="slider" min="50" max="200" value="120" step="1">
+                <input type="range" id="bpm" class="slider" min="50" max="300" value="120" step="1">
                 <span id="bpmValue">120</span>
             </div>
         </div>
@@ -73,12 +73,22 @@
                     <div class="string"></div>
                     <div class="string"></div>
                     <div class="string"></div>
-                    <div th:each="chord1, chord1stat : ${measure1.allChords}">
+                    <div class="chord-container" th:each="chord1, chord1stat : ${measure1.allChords}">
                         <!-- <p class = "chord-name"th:text="'chord = ' + ${chord1}"></p> -->
+                        <div class="duration-box">
+                            <!-- <span th:text="${chord1.note.duration}"></span> -->
+                            <!-- <img th:src="@{/images/${chord1.note.duration}.png}" alt="duration icon"> -->
+                            <img class="quarter-note" th:if="${chord1.note.duration == 1}" th:src="@{/images/1.png}" alt="quarter note"></img>
+                            <img class="half-note"th:if="${chord1.note.duration == 2}" th:src="@{/images/2.png}" alt="half note"></img>
+                            <img class="whole-note"th:if="${chord1.note.duration == 4}" th:src="@{/images/4.png}" alt="whole note"></img>
+                            <img class="eighth-note" th:if="${chord1.note.duration == 8}" th:src="@{/images/8.png}" alt="eighth note"></img>
+                            <img class="sixteenth-note"th:if="${chord1.note.duration == 16}" th:src="@{/images/16.png}" alt="sixteenth note"></img>
+                        </div>
                         <div class="chord-box"
                             th:id="'measure' + ${measureStat.index} + 'chord' + ${chord1stat.index}"
                             th:attr="data-measure-id=${chord1.measureId},data-chord-num=${chord1.chordNumber}" 
                             th:onclick="'chordClicked(' + ${measureStat.index} + ','+ ${chord1stat.index} + ')'">
+                            <!-- duration of chord is found via its notes -->
                             <div th:each="note1 : ${chord1.allNotes}">
                                 <p class="note"
                                    th:attr="data-duration=${note1.duration},data-fret-number=${note1.fretNumber}">
@@ -100,7 +110,7 @@
                 <div class="string-rows">
                     <div th:each="i : ${#numbers.sequence(1, 6)}" th:id="'row-' + ${i}">
                         <div class="note-btn-div">
-                            <span th:each="j : ${#numbers.sequence(0, 11)}">
+                            <span th:each="j : ${#numbers.sequence(0, 17)}">
                                 <button th:text="${fretboard[i - 1][j]}" class="note-btn" th:id="${i} + '-' + ${j}" th:attr="data-string=${i}, data-fret=${j}"></button>
                             </span>
                         </div>

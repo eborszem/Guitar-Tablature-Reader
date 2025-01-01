@@ -1,8 +1,11 @@
 // an array storing real time (tone js: 0:0, 0:1, etc.), notes arr, and duration (4n, 2n, 1n, etc.) of a chord
 const array = [];
 let synth = new Tone.PolySynth(Tone.Synth, {
-    volume: -30 + (50 * 60) / 100, // initially volume control is 50/100
+    volume: -44 + (50 * 60) / 100, // initially volume control is 50/100
+    type: "sine",
 }).toDestination();
+
+
 synth.maxPolyphony = 1000; // prevents chords being skipped when composition is played fast
 Tone.Transport.bpm.value = 120;
 // Define note values
@@ -21,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedVolume = localStorage.getItem('volume') || 50;
     volumeSlider.value = savedVolume;
     volumeValue.textContent = savedVolume;
-    synth.volume.value = -30 + (savedVolume * 60) / 100;
+    synth.volume.value = -44 + (savedVolume * 60) / 100;
     
     // update volume value when volume changes
     volumeSlider.addEventListener('input', (event) => {
@@ -32,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (curVolume == 0) {
             synth.volume.value = -100;
         } else {
-            synth.volume.value = -30 + (curVolume * 60) / 100;
+            synth.volume.value = -44 + (curVolume * 60) / 100;
         }
         localStorage.setItem('volume', curVolume); // save volume
         // console.log("current volume is "+curVolume);
@@ -59,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* PLAY AND PAUSE BUTTONS */
     const playBtn = document.getElementById("play-btn");
     let currentTime = 0;
+    let isPaused = false;
     playBtn.addEventListener("click", async () => {
         await Tone.start(); // make sure audio is started
         Tone.Transport.stop();
@@ -72,22 +76,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const pauseBtn = document.getElementById("pause-btn");
     pauseBtn.addEventListener("click", async () => {
-        setTimeout (() => {
-            if (isPaused) { // means we have clicked the button to resume
-                //cycleChordBoxes();
-                isPaused = false; 
-                Tone.Transport.start();
-                pianoPart.start("+0.1", currentTime); // start playing again from the paused time
-                pauseBtn.textContent = "Pause";
-            } else { // means we have clicked the button to pause
-                isPaused = true;
-                currentTime = Tone.Transport.seconds;
-                Tone.Transport.pause();
-                pianoPart.stop();
-                
-                pauseBtn.textContent = "Resume";
-            }
-        }, 750); // arbitrary number
+        if (isPaused) { // means we have clicked the button to resume
+            //cycleChordBoxes();
+            isPaused = false;
+            Tone.Transport.start();
+            pianoPart.start("+0.1", currentTime); // start playing again from the paused time
+            pauseBtn.textContent = "Pause";
+        } else { // means we have clicked the button to pause
+            isPaused = true;
+            currentTime = Tone.Transport.seconds;
+            Tone.Transport.pause();
+            pianoPart.stop();
+            pauseBtn.textContent = "Resume";
+        }
     });
 
     /* This code executes upon page being loaded. Sets up an array containing chords    */   
@@ -117,12 +118,12 @@ document.addEventListener("DOMContentLoaded", () => {
             // Now there is a way to convert from fretboard[string][fret] to a specific chord and pitch
             // May pad the fretboard with an empty string to make it 1-indexed
             const FRETBOARD = [
-                ["E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5"],
-                ["B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4"],
-                ["G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4"],
-                ["D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4"],
-                ["A2", "A#2", "B2", "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3"],
-                ["E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", "C3", "C#3", "D3", "D#3"],
+                ["E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5"],
+                ["B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5"],
+                ["G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5"],
+                ["D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4"],
+                ["A2", "A#2", "B2", "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4"],
+                ["E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", "C3", "C#3", "D3", "D#3",  "E3", "F3", "F#3", "G3", "G#3", "A3"],
             ];
 
             // An array which will be passed as a parameter
