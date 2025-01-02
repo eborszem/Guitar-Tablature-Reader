@@ -11,3 +11,4 @@
 -pause symbol for pause button
 -moving beam as audio plays
 -"duplicate measure" button?
+-mouse pointer when over virtual fretboard

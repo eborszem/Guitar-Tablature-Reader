@@ -25,8 +25,8 @@
         <div class="button-container">
 
             <button id="add-new-measure" class="button">Add Measure</button>
-            <button id="play-btn" class="button">Play</button>
-            <button id="pause-btn" class="button">Pause</button>
+            <button id="play-btn" class="play-btn"><i class="fa-solid fa-play"></i></button>
+            <button id="pause-btn" class="pause-btn"><i class="fa-solid fa-pause"></i></button>
             <button id="new-composition" class="button">New Song</button>
             
 
@@ -104,6 +104,7 @@
                     </div>
                     <button class="delete-measure"><i class="fa-solid fa-trash"></i></button>
                     <button class="add-measure"><i class="fa-solid fa-plus"></i></button>
+                    <button class="duplicate-measure"><i class="fa-solid fa-copy"></i></button>
                 </div>
             </div>
         </div>
@@ -122,14 +123,29 @@
                     </div>
                     <p id="notesDisplay"></p>
                 </div>
-                <select id="duration-dropdown" name="duration">
-                    <option value="empty"></option>
-                    <option value="sixteenth">Sixteenth</option>
-                    <option value="eighth">Eighth</option>
-                    <option value="quarter">Quarter</option>
-                    <option value="half">Half</option>
-                    <option value="whole">Whole</option>
-                </select>
+                <div class="duration-wrapper">
+                    <span class="duration-types">Change Duration</span>
+                    <button class="whole-duration" id="whole-duration">
+                        <span>Whole note</span>
+                        <img th:src="@{/images/4.png}" alt="whole note">
+                    </button>
+                    <button class="half-duration" id="half-duration">
+                        <span>Half note</span>
+                        <img th:src="@{/images/2.png}" alt="half note">
+                    </button>
+                    <button class="quarter-duration" id="quarter-duration">
+                        <span>Quarter note</span>
+                        <img th:src="@{/images/1.png}" alt="quarter note">
+                    </button>
+                    <button class="eighth-duration" id="eighth-duration">
+                        <span>Eighth note</span>
+                        <img th:src="@{/images/8.png}" alt="eighth note">
+                    </button>
+                    <button class="sixteenth-duration" id="sixteenth-duration">
+                        <span>Sixteenth note</span>
+                        <img th:src="@{/images/16.png}" alt="sixteenth note">
+                    </button>
+                </div>
                 <button id="confirm-btn" class="button">Confirm</button>
             </div>
         </div>

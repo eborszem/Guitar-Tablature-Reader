@@ -71,7 +71,8 @@ document.addEventListener("DOMContentLoaded", () => {
         currentTime = 0;
         pianoPart.start(0); // start pianoPart at time 0
         Tone.Transport.start(); 
-        pauseBtn.textContent = "Pause";
+        // pauseBtn.textContent = "Pause";
+        pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
     });
 
     const pauseBtn = document.getElementById("pause-btn");
@@ -81,7 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
             isPaused = false;
             Tone.Transport.start();
             pianoPart.start("+0.1", currentTime); // start playing again from the paused time
-            pauseBtn.textContent = "Pause";
+            // pauseBtn.textContent = "Pause";
+            pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
         } else { // means we have clicked the button to pause
             isPaused = true;
             currentTime = Tone.Transport.seconds;
