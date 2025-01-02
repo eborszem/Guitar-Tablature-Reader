@@ -37,7 +37,6 @@ public class CompositionRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // returns measureId
     public int addMeasureToRepo(Measure m, int compositionId) {
         String sql = "SELECT MAX(measure_number) FROM Measures WHERE composition_id = ?";
         Integer val = jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, Integer.class);
@@ -82,6 +81,84 @@ public class CompositionRepository {
         return measureIdInt;
     }
 
+    public int addMeasureToRepo2(Measure m, int compositionId, int measureNumber) {
+        // Create a KeyHolder to capture the auto-generated key for the measure ID
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        // Insert measure and retrieve the auto-generated ID
+        String sql = "INSERT INTO Measures (composition_id, measure_number) VALUES (?, ?)";
+        jdbcTemplate.update(
+            connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                ps.setInt(1, compositionId);
+                ps.setInt(2, measureNumber);
+                return ps;
+            },
+            keyHolder
+        );
+
+        // Get the generated measure ID
+        Number measureId_Number = keyHolder.getKey();
+        if (measureId_Number == null) {
+            throw new RuntimeException("Failed to get id");
+        }
+        int measureId = measureId_Number.intValue();
+        
+        String sql2 = "INSERT INTO Chords (measure_id, low_e_string, a_string, d_string, g_string, b_string, high_e_string, duration, chord_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        Note low_e_string = m.getChord().getNote();
+        Note a_string = low_e_string.next;
+        Note d_string = a_string.next;
+        Note g_string = d_string.next;
+        Note b_string = g_string.next;
+        Note high_e_string = b_string.next;
+        int duration = low_e_string.getDuration();
+        jdbcTemplate.update(sql2, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, 0); // chord_number == 0, as a new measure will only have a single chord/rest
+        return measureId;
+    }
+
+    /* Create new measure and give it measure number + 1,
+     * then get current measure number from measure id,
+     * then increment all following measures by 1
+     */
+    public void addMeasure(int measureId, int compositionId) {
+        int duration = 4;
+        Note note = new Note(-1, 0, duration, true);
+        note.next = new Note(-1, 1, duration, true);
+        note.next.next =  new Note(-1, 2, duration, true);
+        note.next.next.next = new Note(-1, 3, duration, true);
+        note.next.next.next.next = new Note(-1, 4, duration, true);
+        note.next.next.next.next.next = new Note(-1, 5, duration, true);
+        int measureNumber = getMeasureNumber(compositionId, measureId);
+        System.out.println("&&&orig measure number===" + measureNumber);
+        incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
+        int newID = addMeasureToRepo2(new Measure(new Chord(note)), compositionId, measureNumber + 1); // goes 1 after current measure
+        int measureNumber2 = getMeasureNumber(compositionId, newID);
+        System.out.println("&&&NEW measure number===" + measureNumber2);
+    }
+
+    // Note: "Measure numbers" are the index of the measure in the composition. The lowest numbered measures are first, and the highest numbered measures are last
+    // "Measure IDs" are different, being a unique identifier across all compositions (However, I still like to check the composition ID in order to be safe)
+    public int getMeasureNumber(int compositionId, int measureId) {
+        System.out.println("*******compositionID=" + compositionId + ", measureID=" + measureId);
+        String sql = "SELECT measure_number FROM Measures WHERE id = ? AND composition_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{measureId, compositionId}, Integer.class);
+    }
+
+    public void incrementMeasureNumbers(int compositionId, int measureNum) {
+        String sql = "UPDATE Measures SET measure_number = measure_number + 1 WHERE composition_id = ? AND measure_number > ?";
+        jdbcTemplate.update(sql, compositionId, measureNum);
+    }
+
+    public void deleteMeasure(int measureId) {
+        String sql = "DELETE FROM Measures WHERE id = ?";
+        deleteChordsInMeasure(measureId);
+        jdbcTemplate.update(sql, measureId);
+    }
+
+    public void deleteChordsInMeasure(int measureId) {
+        String sql = "DELETE FROM Chords WHERE measure_id = ?";
+        jdbcTemplate.update(sql, measureId);
+    }
+
     public List<Chord> findChordsByCompositionId(int compositionId) {
         String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ?";
         
@@ -113,7 +190,6 @@ public class CompositionRepository {
 
     public List<Measure> findMeasuresByCompositionId(int compositionId) {
         String sql = "SELECT * FROM Measures WHERE composition_id = ?";
-        
         PreparedStatementCreator psc = connection -> {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, compositionId);
@@ -146,30 +222,30 @@ public class CompositionRepository {
     }
 
     public Measure formatComposition(int compositionId) {
-        List<Chord> chords = findChordsByCompositionId(compositionId);
-        List<Measure> measures = findMeasuresByCompositionId(compositionId);
-        // sort all chords by their measure id (relative position in measure)
-        // sort all measures by their measure number (relative position in composition)
-        // then add x chords to measure 0, then y chords to measure 1, etc.
-        //chords.sort((c1, c2) -> Integer.compare(c1.getMeasureId(), c2.getMeasureId()));
-        measures.sort((c1, c2) -> Integer.compare(c1.getMeasureNumber(), c2.getMeasureNumber()));
-        HashMap<Integer, ArrayList<Chord>> measureIdToChords = new HashMap<>();
+        // 1. group chords by their measure ids (relative position in measure)
+        // 2. sort all measures by their measure number (relative position in composition)
+        // 3. then add x chords to measure 0, then y chords to measure 1, etc.
+        
         // creates HashMap with measure ids as keys, and chords (that go into those measures) as values
+        List<Chord> chords = findChordsByCompositionId(compositionId);
+        HashMap<Integer, ArrayList<Chord>> measureIdToChords = new HashMap<>();
         for (Chord c : chords) {
             int measureId = c.getMeasureId();
+            ArrayList<Chord> arr;
             if (!measureIdToChords.containsKey(measureId)) {
-                ArrayList<Chord> arr = new ArrayList<>();
-                arr.add(c);
-                measureIdToChords.put(measureId, arr);
+                arr = new ArrayList<>();
             } else {
-                ArrayList<Chord> arr = measureIdToChords.get(measureId);
-                arr.add(c);
-                measureIdToChords.put(measureId, arr);
+                arr = measureIdToChords.get(measureId);
             }
-            
+            arr.add(c);
+            measureIdToChords.put(measureId, arr);
         }
+        
         Measure dummy = new Measure();
         Measure measure = dummy;
+        //chords.sort((c1, c2) -> Integer.compare(c1.getMeasureId(), c2.getMeasureId()));
+        List<Measure> measures = findMeasuresByCompositionId(compositionId);
+        measures.sort((c1, c2) -> Integer.compare(c1.getMeasureNumber(), c2.getMeasureNumber()));
         for (Measure m : measures) {
             System.out.println("-----------measure-----------");
             int id = m.getId(); // can use this to get measure's chords

@@ -1,13 +1,22 @@
+const UNINITIALIZED = "";
+const UNCHANGED = -1; // User has not chosen measure or chord to change
+const UNDECIDED = -1; // User has not chosen string to change
+
+/* Rests (represented by "X") are initially set to -1
+ * When the X changes from a rest to a note, then again changes back to a rest, it is -2
+ * Essentially, a negative number represents a rest "note". A positive number represents a fret number, which corresponds to an audible note.
+ */
+const INIT_REST = -1; 
+const REST = -2;
+
 function chordClicked(chordElement) {
     console.log("Chord clicked")
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    const UNINITIALIZED = "";
+    /* ADDING NEW MEASURE TO COMPOSITION */
     var newMeasure = document.getElementById("add-new-measure");
     newMeasure.addEventListener("click", function() {
-        console.log("test");
-
         fetch("/createNewMeasure", {
             method: "POST",
         })
@@ -18,14 +27,60 @@ document.addEventListener("DOMContentLoaded", function() {
             // Update the page with the new measure without reloading
             // You can iterate over the response and dynamically add the new measure to the DOM
             data.forEach(chord => {
-                console.log("frets:", chord.fretNumbers, "dur:", chord.duration, "measureId:", chord.measureId);
+                // console.log("frets:", chord.fretNumbers, "dur:", chord.duration, "measureId:", chord.measureId);
                 // TODO
             });
         })
         .catch(error => console.error("Error fetching new measure:", error));
     });
 
-    // make a new composition/song
+    /* DELETING MEASURE FROM COMPOSITION */
+    var deleteMeasureBtns = document.querySelectorAll(".delete-measure");
+    deleteMeasureBtns.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
+            let deleteMeasureId = chordBox.getAttribute('data-measure-id');
+            // console.log("Deleting measure with id:", deleteMeasureId);
+            $.ajax({
+                type: "POST",
+                url: "/deleteMeasure",
+                data: {
+                    measureId: deleteMeasureId
+                },
+                timeout: 5000,
+                success: function(response) {
+                    // console.log("Measure deleted successfully:" + response);
+                    location.reload();
+                }
+            });
+        });
+    });
+
+    /* ADDING MEASURE TO COMPOSITION */
+    var addMeasureBtns = document.querySelectorAll(".add-measure");
+    addMeasureBtns.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
+            let addMeasureId = chordBox.getAttribute('data-measure-id'); // the new measure will be added after this one
+            // console.log("Adding measure with id:", addMeasureId);
+            console.log("Adding measure with id:", addMeasureId);
+            $.ajax({
+                type: "POST",
+                url: "/addMeasure",
+                data: {
+                    measureId: addMeasureId
+                },
+                timeout: 5000,
+                success: function(response) {
+                    console.log("Measure added successfully:" + response);
+                    location.reload();
+                }
+            });
+        });
+    });
+
+
+    /* ADDING NEW COMPOSITION/SONG */
     var newComposition = document.getElementById("new-composition");
     newComposition.addEventListener("click", function() {
         document.getElementById("popup").style.display = "block";
@@ -34,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var submitNewComposition = document.getElementById("submit");
     var form = document.getElementById("popup");
     submitNewComposition.addEventListener("click", function() {
-        const regex = /^.+$/; // make sure that the title and composer are not empty
+        const regex = /^.+$/; // makes sure that the title and composer are not empty
         var title = document.getElementById("title").value;
         var composer = document.getElementById("composer").value;
         if (!regex.test(title) && !regex.test(composer)) {
@@ -64,43 +119,44 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("popup").style.display = "none";
     });
 
-    // Chord creation
-    const modal = document.getElementById("chordModal");
-    const span = document.getElementsByClassName("close")[0];
-    const notesDisplay = document.getElementById('notesDisplay');
+    /* CHORD MODIFICATION
+     * User clicks on a chord box to modify the notes in the chord. A virtual fretboard will appear,
+     * allowing the user to modify the notes (which are labeled). A chord on guitar has a maximum of
+     * 6 notes (one note per string). The user can click on the virtual fretboard to change the notes.
+     * Duration can also be changed.
+     * The type (note or rest) is implied. Clicking a note already highlighted/selected on the virtual
+     * fretboard will turn it into a rest, depicted by an "X". This is also the default value for a string
+     * when a new measure or chord is created.
+     */
+    const modal = document.getElementById("chordModal"); // virtual fretboard popup
+    const span = document.getElementsByClassName("close")[0]; // close popup button
 
-    let notes = [];
-    let chord_duration = 0;
-    let measureId = -1;
-    let chordNum = -1;
-    // TODO: if note is selected and already pressed, turn it into a rest
+    let notes = []; // notes in the selected chord
+
+    // Undecided values, they will become decided when the user clicks a chord
+    let measureId = UNDECIDED; // measure id of the selected chord
+    let chordLocation = UNDECIDED; // location of the selected chord relative to its position in the measure (e.g. 0=first chord in measure, 1=second chord in measure, etc.)
+    
     function chordClicked(chordElement) {
-        measureId = chordElement.getAttribute('data-measure-id');
-        console.log("DATABASE MEASURE ID ==="+measureId);
-        chordNum = chordElement.getAttribute('data-chord-num');
+        measureId = chordElement.getAttribute('data-measure-id'); // now decided
+        chordLocation = chordElement.getAttribute('data-chord-num'); // now decided
         const noteElements = chordElement.querySelectorAll('.note');
         noteElements.forEach(function(noteElement) {
             notes.push(noteElement.getAttribute('data-fret-number').trim());
         });
-        // Reverse notes array to match order of strings
-        notes.reverse();
         const duration = noteElements[0].getAttribute('data-duration');
-        console.log("DURATION TEST==="+duration);
-        // Display notes in the modal
         const notesDisplay = document.getElementById('notesDisplay');
+        // Display notes in the virtual fretboard popup
         let notesText = 'Chord notes: ';
-        //notesDisplay.textContent = 'Chord notes: ' + notes.reverse().join(', ');
-        notes.reverse();
         for (let i = 0; i < notes.length; i++) {
-            if (notes[i] === "-1" || notes[i] === "-2") {
+            if (notes[i] == INIT_REST || notes[i] == REST) {
                 notesText += "X"; // signifies no note
             } else {
-                notesText += notes[i];
+                notesText += FRETBOARD[i][notes[i]]; // use: FRETBOARD[string number][fret number]
             }
             if (i < notes.length - 1) {
                 notesText += ', ';
             }
-            console.log("notesText...="+notesText);
         }
         notesDisplay.textContent = notesText;
         const modal = document.getElementById('chordModal');
@@ -136,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    /* Dropdowns which determine duration of chord/note/rest (quarter note, half note, etc. )and type (rest/not rest) */ 
+    /* Dropdowns which determine duration of chord/note/rest (quarter note, half note, etc.) */ 
     const durationDropdown = document.getElementById("duration-dropdown");
     let newDur = UNINITIALIZED;
     durationDropdown.addEventListener('change', function() {
@@ -144,32 +200,25 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(newDur + " was selected.")
     });
     
-    const typeDropdown = document.getElementById("type-dropdown");
-    let newType = UNINITIALIZED;
-    typeDropdown.addEventListener('change', function() {
-        newType = typeDropdown.value;
-        console.log(newType + " was selected.")
-    });
-
-    // 6 arrays which store the fret numbers being changed on the chord (strings implicitly stored)
-    // no values in an array = user did not change string
-    // 3 values in an array = user clicked three notes on string
-    let low_e_string = -1;
-    let a_string = -1;
-    let d_string = -1;
-    let g_string = -1;
-    let b_string = -1;
-    let high_e_string = -1;
+    // These represent the changed notes which lay on the strings.
+    // UNCHANGED (-1) represents a string that has not been changed.
+    // When the user clicks on the virtual fretboard, its respective string will be updated.
+    // Otherwise, it is not and the string does not change.
+    // If the user does not confirm changes, the values will back to UNCHANGED.
+    let updated_low_e_string = UNCHANGED;
+    let updated_a_string = UNCHANGED;
+    let updated_d_string = UNCHANGED;
+    let updated_g_string = UNCHANGED;
+    let updated_b_string = UNCHANGED;
+    let updated_high_e_string = UNCHANGED;
 
     // Close when "x" is pressed on the popup
     span.onclick = function() {
         modal.style.display = "none";
         notes = [];
-        chord_duration = 0;
-        measureId = -1;
-        chordNum = -1;
+        measureId = UNDECIDED;
+        chordLocation = UNDECIDED;
         newDur = UNINITIALIZED;
-        newType = UNINITIALIZED;
         btnArr = [];
     };
 
@@ -178,11 +227,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (event.target === modal) {
             modal.style.display = "none";
             notes = [];
-            chord_duration = 0;
-            measureId = -1;
-            chordNum = -1;
+            measureId = UNDECIDED;
+            chordLocation = UNDECIDED;
             newDur = UNINITIALIZED;
-            newType = UNINITIALIZED;
             btnArr = [];
         }
         const newCompositionPopup = document.getElementById("popup");
@@ -196,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function() {
     confirmBtn.addEventListener("click", async () => {
         modal.style.display = "none";
         res = [];
-        console.log("string values="+low_e_string + " " + a_string + " " + d_string + " " + g_string + " " + b_string + " " + high_e_string);
+        console.log("string values="+updated_low_e_string + " " + updated_a_string + " " + updated_d_string + " " + updated_g_string + " " + updated_b_string + " " + updated_high_e_string);
 
         console.log("curChord (confirmBtn)="+curChord);
         // converting curChord (which contains the measure and chord values) into actual integer values to pass into ajax
@@ -204,7 +251,6 @@ document.addEventListener("DOMContentLoaded", function() {
         let measureAndChord = measureAndChordStrs.map(Number);
         //console.log(measureAndChord);
         console.log(newDur + "dur was selected.")
-        console.log(newType + "type was selected.")
         console.log("notes array in confirm ="+notes);
         let durData = 0;
         if (newDur === "sixteenth") {
@@ -219,56 +265,48 @@ document.addEventListener("DOMContentLoaded", function() {
             durData = 4;
         }
         
-        let typeData = 0;
-        if (newType === "note-option") {
-            typeData = 0;
-        } else if (newType === "rest-option") {
-            typeData = 1;
-        }
 
+        
         $.ajax({
             type: "POST",
             url: "/updateChord",
             data: {
-                low_e_string: low_e_string,
-                a_string: a_string,
-                d_string: d_string,
-                g_string: g_string,
-                b_string: b_string,
-                high_e_string: high_e_string,
+                updated_low_e_string: updated_low_e_string,
+                updated_a_string: updated_a_string,
+                updated_d_string: updated_d_string,
+                updated_g_string: updated_g_string,
+                updated_b_string: updated_b_string,
+                updated_high_e_string: updated_high_e_string,
                 measureId: measureId,
                 measure: measureAndChord[0],
-                chord: measureAndChord[1],
-                chordNum: chordNum,
-                duration: chord_duration,
+                // chord: measureAndChord[1],
+                chordLocation: chordLocation,
                 newDuration: durData,
-                newType: typeData,
-                original_l_e: parseInt(notes[5], 10),
-                original_a: parseInt(notes[4], 10),
-                original_d: parseInt(notes[3], 10),
-                original_g: parseInt(notes[2], 10),
-                original_b: parseInt(notes[1], 10),
-                original_h_e: parseInt(notes[0], 10)
+                original_low_e_string: parseInt(notes[5], 10),
+                original_a_string: parseInt(notes[4], 10),
+                original_d_string: parseInt(notes[3], 10),
+                original_g_string: parseInt(notes[2], 10),
+                original_b_string: parseInt(notes[1], 10),
+                original_high_e_string: parseInt(notes[0], 10)
             },
             timeout: 5000,
             success: function(response) {
                 location.reload();
+                // console.log("measure=" + measure + ", measureAndChord[0]=" + measureAndChord[0]);
                 console.log("Chord updated successfully:", response);
             }
         });
-        // reset strings + other variables
-        low_e_string = -1;
-        a_string = -1;
-        d_string = -1;
-        g_string = -1;
-        b_string = -1;
-        high_e_string = -1;
+        // Reset strings + other variables, as chord is changed
+        updated_low_e_string = UNCHANGED;
+        updated_a_string = UNCHANGED;
+        updated_d_string = UNCHANGED;
+        updated_g_string = UNCHANGED;
+        updated_b_string = UNCHANGED;
+        updated_high_e_string = UNCHANGED;
         notes = [];
-        chord_duration = 0;
-        measureId = -1;
-        chordNum = -1;
+        measureId = UNDECIDED;
+        chordLocation = UNDECIDED;
         newDur = UNINITIALIZED;
-        newType = UNINITIALIZED;
     });
 
     // Clicking notes on fretboard to construct a chord
@@ -279,12 +317,12 @@ document.addEventListener("DOMContentLoaded", function() {
             const row = event.target.closest('div');
             console.log("str=" + string + ", fret=" + fret);
             switch (parseInt(string, 10)) {
-                case 6: low_e_string = fret; console.log("----->6" + fret); break;
-                case 5: a_string = fret; console.log("----->5" + fret); break;
-                case 4: d_string = fret; console.log("----->4" + fret); break;
-                case 3: g_string = fret; console.log("----->3" + fret); break;
-                case 2: b_string = fret; console.log("----->2" + fret); break;
-                case 1: high_e_string = fret; console.log("----->1" + fret); break;
+                case 6: updated_low_e_string = fret; console.log("----->6" + fret); break;
+                case 5: updated_a_string = fret; console.log("----->5" + fret); break;
+                case 4: updated_d_string = fret; console.log("----->4" + fret); break;
+                case 3: updated_g_string = fret; console.log("----->3" + fret); break;
+                case 2: updated_b_string = fret; console.log("----->2" + fret); break;
+                case 1: updated_high_e_string = fret; console.log("----->1" + fret); break;
             }
 
             // only one note can be played per string
@@ -311,15 +349,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 // update string to have a rest
                 // -2 represents rest here to avoid bug involving -1 in updateChord() in DemoController
                 switch (parseInt(string, 10)) {
-                    case 6: low_e_string = -2; break;
-                    case 5: a_string = -2; break;
-                    case 4: d_string = -2; break;
-                    case 3: g_string = -2; break;
-                    case 2: b_string = -2; break;
-                    case 1: high_e_string = -2; break;
+                    case 6: updated_low_e_string = REST; break;
+                    case 5: updated_a_string = REST; break;
+                    case 4: updated_d_string = REST; break;
+                    case 3: updated_g_string = REST; break;
+                    case 2: updated_b_string = REST; break;
+                    case 1: updated_high_e_string = REST; break;
                 }
-
-                newBtnId = string + "-" + "-2";
+                newBtnId = string + "-" + "-2"; // REST = -2
                 btnArr[string - 1] = newBtnId;
             } else {
                 event.target.classList.add('pressed');
