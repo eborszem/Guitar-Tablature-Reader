@@ -7,8 +7,11 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.2/Tone.min.js"></script>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
+    <!-- unused: <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- trash can icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- js and css -->
     <link rel="stylesheet" th:href="@{/css/page.css}">
     <script type="text/javascript" th:src="@{/js/page.js}"></script>
     <script type="text/javascript" th:src="@{/js/sound.js}"></script>
@@ -99,6 +102,8 @@
                             </div>
                         </div>
                     </div>
+                    <button class="delete-measure"><i class="fa-solid fa-trash"></i></button>
+                    <button class="add-measure"><i class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
         </div>
@@ -124,10 +129,6 @@
                     <option value="quarter">Quarter</option>
                     <option value="half">Half</option>
                     <option value="whole">Whole</option>
-                </select>
-                <select id="type-dropdown" name="type">
-                    <option value="note-option">Chord/Note</option>
-                    <option value="rest-option">Rest</option>
                 </select>
                 <button id="confirm-btn" class="button">Confirm</button>
             </div>

@@ -29,7 +29,7 @@ import org.springframework.ui.Model;
 @Controller
 public class DemoController {
 
-    public static int globalCompositionId = 1; // composition 1 by default
+    public static int globalCompositionId = 2; // composition 1 is chosen by default
     @Autowired
     CompositionRepository cr;
 
@@ -129,43 +129,59 @@ public class DemoController {
         List<Map<String, Object>> res = new ArrayList<>();
         Map<String, Object> chord = new HashMap<>();
         chord.put("fretNumbers", List.of(-1, -1, -1, -1, -1, -1)); // default rests
-        chord.put("duration", "4"); // TODO: Hardcoded to whole note currently. Need to make it work for num of beats in measure
+        chord.put("duration", "4"); // TODO: Whole note value currently
         chord.put("measureId", measureId);
         res.add(chord);
 
         return res;
     }
 
+    @RequestMapping(value = "/deleteMeasure", method = RequestMethod.POST)
+    public ResponseEntity<String> deleteMeasure(@RequestParam("measureId") int measureId) {
+        cr.deleteMeasure(measureId);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/addMeasure", method = RequestMethod.POST)
+    public ResponseEntity<String> addMeasure(@RequestParam("measureId") int measureId) {
+        cr.addMeasure(measureId, globalCompositionId);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    /* Basically, this code runs when the user confirms they want to change a chord via the virtual fretboard 
+     * (which appears when the user clicks a chord). updateChord() takes in the updated and old string values. 
+     * We also take in identifying information such as the unique measureId (as stored in database), measureLocation (relative
+     * to the composition), and chordLocation (relative to the measureLocation).
+     */
     @RequestMapping(value = "/updateChord", method = RequestMethod.POST)
-    public ResponseEntity<String> updateChord(@RequestParam("low_e_string") int low_e_string,
-                                            @RequestParam("a_string") int a_string,
-                                            @RequestParam("d_string") int d_string, 
-                                            @RequestParam("g_string") int g_string,
-                                            @RequestParam("b_string") int b_string,
-                                            @RequestParam("high_e_string") int high_e_string,
-                                            @RequestParam("measureId") int measureId,
-                                            @RequestParam("measure") int measure,
-                                            @RequestParam("chord") int chord,
-                                            @RequestParam("chordNum") int chordNum,
-                                            @RequestParam("duration") int duration,
+    public ResponseEntity<String> updateChord(@RequestParam("updated_low_e_string") int updated_low_e_string,
+                                            @RequestParam("updated_a_string") int updated_a_string,
+                                            @RequestParam("updated_d_string") int updated_d_string, 
+                                            @RequestParam("updated_g_string") int updated_g_string,
+                                            @RequestParam("updated_b_string") int updated_b_string,
+                                            @RequestParam("updated_high_e_string") int updated_high_e_string,
+                                            @RequestParam("measureId") int measureId, // id of the measure in database
+                                            @RequestParam("measure") int measureLocation, // the location of the measure in the composition (0 = first measure in composition, 1 = second measure in composition, etc.)
+                                            @RequestParam("chordLocation") int chordLocation, // the location of the chord in the measure (0 = first chord in measure, 1 = second chord in measure, etc.)
                                             @RequestParam("newDuration") int newDuration,
-                                            @RequestParam("newType") int newType,
-                                            @RequestParam("original_l_e") int original_l_e,
-                                            @RequestParam("original_a") int original_a,
-                                            @RequestParam("original_d") int original_d,
-                                            @RequestParam("original_g") int original_g,
-                                            @RequestParam("original_b") int original_b,
-                                            @RequestParam("original_h_e") int original_h_e) {
-        System.out.println("changed string values=" + low_e_string + " " + a_string + " " + d_string + " " + g_string + " " + b_string + " " + high_e_string);
-        System.out.println("original string values=" + original_l_e + " " + original_a + " " + original_d + " " + original_g + " " + original_b + " " + original_h_e);
-        System.out.println("measure=" + measure + ", chord=" + chord + ", duration=" + duration);
+                                            @RequestParam("original_low_e_string") int original_low_e_string,
+                                            @RequestParam("original_a_string") int original_a_string,
+                                            @RequestParam("original_d_string") int original_d_string,
+                                            @RequestParam("original_g_string") int original_g_string,
+                                            @RequestParam("original_b_string") int original_b_string,
+                                            @RequestParam("original_high_e_string") int original_high_e_string) {
+        // System.out.println("changed string values=" + updated_low_e_string + " " + updated_a_string + " " + updated_d_string + " " + updated_g_string + " " + updated_b_string + " " + updated_high_e_string);
+        // System.out.println("original string values=" + original_low_e_string + " " + original_a_string + " " + original_d_string + " " + original_g_string + " " + original_b_string + " " + original_high_e_string);
+        // System.out.println("measure=" + measure + ", chord=" + chord + ", duration=" + duration);
+        System.out.println("*****measureLocation=" + measureLocation + ", measureId=" + measureId);
+        System.out.println("*****chord=" + chordLocation);
         Measure measures = cr.formatComposition(globalCompositionId);
         // navigate to the chord in the composition
-        for (int i = 0; i < measure; i++) {
+        for (int i = 0; i < measureLocation; i++) {
             measures = measures.getNext();
         }
         Chord chords = measures.getChord();
-        for (int i = 0; i < chord; i++) {
+        for (int i = 0; i < chordLocation; i++) {
             chords = chords.getNext();
         }
         
@@ -174,13 +190,9 @@ public class DemoController {
         if (newDuration != 16 && newDuration != 8 && newDuration != 4 && newDuration != 2 && newDuration != 1) {
             newDuration = dur; // default to current duration
         }
-        // 0 = chord/note, 1 = rest
-        if (newType != 0 && newType != 1) {
-            newType = 0; // default to chord/note
-        }
+
         System.out.println("TEST======="+chords.getNote().getDuration());
         System.out.println("new dur=" + newDuration);
-        System.out.println("new type=" + newType);
         boolean durUpdate = false;
         // change duration, if it was changed
         int oldDur = dur;
@@ -188,33 +200,34 @@ public class DemoController {
             durUpdate = true;
             dur = newDuration;
         }
+        final int UNCHANGED = -1;
         /* Call it here, modify the values, and then update in the html */
-        int val = high_e_string;
-        if (high_e_string == -1)
-            val = original_h_e;
+        int val = updated_high_e_string;
+        if (updated_high_e_string == UNCHANGED)
+            val = original_high_e_string;
         Note high_e = new Note(val, 0, dur, false);
-        val = b_string;
-        if (b_string == -1)
-            val = original_b;
+        val = updated_b_string;
+        if (updated_b_string == UNCHANGED)
+            val = original_b_string;
         Note b = new Note(val, 1, dur, false);
-        val = g_string;
-        if (g_string == -1) {
-            val = original_g;
+        val = updated_g_string;
+        if (updated_g_string == UNCHANGED) {
+            val = original_g_string;
         }
         Note g = new Note(val, 2, dur, false);
-        val = d_string;
-        if (d_string == -1) {
-            val = original_d;
+        val = updated_d_string;
+        if (updated_d_string == UNCHANGED) {
+            val = original_d_string;
         }
         Note d = new Note(val, 3, dur, false);
-        val = a_string;
-        if (a_string == -1) {
-            val = original_a;
+        val = updated_a_string;
+        if (updated_a_string == UNCHANGED) {
+            val = original_a_string;
         }
         Note a = new Note(val, 4, dur, false);
-        val = low_e_string;
-        if (low_e_string == -1) {
-            val = original_l_e;
+        val = updated_low_e_string;
+        if (updated_low_e_string == UNCHANGED) {
+            val = original_low_e_string;
         }
         Note low_e = new Note(val, 5, dur, false);
 
@@ -228,16 +241,14 @@ public class DemoController {
         System.out.println("==============CONTROLLER DONE PRINTING NOTES E to e==============");
 
         Chord updatedChord = new Chord(high_e);
-        System.out.println("MEASURE ID ====" + measureId);
-        System.out.println("CHORD NUM ====" + chordNum);
         System.out.println("durUpdate="+durUpdate);
 
         if (durUpdate) {
             System.out.println("newDuration="+newDuration+", oldDur="+oldDur);
-            cr.updateDurations(newDuration, oldDur, updatedChord, measureId, chordNum, globalCompositionId);
+            cr.updateDurations(newDuration, oldDur, updatedChord, measureId, chordLocation, globalCompositionId);
         } else {
             // was above if previously, moved here to avoid possible bugs
-            cr.updateChord(updatedChord, measureId, chordNum);
+            cr.updateChord(updatedChord, measureId, chordLocation);
         }
         return new ResponseEntity<>("Chord updated", HttpStatus.OK);
     }
