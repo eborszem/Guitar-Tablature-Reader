@@ -115,9 +115,10 @@ public class CompositionRepository {
         return measureId;
     }
 
-    /* Create new measure and give it measure number + 1,
-     * then get current measure number from measure id,
-     * then increment all following measures by 1
+    /* Create new measure,
+     * then increment all following measures by 1,
+     * then add new measure to database with measure number (gotten from measureId) + 1.
+     * This method retains the order of measures.
      */
     public void addMeasure(int measureId, int compositionId) {
         int duration = 4;
@@ -128,12 +129,41 @@ public class CompositionRepository {
         note.next.next.next.next = new Note(-1, 4, duration, true);
         note.next.next.next.next.next = new Note(-1, 5, duration, true);
         int measureNumber = getMeasureNumber(compositionId, measureId);
-        System.out.println("&&&orig measure number===" + measureNumber);
+        // System.out.println("&&&orig measure number===" + measureNumber);
         incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
         int newID = addMeasureToRepo2(new Measure(new Chord(note)), compositionId, measureNumber + 1); // goes 1 after current measure
         int measureNumber2 = getMeasureNumber(compositionId, newID);
-        System.out.println("&&&NEW measure number===" + measureNumber2);
+        // System.out.println("&&&NEW measure number===" + measureNumber2);
     }
+
+    // /* Same as above, but measure retains the chords from its "parent". */
+    // public void duplicateMeasure(int measureId, int compositionId) {
+    //     List<Chord> chords = findChordsByCompositionIdAndMeasureId(compositionId, measureId);
+    //     int duration = 4;
+    //     for (Chord c : chords) {
+    //         Note note = new Note(-1, 0, duration, false);
+    //         Note dummy = note;
+    //         while (c != null) {
+    //             note.next = c.getNote();
+    //             c.getNote().getNext();
+    //             note = note.next;
+    //         }
+            
+
+
+    //     }
+    //     Note note = new Note(-1, 0, duration, true);
+    //     note.next = new Note(-1, 1, duration, true);
+    //     note.next.next =  new Note(-1, 2, duration, true);
+    //     note.next.next.next = new Note(-1, 3, duration, true);
+    //     note.next.next.next.next = new Note(-1, 4, duration, true);
+    //     note.next.next.next.next.next = new Note(-1, 5, duration, true);
+    //     int measureNumber = getMeasureNumber(compositionId, measureId);
+    //     // System.out.println("&&&orig measure number===" + measureNumber);
+    //     incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
+    //     int newID = addMeasureToRepo2(new Measure(new Chord(note)), compositionId, measureNumber + 1); // goes 1 after current measure
+    //     getMeasureNumber(compositionId, newID);
+    // }
 
     // Note: "Measure numbers" are the index of the measure in the composition. The lowest numbered measures are first, and the highest numbered measures are last
     // "Measure IDs" are different, being a unique identifier across all compositions (However, I still like to check the composition ID in order to be safe)

@@ -1,6 +1,4 @@
-const UNINITIALIZED = "";
-const UNCHANGED = -1; // User has not chosen measure or chord to change
-const UNDECIDED = -1; // User has not chosen string to change
+const UNCHANGED = -1; // User has not chosen string, measure, chord, or duration to change
 
 /* Rests (represented by "X") are initially set to -1
  * When the X changes from a rest to a note, then again changes back to a rest, it is -2
@@ -63,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function() {
             let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
             let addMeasureId = chordBox.getAttribute('data-measure-id'); // the new measure will be added after this one
             // console.log("Adding measure with id:", addMeasureId);
-            console.log("Adding measure with id:", addMeasureId);
             $.ajax({
                 type: "POST",
                 url: "/addMeasure",
@@ -72,7 +69,29 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 timeout: 5000,
                 success: function(response) {
-                    console.log("Measure added successfully:" + response);
+                    // console.log("Measure added successfully:" + response);
+                    location.reload();
+                }
+            });
+        });
+    });
+
+    /* DUPLICATING MEASURE */
+    var dupeMeasureBtns = document.querySelectorAll(".duplicate-measure");
+    dupeMeasureBtns.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
+            let dupeMeasureId = chordBox.getAttribute('data-measure-id'); // the new measure will be added after this one
+            // console.log("Duping measure with id:", dupeMeasureId);
+            $.ajax({
+                type: "POST",
+                url: "/duplicateMeasure",
+                data: {
+                    measureId: dupeMeasureId
+                },
+                timeout: 5000,
+                success: function(response) {
+                    // console.log("Measure duped successfully:" + response);
                     location.reload();
                 }
             });
@@ -133,9 +152,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let notes = []; // notes in the selected chord
 
-    // Undecided values, they will become decided when the user clicks a chord
-    let measureId = UNDECIDED; // measure id of the selected chord
-    let chordLocation = UNDECIDED; // location of the selected chord relative to its position in the measure (e.g. 0=first chord in measure, 1=second chord in measure, etc.)
+    // UNCHANGED values, they will become decided when the user clicks a chord
+    let measureId = UNCHANGED; // measure id of the selected chord
+    let chordLocation = UNCHANGED; // location of the selected chord relative to its position in the measure (e.g. 0=first chord in measure, 1=second chord in measure, etc.)
     
     function chordClicked(chordElement) {
         measureId = chordElement.getAttribute('data-measure-id'); // now decided
@@ -160,7 +179,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         notesDisplay.textContent = notesText;
         const modal = document.getElementById('chordModal');
-        prepopulateBtns(notes);
+        prepopulateBtns(notes); // prepopulate the frets that are already selected
+        prepopulateDuration(duration); // prepoulate the duration (whole note, half note, etc. )that is already selected
         modal.style.display = "block";
     }
 
@@ -182,6 +202,45 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log("btnArr===="+btnArr);
     }
 
+    function prepopulateDuration(duration) {
+        console.log("prepopulating duration: " + duration + "type=" + typeof(duration));
+        document.querySelectorAll('.duration-wrapper button').forEach(button => {
+            button.classList.remove('pressed');
+        });
+        switch (duration) {
+            case "4": console.log("WHOLE NOTE DURATION"); document.getElementById('whole-duration').classList.add('pressed'); break;
+            case "2": document.getElementById('half-duration').classList.add('pressed'); break;
+            case "1": document.getElementById('quarter-duration').classList.add('pressed'); break;
+            case "8": document.getElementById('eighth-duration').classList.add('pressed'); break;
+            case "16": document.getElementById('sixteenth-duration').classList.add('pressed'); break;
+        }
+    }
+
+    let newDur = UNCHANGED;
+    document.querySelectorAll('.duration-wrapper button').forEach(button => {
+        button.addEventListener('click', function(event) {
+            document.querySelectorAll('.duration-wrapper button').forEach(btn => {
+                btn.classList.remove('pressed');
+            });
+            button.classList.add('pressed');
+            newDur = button.getAttribute('data-duration');
+            const clickedButton = event.currentTarget;
+            if (clickedButton.classList.contains('whole-duration')) {
+                newDur = 4;
+            } else if (clickedButton.classList.contains('half-duration')) {
+                newDur = 2;
+            } else if (clickedButton.classList.contains('quarter-duration')) {
+                newDur = 1;
+            } else if (clickedButton.classList.contains('eighth-duration')) {
+                newDur = 8;
+            } else if (clickedButton.classList.contains('sixteenth-duration')) {
+                newDur = 16;
+            }
+            
+        });
+    });
+
+
     let curChord = "";
     const chordBoxes = document.querySelectorAll('.chord-box');
     chordBoxes.forEach(function(box) {
@@ -190,14 +249,6 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(this.id);
             curChord = this.id;
         });
-    });
-
-    /* Dropdowns which determine duration of chord/note/rest (quarter note, half note, etc.) */ 
-    const durationDropdown = document.getElementById("duration-dropdown");
-    let newDur = UNINITIALIZED;
-    durationDropdown.addEventListener('change', function() {
-        newDur = durationDropdown.value;
-        console.log(newDur + " was selected.")
     });
     
     // These represent the changed notes which lay on the strings.
@@ -216,9 +267,9 @@ document.addEventListener("DOMContentLoaded", function() {
     span.onclick = function() {
         modal.style.display = "none";
         notes = [];
-        measureId = UNDECIDED;
-        chordLocation = UNDECIDED;
-        newDur = UNINITIALIZED;
+        measureId = UNCHANGED;
+        chordLocation = UNCHANGED;
+        newDur = UNCHANGED;
         btnArr = [];
     };
 
@@ -227,9 +278,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (event.target === modal) {
             modal.style.display = "none";
             notes = [];
-            measureId = UNDECIDED;
-            chordLocation = UNDECIDED;
-            newDur = UNINITIALIZED;
+            measureId = UNCHANGED;
+            chordLocation = UNCHANGED;
+            newDur = UNCHANGED;
             btnArr = [];
         }
         const newCompositionPopup = document.getElementById("popup");
@@ -252,20 +303,6 @@ document.addEventListener("DOMContentLoaded", function() {
         //console.log(measureAndChord);
         console.log(newDur + "dur was selected.")
         console.log("notes array in confirm ="+notes);
-        let durData = 0;
-        if (newDur === "sixteenth") {
-            durData = 16;
-        } else if (newDur === "eighth") {
-            durData = 8;
-        } else if (newDur === "quarter") {
-            durData = 1;
-        } else if (newDur === "half") {
-            durData = 2;
-        } else if (newDur === "whole") {
-            durData = 4;
-        }
-        
-
         
         $.ajax({
             type: "POST",
@@ -281,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 measure: measureAndChord[0],
                 // chord: measureAndChord[1],
                 chordLocation: chordLocation,
-                newDuration: durData,
+                newDuration: newDur,
                 original_low_e_string: parseInt(notes[5], 10),
                 original_a_string: parseInt(notes[4], 10),
                 original_d_string: parseInt(notes[3], 10),
@@ -304,9 +341,9 @@ document.addEventListener("DOMContentLoaded", function() {
         updated_b_string = UNCHANGED;
         updated_high_e_string = UNCHANGED;
         notes = [];
-        measureId = UNDECIDED;
-        chordLocation = UNDECIDED;
-        newDur = UNINITIALIZED;
+        measureId = UNCHANGED;
+        chordLocation = UNCHANGED;
+        newDur = UNCHANGED;
     });
 
     // Clicking notes on fretboard to construct a chord

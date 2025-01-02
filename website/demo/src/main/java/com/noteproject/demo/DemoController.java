@@ -148,6 +148,12 @@ public class DemoController {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/duplicateMeasure", method = RequestMethod.POST)
+    public ResponseEntity<String> duplicateMeasure(@RequestParam("measureId") int measureId) {
+        // cr.duplicateMeasure(measureId, globalCompositionId);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
     /* Basically, this code runs when the user confirms they want to change a chord via the virtual fretboard 
      * (which appears when the user clicks a chord). updateChord() takes in the updated and old string values. 
      * We also take in identifying information such as the unique measureId (as stored in database), measureLocation (relative
@@ -170,6 +176,7 @@ public class DemoController {
                                             @RequestParam("original_g_string") int original_g_string,
                                             @RequestParam("original_b_string") int original_b_string,
                                             @RequestParam("original_high_e_string") int original_high_e_string) {
+        final int UNCHANGED = -1;
         // System.out.println("changed string values=" + updated_low_e_string + " " + updated_a_string + " " + updated_d_string + " " + updated_g_string + " " + updated_b_string + " " + updated_high_e_string);
         // System.out.println("original string values=" + original_low_e_string + " " + original_a_string + " " + original_d_string + " " + original_g_string + " " + original_b_string + " " + original_high_e_string);
         // System.out.println("measure=" + measure + ", chord=" + chord + ", duration=" + duration);
@@ -196,11 +203,10 @@ public class DemoController {
         boolean durUpdate = false;
         // change duration, if it was changed
         int oldDur = dur;
-        if (newDuration != dur) {
+        if (newDuration != dur && newDuration != UNCHANGED) {
             durUpdate = true;
             dur = newDuration;
         }
-        final int UNCHANGED = -1;
         /* Call it here, modify the values, and then update in the html */
         int val = updated_high_e_string;
         if (updated_high_e_string == UNCHANGED)
