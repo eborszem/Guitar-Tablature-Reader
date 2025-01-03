@@ -202,6 +202,8 @@ public class CompositionRepository {
     public void deleteChord(int measureId, int chordLocation) {
         String sql = "DELETE FROM Chords WHERE measure_id = ? AND chord_number = ?";
         jdbcTemplate.update(sql, measureId, chordLocation);
+        String sql2 = "UPDATE Chords SET chord_number = chord_number - 1 WHERE measure_id = ? AND chord_number > ?";
+        jdbcTemplate.update(sql2, measureId, chordLocation);
     }
 
     public List<Chord> findChordsByCompositionId(int compositionId) {
