@@ -9,10 +9,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.2/Tone.min.js"></script>
     <!-- unused: <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- trash can icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <!-- js and css -->
     <link rel="stylesheet" th:href="@{/css/page.css}">
+    <link rel="stylesheet" th:href="@{/css/virtualFretboard.css}">
     <script type="text/javascript" th:src="@{/js/page.js}"></script>
     <script type="text/javascript" th:src="@{/js/sound.js}"></script>
 
@@ -21,23 +21,24 @@
     <div class="interface">
         <span class="tabreader">GUITAR TAB READER</span>
         <span class="title" th:text="${compositionInfo.title} + ' by ' + ${compositionInfo.composer}"></span>
-        <p class="timestamp" th:text="'Created ' + ${#dates.format(compositionInfo.timestamp, 'hh:mm a')} + ' on ' + ${#dates.format(compositionInfo.timestamp, 'MMMM dd, yyyy')}"></p>
         <div class="button-container">
-
             <button id="add-new-measure" class="button">Add Measure</button>
             <button id="play-btn" class="play-btn"><i class="fa-solid fa-play"></i></button>
-            <button id="pause-btn" class="pause-btn"><i class="fa-solid fa-pause"></i></button>
+            <!-- <button id="pause-btn" class="pause-btn"><i class="fa-solid fa-pause"></i></button> -->
+            <button id="restart-btn" class="restart-btn"><i class="fa-solid fa-arrow-rotate-left"></i></button>
             <button id="new-composition" class="button">New Song</button>
             
 
             <form id="composition-form">
                 <!-- <label for="composition">Select song</label> -->
-                <select id="composition-dropdown" name="selectedComposition" class="composition-dropdown">
-                    <option value="" disabled selected>Select Song</option>
-                    <option th:each="composition : ${allCompositions}" 
-                            th:value="${composition.id}"
-                            th:text="${composition.title}"></option>
-                </select>
+                <div class="dropdown-wrapper">
+                    <select id="composition-dropdown" name="selectedComposition" class="composition-dropdown">
+                        <option value="" disabled selected>Change Song</option>
+                        <option th:each="composition : ${allCompositions}" 
+                                th:value="${composition.id}"
+                                th:text="${composition.title}"></option>
+                    </select>
+                </div>
                 <!-- <button type="submit">Submit</button> -->
             </form>
         </div>
@@ -114,11 +115,16 @@
                 <span class="close">&times;</span>
                 <span class="virtual-fretboard">VIRTUAL FRETBOARD</span>
                 <div class="string-rows">
-                    <div th:each="i : ${#numbers.sequence(1, 6)}" th:id="'row-' + ${i}">
+                    <div class="string-col" th:each="i : ${#numbers.sequence(1, 6)}" th:id="'row-' + ${i}">
                         <div class="note-btn-div">
-                            <span th:each="j : ${#numbers.sequence(0, 17)}">
+                            <span class="string-row" th:each="j : ${#numbers.sequence(0, 17)}">
                                 <button th:text="${fretboard[i - 1][j]}" class="note-btn" th:id="${i} + '-' + ${j}" th:attr="data-string=${i}, data-fret=${j}"></button>
                             </span>
+                        </div>
+                    </div>
+                    <div class="tablature-wrapper">
+                        <div class="tablature-number-row" th:each="i : ${#numbers.sequence(0, 17)}">
+                            <span th:text="${i}" class="tablature-number"></span>
                         </div>
                     </div>
                     <p id="notesDisplay"></p>
@@ -146,7 +152,13 @@
                         <img th:src="@{/images/16.png}" alt="sixteenth note">
                     </button>
                 </div>
-                <button id="confirm-btn" class="button">Confirm</button>
+                <div class="delete-chord-wrapper">
+                    <button id="delete-chord-btn">
+                        <span>Delete Chord</span>
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+                <button id="confirm-btn" class="button">Confirm Changes</button>
             </div>
         </div>
 
@@ -163,6 +175,7 @@
         </div>
     </div>
     
+    <span class="timestamp" th:text="'Created ' + ${#dates.format(compositionInfo.timestamp, 'hh:mm a')} + ' on ' + ${#dates.format(compositionInfo.timestamp, 'MMMM dd, yyyy')}"></span>
     <!-- Include jQuery -->
     
     

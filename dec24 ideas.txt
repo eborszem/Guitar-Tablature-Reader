@@ -1,14 +1,17 @@
 -MAKE IT SO REPO/DATABASE LOADS A DEFAULT SONG IF THERE IS NO LOADED SONG
--Duplicate measure
--Delete chord
+
+
+
+
+
 -Add "premade" chords when user clicks on chord
     -nice chords (EM, AM, GM, dm, G7, CMaj7, etc.) appear at bottom of modal
     -perhaps row of (C C# D D# ... B C) which are clickable and present a dropdown like below for each note
         -C->Cm->Caug->Cdim->C6->C7->CMaj7->C9->CSus2->CSus4
--Cant delete measure if there's only one
+
+
+
+-Cant delete last measure in a composition
+-Cant delete last chord in a measure
 -Google and Firefox compatibility
--arrow symbol for play button
--pause symbol for pause button
--moving beam as audio plays
--"duplicate measure" button?
--mouse pointer when over virtual fretboard
+-Uncaught (in promise) RangeError: Value must be within [0, Infinity], got: -4.88498130835069e-15

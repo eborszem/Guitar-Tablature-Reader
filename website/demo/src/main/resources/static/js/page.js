@@ -12,7 +12,9 @@ function chordClicked(chordElement) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    /* ADDING NEW MEASURE TO COMPOSITION */
+    /* There are currently two "add measure" buttons. One is at the top of the page, and the other is shown when the user hovers over a measure. 
+     * These two buttons are immediately below.
+    */
     var newMeasure = document.getElementById("add-new-measure");
     newMeasure.addEventListener("click", function() {
         fetch("/createNewMeasure", {
@@ -32,6 +34,27 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => console.error("Error fetching new measure:", error));
     });
 
+    var addMeasureBtns = document.querySelectorAll(".add-measure");
+    addMeasureBtns.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
+            let addMeasureId = chordBox.getAttribute('data-measure-id'); // the new measure will be added after this one
+            // console.log("Adding measure with id:", addMeasureId);
+            $.ajax({
+                type: "POST",
+                url: "/addMeasure",
+                data: {
+                    measureId: addMeasureId
+                },
+                timeout: 5000,
+                success: function(response) {
+                    // console.log("Measure added successfully:" + response);
+                    location.reload();
+                }
+            });
+        });
+    });
+
     /* DELETING MEASURE FROM COMPOSITION */
     var deleteMeasureBtns = document.querySelectorAll(".delete-measure");
     deleteMeasureBtns.forEach(function(btn) {
@@ -48,28 +71,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 timeout: 5000,
                 success: function(response) {
                     // console.log("Measure deleted successfully:" + response);
-                    location.reload();
-                }
-            });
-        });
-    });
-
-    /* ADDING MEASURE TO COMPOSITION */
-    var addMeasureBtns = document.querySelectorAll(".add-measure");
-    addMeasureBtns.forEach(function(btn) {
-        btn.addEventListener("click", function() {
-            let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
-            let addMeasureId = chordBox.getAttribute('data-measure-id'); // the new measure will be added after this one
-            // console.log("Adding measure with id:", addMeasureId);
-            $.ajax({
-                type: "POST",
-                url: "/addMeasure",
-                data: {
-                    measureId: addMeasureId
-                },
-                timeout: 5000,
-                success: function(response) {
-                    // console.log("Measure added successfully:" + response);
                     location.reload();
                 }
             });
@@ -97,7 +98,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
-
 
     /* ADDING NEW COMPOSITION/SONG */
     var newComposition = document.getElementById("new-composition");
@@ -344,6 +344,23 @@ document.addEventListener("DOMContentLoaded", function() {
         measureId = UNCHANGED;
         chordLocation = UNCHANGED;
         newDur = UNCHANGED;
+    });
+
+    /* If the user chooses to delete a chord */
+    var deleteChordBtn = document.getElementById("delete-chord-btn");
+    deleteChordBtn.addEventListener("click", async () => {
+        $.ajax({
+            type: "POST",
+            url: "/deleteChord",
+            data: {
+                measureId: measureId,
+                chordLocation: chordLocation
+            },
+            timeout: 5000,
+            success: function() {
+                location.reload();
+            }
+        });
     });
 
     // Clicking notes on fretboard to construct a chord

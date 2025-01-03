@@ -150,7 +150,13 @@ public class DemoController {
 
     @RequestMapping(value = "/duplicateMeasure", method = RequestMethod.POST)
     public ResponseEntity<String> duplicateMeasure(@RequestParam("measureId") int measureId) {
-        // cr.duplicateMeasure(measureId, globalCompositionId);
+        cr.duplicateMeasure(measureId, globalCompositionId);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/deleteChord", method = RequestMethod.POST)
+    public ResponseEntity<String> deleteChord(@RequestParam("measureId") int measureId, @RequestParam("chordLocation") int chordLocation) {
+        cr.deleteChord(measureId, chordLocation);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
