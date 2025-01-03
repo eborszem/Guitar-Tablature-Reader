@@ -59,39 +59,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
 
-    /* PLAY AND PAUSE BUTTONS */
-    const playBtn = document.getElementById("play-btn");
-    let currentTime = 0;
-    let isPaused = false;
-    playBtn.addEventListener("click", async () => {
-        await Tone.start(); // make sure audio is started
-        Tone.Transport.stop();
-        pianoPart.stop(); // stop audio if already started
-        isPaused = false;
-        currentTime = 0;
-        pianoPart.start(0); // start pianoPart at time 0
-        Tone.Transport.start(); 
-        // pauseBtn.textContent = "Pause";
-        pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-    });
+    
 
-    const pauseBtn = document.getElementById("pause-btn");
-    pauseBtn.addEventListener("click", async () => {
-        if (isPaused) { // means we have clicked the button to resume
-            //cycleChordBoxes();
-            isPaused = false;
-            Tone.Transport.start();
-            pianoPart.start("+0.1", currentTime); // start playing again from the paused time
-            // pauseBtn.textContent = "Pause";
-            pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-        } else { // means we have clicked the button to pause
-            isPaused = true;
-            currentTime = Tone.Transport.seconds;
-            Tone.Transport.pause();
-            pianoPart.stop();
-            pauseBtn.textContent = "Resume";
-        }
-    });
+    // const pauseBtn = document.getElementById("pause-btn");
+    // pauseBtn.addEventListener("click", async () => {
+    //     if (isPaused) { // means we have clicked the button to resume
+    //         //cycleChordBoxes();
+    //         isPaused = false;
+    //         Tone.Transport.start();
+    //         pianoPart.start("+0.1", currentTime); // start playing again from the paused time
+    //         // pauseBtn.textContent = "Pause";
+    //         pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    //     } else { // means we have clicked the button to pause
+    //         isPaused = true;
+    //         currentTime = Tone.Transport.seconds;
+    //         Tone.Transport.pause();
+    //         pianoPart.stop();
+    //         pauseBtn.textContent = "Resume";
+    //     }
+    // });
 
     /* This code executes upon page being loaded. Sets up an array containing chords    */   
     /* that will be played as well as durations.                                        */    
@@ -207,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
-    /*------------------------------------------------------------------------------------
+    /*
     // moving beam
     let curIndex = 0;
     const chordBoxes = document.querySelectorAll('.chord-box');
@@ -250,5 +236,91 @@ document.addEventListener("DOMContentLoaded", () => {
     }*/
     // end moving beam
 
+    // Function to highlight the current chord box
+    // const highlightChordBox = (index) => {
+    //     document.querySelectorAll(".chord-box").forEach((box, i) => {
+    //         if (i === index) {
+    //             box.classList.add("active"); // Add highlight
+    //         } else {
+    //             box.classList.remove("active"); // Remove highlight
+    //         }
+    //     });
+    // };
+      
+    // function timeToSeconds(timeString) {
+    //     const [seconds] = timeString.split(':').map(Number);
+    //     return seconds;
+    // }
 
+    // function durationToSeconds(duration) {
+    //     const secondsPerBeat = 60 / Tone.Transport.bpm.value;
+    //     let fraction = 1; // default is whole note
+    //     switch(duration) {
+    //         case "2n": fraction = 0.5; break;
+    //         case "4n": fraction = 0.25; break;
+    //         case "8n": fraction = 0.125; break;
+    //         case "16n": fraction = 0.0625; break;
+    //     }
+    //     return secondsPerBeat * fraction;
+    // }
+
+    /* PLAY AND PAUSE BUTTONS */
+    const playBtn = document.getElementById("play-btn");
+    let currentTime = 0;
+    // let isPaused = false;
+    let playing = false;
+    playBtn.addEventListener("click", async () => {
+        await Tone.start();
+        if (!playing) {
+            console.log("PLAYING NOW--currentTime="+currentTime);
+            pianoPart.start("+0.1", currentTime);
+            Tone.Transport.start();
+            playing = true;
+            
+            // setInterval(() => {
+            //     const currentTime = Tone.Transport.seconds;
+            //     let activeIndex = -1;
+          
+            //     // Find the currently active chord based on playback time
+            //     array.forEach((chord, index) => {
+            //         console.log("chord.time="+timeToSeconds(chord.time) + " currentTime="+currentTime);
+            //         if (currentTime >= timeToSeconds(chord.time) && currentTime < timeToSeconds(chord.time) + durationToSeconds(chord.duration)) {
+            //             activeIndex = index;
+            //             console.log("REACHED INTERVAL");
+            //         }
+            //     });
+          
+            //     // Highlight the corresponding chord box
+            //     highlightChordBox(activeIndex);
+            //   }, 100); // Check every 100ms for smooth updates
+              
+            const restartBtn = document.getElementById('restart-btn');
+            restartBtn.style.display = "block";
+            playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        } else {
+            console.log("PAUSING NOW--currentTime="+currentTime);
+            currentTime = Tone.Transport.seconds;
+            Tone.Transport.pause();
+            pianoPart.stop();
+            playing = false;
+            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        }
+    });
+
+    const restartBtn = document.getElementById("restart-btn");
+    restartBtn.addEventListener("click", async () => {
+        console.log("RESTARTING NOW--currentTime="+currentTime);
+        // if (Tone.Transport.state !== "paused") {
+        // }
+        // if (pianoPart.state !== "stopped") {
+        // }
+        currentTime = 0;
+        Tone.Transport.stop();
+        pianoPart.stop();
+        // Tone.Transport.start(0);
+        // pianoPart.start(0);
+        playing = false;
+        playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        // await Tone.start();
+    });
 });

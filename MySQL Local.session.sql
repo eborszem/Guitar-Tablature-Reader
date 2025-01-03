@@ -1,1 +1,1 @@
-x
+DELETE FROM Measures WHERE id = 185;

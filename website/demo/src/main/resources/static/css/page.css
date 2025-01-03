@@ -20,7 +20,7 @@ body span {
 }
 
 .interface {
-    padding: 25px;
+    padding: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,33 +29,72 @@ body span {
 }
 
 .tabreader {
+    color: black;
     font-size: 50px;
-    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+    /* border: 20px solid rgb(25, 25, 25); */
+    width: max-content;
+    display: flex;
+    justify-content: center;
+    font-family: 'Ubuntu';
+    font-weight: bold;
     margin: 0;
     padding: 0;
 }
 
 .title {
+    color: black;
     font-size: 30px;
-    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+    width: max-content + 10px;
+    display: flex;
+    justify-content: center;
     margin: 0;
-    padding: 0;
+    padding: 5px;
+}
+
+.timestamp {
+    color: black;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 15px;
+    width: max-content;
+    padding: 5px;
+    margin: 0;
 }
 
 .button-container {
-    border: 2px solid rgb(0, 0, 0);
-    border-radius: 15px;
-    padding: 25px;
+    /* border: 2px solid rgb(0, 0, 0);
+    border-radius: 15px;*/
+    padding: 15px;
     box-sizing: border-box;
-    width: 75%;
+    width: 50%;
     display: flex;
     justify-content: space-evenly; /* space evenly */
     align-items: center; /* center items vertically */
 }
 
-.button-container button {
+/* .button-container button {
     background-color: rgb(107, 107, 107);
     background-color:rgb(244, 244, 244);
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 15px;
+    border: 2px solid rgb(0, 0, 0);
+    justify-content: center;
+    padding: 20px;
+    transition: box-shadow 0.3s ease;
+    font-family: 'Ubuntu';
+    font-weight: bold;
+} */
+
+.button-container button {
+    background-color: rgb(25, 25, 25);
+    color: white;
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
@@ -73,14 +112,39 @@ body span {
 }
 
 .button-container .pause-btn {
+    /* display: none; */
     font-size: 40px;
 }
 
 
-.button-container .button:hover {
-    background-color: linear-gradient(145deg, #3e3e3e, #6b6b6b);
+.button-container .restart-btn {
+    display: none;
+    font-size: 40px;
+}
+
+.button-container .button:hover, .play-btn:hover, .pause-btn:hover, .restart-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+
+.dropdown-wrapper .composition-dropdown {
+    background-color: rgb(25, 25, 25);
+    color: white;
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 15px;
+    cursor: pointer;
+    height: 75px;
+    font-family: 'Ubuntu';
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.dropdown-wrapper:hover .composition-dropdown {
+    transform: scale(1.05);
+}
+
+.dropdown-wrapper .composition-dropdown option {
+    /*  */
 }
 
 .composition-box {
@@ -211,6 +275,17 @@ body span {
     cursor: pointer;
 }
 
+.chord-box {
+    position: relative;
+    z-index: 0;
+}
+
+.chord-box.active {
+    opacity: 1;
+    color: red;
+    background-color: blue;
+}
+
 .chord-container {
     position: relative;
     display: inline-block;
@@ -254,16 +329,6 @@ body span {
     height: auto;
 }
 
-.chord-box {
-    position: relative;
-    z-index: 0;
-}
-
-
-.chord-box.active {
-    opacity: 1;
-}
-
 .string {
     width: 100%;
     height: 1px;
@@ -301,187 +366,16 @@ body span {
     z-index: 0;
 }
 
-.chordModal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-}
-
-/* Modal styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 65%;
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers the items horizontally */
-    justify-content: center; /* Centers the items vertically */
-    border-radius: 20px;
-    border: 2px solid rgb(0, 0, 0);
-    background-color: rgb(244, 244, 244);
-}
-
-.duration-wrapper .duration-types {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 18px;
-}
-
-.modal-content .duration-wrapper {
-    position: absolute; /* Position it absolutely within the .modal-content */
-    top: 50%;
-    left: -20%;
-    width: 150px;
-    height: 46.5%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 5px;
-    background-color: rgb(244, 244, 244);
-    padding: 10px;
-    border: 2px solid rgb(0, 0, 0);
-    border-radius: 20px;
-}
-
-.modal-content .duration-wrapper button {
-    color: black;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    cursor: pointer;
-}
-
-.modal-content .duration-wrapper button.pressed {
-    background: blue;
-    color: white;
-}
-
-.modal-content .whole-duration img {
-    width: 18px;
-    height: auto;
-}
-
-.modal-content .half-duration img {
-    width: 10px;
-    height: auto;
-}
-
-.modal-content .quarter-duration img {
-    width: 10px;
-    height: auto;
-}
-
-.modal-content .eighth-duration img {
-    width: 18px;
-    height: auto;
-}
-
-.modal-content .sixteenth-duration img {
-    width: 18px;
-    height: auto;
-}
-
-/* the "modal-content" div is the actual fretboard. this div is just the text above it */
-.virtual-fretboard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    font-size: 25px;
-}
-
-.close {
-    position: absolute;
-    top: -16px;
-    right: 3px;
-    color: #aaa;
-    float: right;
-    font-size: 50px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* for fretboard that appears when user clicks chord */
-#row {
-    background-color: darkgray;
-}
-
-.string-rows {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* centers rows horizontally */
-}
-
-.string-rows div {
-    display: flex;
-    padding: 2px;
-    border: solid;
-}
-
-.note-btn.pressed {
-    background: blue;
-    color: white;
-    opacity: 1;
-    border: none;
-    border-radius: 20px;
-}
-
-.note-btn {
-    background-color: white;
-    opacity: 100;
-    height: 50px;
-    width: 50px;
-    border: 5px;
-    cursor: pointer;
-}
 
 
 label {
-font-family: 'Ubuntu';
-font-weight: bold;
+    font-family: 'Ubuntu';
+    font-weight: bold;
 }
 
 option {
-font-family: 'Ubuntu';
-font-weight: bold;
+    font-family: 'Ubuntu';
+    font-weight: bold;
 }
 
 .composition-dropdown {
@@ -529,12 +423,11 @@ font-weight: bold;
 .slider-container {
     display: flex;
     flex-direction: column;
-    gap: 15px;
 }
 
 .slider-class {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 5px;
 }

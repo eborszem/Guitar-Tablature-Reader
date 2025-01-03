@@ -81,7 +81,7 @@ public class CompositionRepository {
         return measureIdInt;
     }
 
-    public int addMeasureToRepo2(Measure m, int compositionId, int measureNumber) {
+    public int addMeasureToRepo2(Measure m, int compositionId, int measureNumber, boolean duplicating) {
         // Create a KeyHolder to capture the auto-generated key for the measure ID
         KeyHolder keyHolder = new GeneratedKeyHolder();
         // Insert measure and retrieve the auto-generated ID
@@ -102,16 +102,32 @@ public class CompositionRepository {
             throw new RuntimeException("Failed to get id");
         }
         int measureId = measureId_Number.intValue();
-        
         String sql2 = "INSERT INTO Chords (measure_id, low_e_string, a_string, d_string, g_string, b_string, high_e_string, duration, chord_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        Note low_e_string = m.getChord().getNote();
-        Note a_string = low_e_string.next;
-        Note d_string = a_string.next;
-        Note g_string = d_string.next;
-        Note b_string = g_string.next;
-        Note high_e_string = b_string.next;
-        int duration = low_e_string.getDuration();
-        jdbcTemplate.update(sql2, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, 0); // chord_number == 0, as a new measure will only have a single chord/rest
+        if (duplicating) {
+            int i = 0;
+            Chord c = m.getChord();
+            while (c != null) {
+                Note high_e_string = c.getNote();
+                Note b_string = high_e_string.next;
+                Note g_string = b_string.next;
+                Note d_string = g_string.next;
+                Note a_string = d_string.next;
+                Note low_e_string = a_string.next;
+                int duration = low_e_string.getDuration();
+                jdbcTemplate.update(sql2, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, i); // chord_number == 0, as a new measure will only have a single chord/rest
+                c = c.getNext();
+                i++;
+            }
+        } else {
+            Note low_e_string = m.getChord().getNote();
+            Note a_string = low_e_string.next;
+            Note d_string = a_string.next;
+            Note g_string = d_string.next;
+            Note b_string = g_string.next;
+            Note high_e_string = b_string.next;
+            int duration = low_e_string.getDuration();
+            jdbcTemplate.update(sql2, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, 0); // chord_number == 0, as a new measure will only have a single chord/rest
+        }
         return measureId;
     }
 
@@ -131,39 +147,33 @@ public class CompositionRepository {
         int measureNumber = getMeasureNumber(compositionId, measureId);
         // System.out.println("&&&orig measure number===" + measureNumber);
         incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
-        int newID = addMeasureToRepo2(new Measure(new Chord(note)), compositionId, measureNumber + 1); // goes 1 after current measure
-        int measureNumber2 = getMeasureNumber(compositionId, newID);
+        int newID = addMeasureToRepo2(new Measure(new Chord(note)), compositionId, measureNumber + 1, false); // goes 1 after current measure
+        //int measureNumber2 = getMeasureNumber(compositionId, newID);
         // System.out.println("&&&NEW measure number===" + measureNumber2);
     }
 
     // /* Same as above, but measure retains the chords from its "parent". */
-    // public void duplicateMeasure(int measureId, int compositionId) {
-    //     List<Chord> chords = findChordsByCompositionIdAndMeasureId(compositionId, measureId);
-    //     int duration = 4;
-    //     for (Chord c : chords) {
-    //         Note note = new Note(-1, 0, duration, false);
-    //         Note dummy = note;
-    //         while (c != null) {
-    //             note.next = c.getNote();
-    //             c.getNote().getNext();
-    //             note = note.next;
-    //         }
-            
-
-
-    //     }
-    //     Note note = new Note(-1, 0, duration, true);
-    //     note.next = new Note(-1, 1, duration, true);
-    //     note.next.next =  new Note(-1, 2, duration, true);
-    //     note.next.next.next = new Note(-1, 3, duration, true);
-    //     note.next.next.next.next = new Note(-1, 4, duration, true);
-    //     note.next.next.next.next.next = new Note(-1, 5, duration, true);
-    //     int measureNumber = getMeasureNumber(compositionId, measureId);
-    //     // System.out.println("&&&orig measure number===" + measureNumber);
-    //     incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
-    //     int newID = addMeasureToRepo2(new Measure(new Chord(note)), compositionId, measureNumber + 1); // goes 1 after current measure
-    //     getMeasureNumber(compositionId, newID);
-    // }
+    public void duplicateMeasure(int measureId, int compositionId) {
+        System.out.println("hello world");
+        List<Chord> chords = findChordsByCompositionIdAndMeasureId(compositionId, measureId);
+        // System.out.println("*test==="+chords.get(0).getNote().getFretNumber());
+        // System.out.println("*test==="+chords.get(1).getNote().getFretNumber());
+        // System.out.println("*test==="+chords.get(2).getNote().getFretNumber());
+        Chord chord = new Chord();
+        Chord dummy = chord;
+        for (Chord c : chords) {
+            chord.setNext(c);
+            chord = chord.getNext();
+        }
+        // System.out.println("durations====="+x.getNext().getNote().getDuration());
+        // System.out.println(x.getNext().getNext().getNote().getDuration());
+        // System.out.println(x.getNext().getNext().getNext().getNote().getDuration());
+        int measureNumber = getMeasureNumber(compositionId, measureId);
+        // System.out.println("&&&orig measure number===" + measureNumber);
+        incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
+        int newID = addMeasureToRepo2(new Measure(dummy.getNext()), compositionId, measureNumber + 1, true); // goes 1 after current measure
+        // getMeasureNumber(compositionId, newID);
+    }
 
     // Note: "Measure numbers" are the index of the measure in the composition. The lowest numbered measures are first, and the highest numbered measures are last
     // "Measure IDs" are different, being a unique identifier across all compositions (However, I still like to check the composition ID in order to be safe)
@@ -187,6 +197,11 @@ public class CompositionRepository {
     public void deleteChordsInMeasure(int measureId) {
         String sql = "DELETE FROM Chords WHERE measure_id = ?";
         jdbcTemplate.update(sql, measureId);
+    }
+
+    public void deleteChord(int measureId, int chordLocation) {
+        String sql = "DELETE FROM Chords WHERE measure_id = ? AND chord_number = ?";
+        jdbcTemplate.update(sql, measureId, chordLocation);
     }
 
     public List<Chord> findChordsByCompositionId(int compositionId) {
