@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,7 @@ import org.springframework.ui.Model;
 @Controller
 public class DemoController {
 
-    public static int globalCompositionId = 2; // composition 1 is chosen by default
+    public static int globalCompositionId = 1; // composition 1 is chosen by default
     @Autowired
     CompositionRepository cr;
 
@@ -39,7 +40,7 @@ public class DemoController {
     }
 
     @GetMapping("/page")
-    public List<Measure> test(Model model) {
+    public String test(Model model) {
         if (globalCompositionId == 1) {
             
         }
@@ -57,7 +58,21 @@ public class DemoController {
         System.out.println("END COMPOSITION PRINT");
         model.addAttribute("allMeasures", cr.getMeasures(globalCompositionId));
         model.addAttribute("allCompositions", cr.getAllCompositions());
-        Composition x = cr.getCompositionInfo(globalCompositionId);
+        Composition x;
+        boolean initialCompositionExists = true;
+        try {
+            x = cr.getCompositionInfo(globalCompositionId);
+        } catch  (EmptyResultDataAccessException e) { // composotions table is empty, so make an initial composition
+            System.out.println("NO COMPOSITIONS EXIST: creating a new composition");
+            globalCompositionId = cr.addNewComposition("initial composition", "new user");
+            x = cr.getCompositionInfo(globalCompositionId);
+            initialCompositionExists = false;
+        }
+
+        if (!initialCompositionExists) {
+            return "redirect:/page";
+        }
+        
         model.addAttribute("compositionInfo", x);
         //System.out.println("1st measure object="+composition.getMeasure());
         List<Chord> chords = cr.findChordsByCompositionId(1);
@@ -98,7 +113,8 @@ public class DemoController {
         // System.out.println(list.get(2).getNext().getNext().getChord().getNext().getNote().getNext().getNext().getNext().getNext().getFretNumber());
         // System.out.println(list.get(2).getNext().getNext().getChord().getNext().getNote().getNext().getNext().getNext().getNext().getNext().getFretNumber());
         // System.out.println("-----TEST END-----");
-        return cr.getMeasures(globalCompositionId);
+        System.out.println("ID="+globalCompositionId);
+        return "page";
     }
 
 

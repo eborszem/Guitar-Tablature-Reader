@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# db password file
+src/main/resources/db-password.properties

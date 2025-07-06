@@ -28,3 +28,20 @@ Notice the placement of the dots/numbers is where the fingers go when you play a
 This project allows for users to create and play guitar tablature. Users can make songs, which are stored in a database and persist, and seamlessly switch between them. Measures can be added to a song by either using the button at the top of the page or by hovering over any measure and clicking the ```+``` symbol. Using ```+``` will add a blank measure immediately after the measure ```+``` was clicked on. Hovering over a measure also reveals a trash can symbol, to delete the measure, and a copy button, which duplicates the measure with all its chords/notes (the new measure is again placed immediately after the measure that was copied).
 
 When loading a new song (or if there are no songs yet), the user sees a blank composition (except for one measure with a rest). You can add measures, which will be prepopulated with a rest (represented with ```X```s). When the user clicks on a chord (represented by a stack of numbers, as seen above with the E major chord), they will be shown a virtual fretboard. The virtual fretboard has the notes of the selected chord prefilled on all six guitar strings just as they would appear if you were physically playing a guitar. You can modify the chord's notes (by clicking anywhere on the fretboard) and duration. You can also choose to delete it entirely. A chord can easily turn into a rest by deselecting every note in the chord.
+
+### Steps to run locally:
+1. **Clone the repository:**
+```bash
+git clone https://github.com/eborszem/Guitar-Tablature-Reader.git
+cd Guitar-Tablature-Reader
+```
+2. **Configure the database:**
+- Update your database credentials in `application.properties` (located in website/demo/src/main/resources)
+
+3. **Run the backend:**
+```bash
+cd website/demo
+./mvnw spring-boot:run
+ ```
+4. **Access the app:**
+- Open your browser at `http://localhost:8080/page`

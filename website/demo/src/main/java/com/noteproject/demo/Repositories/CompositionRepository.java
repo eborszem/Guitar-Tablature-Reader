@@ -635,21 +635,9 @@ public class CompositionRepository {
     
     public Composition getCompositionInfo(int compositionId) {
         String sql = "SELECT title, composer, time FROM Compositions WHERE id = ?";
-
-        while (true) {
-            try {
-                return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
-                    new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
-                );
-            } catch (EmptyResultDataAccessException e) {
-                System.out.println("NO COMPOSITIONS EXIST: comp id = " + compositionId);
-                //return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
-                //    new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
-                //);
-                //return getCompositionById(addNewComposition("placeholder title", "placeholder composer"));
-                compositionId++; // increment until we find a composition
-            }
-        }
+        return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
+            new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
+        );
     }
 
     public Composition getCompositionById(int compIdInt) {
