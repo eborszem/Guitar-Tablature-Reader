@@ -4,22 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.noteproject.demo.Model.*;
 import com.noteproject.demo.Repository.MeasureRepository;
-
 import org.springframework.ui.Model;
+
 @Controller
 public class MeasureController {
     @Autowired
@@ -54,7 +51,7 @@ public class MeasureController {
         Chord c = new Chord(wholeRest);
         Measure m = new Measure(c);
         
-        int measureId = mr.addMeasureToRepo(m, DemoController.globalCompositionId);
+        int measureId = mr.addMeasureToRepo(m, HomeController.globalCompositionId);
 
         List<Map<String, Object>> res = new ArrayList<>();
         Map<String, Object> chord = new HashMap<>();
@@ -74,13 +71,13 @@ public class MeasureController {
 
     @RequestMapping(value = "/addMeasure", method = RequestMethod.POST)
     public ResponseEntity<String> addMeasure(@RequestParam("measureId") int measureId) {
-        mr.addMeasure(measureId, DemoController.globalCompositionId);
+        mr.addMeasure(measureId, HomeController.globalCompositionId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/duplicateMeasure", method = RequestMethod.POST)
     public ResponseEntity<String> duplicateMeasure(@RequestParam("measureId") int measureId) {
-        mr.duplicateMeasure(measureId, DemoController.globalCompositionId);
+        mr.duplicateMeasure(measureId, HomeController.globalCompositionId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 

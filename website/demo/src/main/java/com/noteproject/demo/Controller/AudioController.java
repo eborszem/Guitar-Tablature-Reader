@@ -15,18 +15,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.*;
 
 @RestController
-public class DemoRestController {
+public class AudioController {
     @Autowired
     CompositionRepository cr;
     @Autowired
     CompositionService cs;
 
+    /*
+     * Sends all of the composition's chords (comprised of notes) and their durations to be played by the javascript synth.
+     * Returns an arraylist of chords. Chords are an arraylist of notes. Notes are stored as an integer
+     * array containing the fretNumber, stringNumber, and duration.
+     */
     @GetMapping("/play")
     public ArrayList<ArrayList<int[]>> play(Model model) {
         //String compositionString = fileService.readFile("composition.txt");
         //Composition composition = new Composition().readComposition(compositionString);
         //Measure measure = composition.getMeasure();
-        Measure measure = cs.formatComposition(DemoController.globalCompositionId);
+        Measure measure = cs.formatComposition(HomeController.globalCompositionId);
         Measure m = measure;
         ArrayList<ArrayList<int[]>> allChords = new ArrayList<>();
         while (m != null) {
@@ -48,12 +53,4 @@ public class DemoRestController {
         System.out.println(allChords.toString());
         return allChords;
     }
-    
-    /*// editing a chord
-    @GetMapping("/updateChord")
-    public void updateChord(@RequestParam String param) {
-        
-    }*/
-    
-    
 }

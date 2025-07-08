@@ -1,5 +1,6 @@
 package com.noteproject.demo.Controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.noteproject.demo.Model.*;
 import com.noteproject.demo.Repository.ChordRepository;
-import com.noteproject.demo.Repository.CompositionRepository;
 import com.noteproject.demo.Service.ChordService;
 import com.noteproject.demo.Service.CompositionService;
 
+@Controller
 public class ChordController {    
     @Autowired
     CompositionService cs;
@@ -54,7 +55,7 @@ public class ChordController {
         // System.out.println("measure=" + measure + ", chord=" + chord + ", duration=" + duration);
         System.out.println("*****measureLocation=" + measureLocation + ", measureId=" + measureId);
         System.out.println("*****chord=" + chordLocation);
-        Measure measures = cs.formatComposition(DemoController.globalCompositionId);
+        Measure measures = cs.formatComposition(HomeController.globalCompositionId);
         // navigate to the chord in the composition
         for (int i = 0; i < measureLocation; i++) {
             measures = measures.getNext();
@@ -123,7 +124,7 @@ public class ChordController {
 
         if (durUpdate) {
             System.out.println("newDuration="+newDuration+", oldDur="+oldDur);
-            chs.updateDurations(newDuration, oldDur, updatedChord, measureId, chordLocation, DemoController.globalCompositionId);
+            chs.updateDurations(newDuration, oldDur, updatedChord, measureId, chordLocation, HomeController.globalCompositionId);
         } else {
             // was above if previously, moved here to avoid possible bugs
             chr.updateChord(updatedChord, measureId, chordLocation);
