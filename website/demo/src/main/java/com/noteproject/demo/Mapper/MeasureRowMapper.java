@@ -1,14 +1,8 @@
 package com.noteproject.demo.Mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.springframework.jdbc.core.RowMapper;
-
-import com.noteproject.demo.Model.Chord;
-
-import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
-import com.noteproject.demo.Model.Note;
 
 public class MeasureRowMapper implements RowMapper<Measure> {
     @Override

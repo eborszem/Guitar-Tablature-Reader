@@ -6,8 +6,6 @@ import org.springframework.jdbc.core.RowMapper;
 
 import com.noteproject.demo.Model.Chord;
 
-import com.noteproject.demo.Model.Composition;
-import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Note;
 public class ChordRowMapper implements RowMapper<Chord> {
     @Override

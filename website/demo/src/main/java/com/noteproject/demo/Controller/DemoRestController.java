@@ -1,39 +1,32 @@
-package com.noteproject.demo;
+package com.noteproject.demo.Controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Note;
-import com.noteproject.demo.Repositories.CompositionRepository;
+import com.noteproject.demo.Repository.CompositionRepository;
+import com.noteproject.demo.Service.CompositionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.*;
-import org.springframework.web.bind.annotation.RequestParam;
-
-
 
 @RestController
 public class DemoRestController {
-    
     @Autowired
     CompositionRepository cr;
-
-    private final FileService fileService;
-    public DemoRestController(FileService fileService) {
-        this.fileService = fileService;
-    }
+    @Autowired
+    CompositionService cs;
 
     @GetMapping("/play")
     public ArrayList<ArrayList<int[]>> play(Model model) {
         //String compositionString = fileService.readFile("composition.txt");
         //Composition composition = new Composition().readComposition(compositionString);
         //Measure measure = composition.getMeasure();
-        Measure measure = cr.formatComposition(DemoController.globalCompositionId);
+        Measure measure = cs.formatComposition(DemoController.globalCompositionId);
         Measure m = measure;
         ArrayList<ArrayList<int[]>> allChords = new ArrayList<>();
         while (m != null) {

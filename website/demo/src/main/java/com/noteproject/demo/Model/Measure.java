@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Measure {
-    Chord chord;  // chords in the measure
+    Chord chord; // chords objects in the measure
     public Measure next;
-	//Measure prev;
-	private int noteValue;  // which note gets the beat. Quarter, half, etc.
+	private int noteValue; // which note gets the beat. Quarter, half, etc.
 	private int numNoteValuesPerMeasure;  // how many note beats are present in the measure
 	private int numBeats = noteValue * numNoteValuesPerMeasure;
     private int id;

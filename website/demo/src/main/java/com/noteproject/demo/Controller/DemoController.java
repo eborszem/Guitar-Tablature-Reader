@@ -1,13 +1,11 @@
-package com.noteproject.demo;
+package com.noteproject.demo.Controller;
 
-import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,11 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import com.noteproject.demo.Model.Chord;
-import com.noteproject.demo.Model.Composition;
-import com.noteproject.demo.Model.Measure;
-import com.noteproject.demo.Model.Note;
-import com.noteproject.demo.Repositories.CompositionRepository;
+import com.noteproject.demo.File.FileService;
+import com.noteproject.demo.Model.*;
+import com.noteproject.demo.Repository.*;
+import com.noteproject.demo.Service.*;
 
 import org.springframework.ui.Model;
 
@@ -33,30 +30,30 @@ public class DemoController {
     public static int globalCompositionId = 1; // composition 1 is chosen by default
     @Autowired
     CompositionRepository cr;
+    @Autowired
+    CompositionService cs;
+    @Autowired
+    MeasureRepository mr;
+    @Autowired
+    ChordRepository chr;
+    @Autowired
+    ChordService chs;
 
     private final FileService fileService;
     public DemoController(FileService fileService) {
         this.fileService = fileService;
     }
 
-    @GetMapping("/page")
-    public String test(Model model) {
+    @GetMapping("/")
+    public String page(Model model) {
         if (globalCompositionId == 1) {
             
         }
-        //cr.insertRecord(++index);
-        /*Composition dummy = new Composition();
-        Composition c = dummy.readComposition("/a.txt");
-        System.out.println("start of getmapping");
-        Measure m = c.getMeasure();
-        model.addAttribute("measure", m);*/
         String compositionString = fileService.readFile("composition.txt");
-        //System.out.println("composition as a string="+compositionString);
         Composition composition = new Composition().readComposition(compositionString);
         System.out.println("START COMPOSITION PRINT");
-        //composition.printComposition(composition);
         System.out.println("END COMPOSITION PRINT");
-        model.addAttribute("allMeasures", cr.getMeasures(globalCompositionId));
+        model.addAttribute("allMeasures", mr.getMeasures(globalCompositionId));
         model.addAttribute("allCompositions", cr.getAllCompositions());
         Composition x;
         boolean initialCompositionExists = true;
@@ -64,7 +61,7 @@ public class DemoController {
             x = cr.getCompositionInfo(globalCompositionId);
         } catch  (EmptyResultDataAccessException e) { // composotions table is empty, so make an initial composition
             System.out.println("NO COMPOSITIONS EXIST: creating a new composition");
-            globalCompositionId = cr.addNewComposition("initial composition", "new user");
+            globalCompositionId = cs.addNewComposition("initial composition", "new user");
             x = cr.getCompositionInfo(globalCompositionId);
             initialCompositionExists = false;
         }
@@ -75,7 +72,7 @@ public class DemoController {
         
         model.addAttribute("compositionInfo", x);
         //System.out.println("1st measure object="+composition.getMeasure());
-        List<Chord> chords = cr.findChordsByCompositionId(1);
+        List<Chord> chords = chr.findChordsByCompositionId(1);
         for (Chord c : chords) {
             Note highE = c.getNote();
             Note b = highE.next;
@@ -140,7 +137,7 @@ public class DemoController {
         Chord c = new Chord(wholeRest);
         Measure m = new Measure(c);
         
-        int measureId = cr.addMeasureToRepo(m, globalCompositionId);
+        int measureId = mr.addMeasureToRepo(m, globalCompositionId);
 
         List<Map<String, Object>> res = new ArrayList<>();
         Map<String, Object> chord = new HashMap<>();
@@ -154,25 +151,25 @@ public class DemoController {
 
     @RequestMapping(value = "/deleteMeasure", method = RequestMethod.POST)
     public ResponseEntity<String> deleteMeasure(@RequestParam("measureId") int measureId) {
-        cr.deleteMeasure(measureId);
+        mr.deleteMeasure(measureId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/addMeasure", method = RequestMethod.POST)
     public ResponseEntity<String> addMeasure(@RequestParam("measureId") int measureId) {
-        cr.addMeasure(measureId, globalCompositionId);
+        mr.addMeasure(measureId, globalCompositionId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/duplicateMeasure", method = RequestMethod.POST)
     public ResponseEntity<String> duplicateMeasure(@RequestParam("measureId") int measureId) {
-        cr.duplicateMeasure(measureId, globalCompositionId);
+        mr.duplicateMeasure(measureId, globalCompositionId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/deleteChord", method = RequestMethod.POST)
     public ResponseEntity<String> deleteChord(@RequestParam("measureId") int measureId, @RequestParam("chordLocation") int chordLocation) {
-        cr.deleteChord(measureId, chordLocation);
+        chr.deleteChord(measureId, chordLocation);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
@@ -204,7 +201,7 @@ public class DemoController {
         // System.out.println("measure=" + measure + ", chord=" + chord + ", duration=" + duration);
         System.out.println("*****measureLocation=" + measureLocation + ", measureId=" + measureId);
         System.out.println("*****chord=" + chordLocation);
-        Measure measures = cr.formatComposition(globalCompositionId);
+        Measure measures = cs.formatComposition(globalCompositionId);
         // navigate to the chord in the composition
         for (int i = 0; i < measureLocation; i++) {
             measures = measures.getNext();
@@ -273,10 +270,10 @@ public class DemoController {
 
         if (durUpdate) {
             System.out.println("newDuration="+newDuration+", oldDur="+oldDur);
-            cr.updateDurations(newDuration, oldDur, updatedChord, measureId, chordLocation, globalCompositionId);
+            chs.updateDurations(newDuration, oldDur, updatedChord, measureId, chordLocation, globalCompositionId);
         } else {
             // was above if previously, moved here to avoid possible bugs
-            cr.updateChord(updatedChord, measureId, chordLocation);
+            chr.updateChord(updatedChord, measureId, chordLocation);
         }
         return new ResponseEntity<>("Chord updated", HttpStatus.OK);
     }
@@ -292,6 +289,6 @@ public class DemoController {
     @ResponseBody
     public void newComposition(@RequestParam("title") String title, @RequestParam("composer") String composer) {
         System.out.println("NEW COMP BEING ADDED");
-        globalCompositionId = cr.addNewComposition(title, composer); // adds new comp and measure to tables
+        globalCompositionId = cs.addNewComposition(title, composer); // adds new comp and measure to tables
     }
 }
