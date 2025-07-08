@@ -44,4 +44,4 @@ cd website/demo
 ./mvnw spring-boot:run
  ```
 4. **Access the app:**
-- Open your browser at `http://localhost:8080/page`
+- Open your browser at `http://localhost:8080/`
