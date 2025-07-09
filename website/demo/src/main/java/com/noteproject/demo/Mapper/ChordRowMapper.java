@@ -1,12 +1,10 @@
 package com.noteproject.demo.Mapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.springframework.jdbc.core.RowMapper;
+import com.noteproject.demo.Model.*;
 
-import com.noteproject.demo.Model.Chord;
-
-import com.noteproject.demo.Model.Note;
 public class ChordRowMapper implements RowMapper<Chord> {
     @Override
     public Chord mapRow(ResultSet rs, int rowNum) throws SQLException {

@@ -5,7 +5,6 @@ let synth = new Tone.PolySynth(Tone.Synth, {
     type: "sine",
 }).toDestination();
 
-
 synth.maxPolyphony = 1000; // prevents chords being skipped when composition is played fast
 Tone.Transport.bpm.value = 120;
 // Define note values
@@ -57,27 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
         Tone.Transport.bpm.value = curBpm;
         localStorage.setItem('bpm', curBpm); // save bpm
     });
-    
-
-    
-
-    // const pauseBtn = document.getElementById("pause-btn");
-    // pauseBtn.addEventListener("click", async () => {
-    //     if (isPaused) { // means we have clicked the button to resume
-    //         //cycleChordBoxes();
-    //         isPaused = false;
-    //         Tone.Transport.start();
-    //         pianoPart.start("+0.1", currentTime); // start playing again from the paused time
-    //         // pauseBtn.textContent = "Pause";
-    //         pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-    //     } else { // means we have clicked the button to pause
-    //         isPaused = true;
-    //         currentTime = Tone.Transport.seconds;
-    //         Tone.Transport.pause();
-    //         pianoPart.stop();
-    //         pauseBtn.textContent = "Resume";
-    //     }
-    // });
 
     /* This code executes upon page being loaded. Sets up an array containing chords    */   
     /* that will be played as well as durations.                                        */    
@@ -157,17 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 // so, t / 2 = the current second in the song
             }
 
-            /*function getChord(notes) {
-                console.log("notes..."+notes)
-                let chordArray = [];
-                for (let i = 0; i < notes.length; i++) {
-                    let string = notes[i][1];
-                    let fret = notes[i][0];
-                    chordArray.push(FRETBOARD[string][fret]);
-                }
-                return chordArray;
-            }*/
-
             function getDurationString(dur) {
                 switch (dur) {
                     case SIXTEENTH_NOTE: return "16n";
@@ -193,81 +160,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
-    /*
-    // moving beam
-    let curIndex = 0;
-    const chordBoxes = document.querySelectorAll('.chord-box');
-    function highlightChordBox(index) {
-        chordBoxes.forEach((box, i) => {
-            box.classList.toggle("active", i == index);
-            // debugging info
-            if (i == index) {
-                console.log(i + ", " + array[i]);
-            }
-        });
-    }
-
-    function durToInt(d) {
-        switch (d) {
-            case "16n": return .25;
-            case "8n": return .5;
-            case "4n": return 1;
-            case "2n": return 2;
-            case "1n": return 4;
-            default: return 1; // default to quarter note
-        }
-    }
-    let isPaused = false; // pause button (as opposed to resume button) is disabled
-    
-    function cycleChordBoxes() {
-        if (curIndex >= array.length)
-            return;
-        if (isPaused)
-            return;
-        const durInteger = durToInt(array[curIndex].duration);
-        highlightChordBox(curIndex);
-        console.log("dur=" + durInteger + ", " + array[curIndex].time);
-        setTimeout(() => {
-            cycleChordBoxes();
-        }, durInteger * 1000 / 2); // convert to milliseconds
-        // currently must divide by 2 to accommodate for 120 beats per minute == 1 beat every 2 seconds
-        // without halving it, a quarter note for example would be one second (two beats) instead of 0.5 seconds (one beat)
-        curIndex++;
-    }*/
-    // end moving beam
-
-    // Function to highlight the current chord box
-    // const highlightChordBox = (index) => {
-    //     document.querySelectorAll(".chord-box").forEach((box, i) => {
-    //         if (i === index) {
-    //             box.classList.add("active"); // Add highlight
-    //         } else {
-    //             box.classList.remove("active"); // Remove highlight
-    //         }
-    //     });
-    // };
-      
-    // function timeToSeconds(timeString) {
-    //     const [seconds] = timeString.split(':').map(Number);
-    //     return seconds;
-    // }
-
-    // function durationToSeconds(duration) {
-    //     const secondsPerBeat = 60 / Tone.Transport.bpm.value;
-    //     let fraction = 1; // default is whole note
-    //     switch(duration) {
-    //         case "2n": fraction = 0.5; break;
-    //         case "4n": fraction = 0.25; break;
-    //         case "8n": fraction = 0.125; break;
-    //         case "16n": fraction = 0.0625; break;
-    //     }
-    //     return secondsPerBeat * fraction;
-    // }
 
     /* PLAY AND PAUSE BUTTONS */
     const playBtn = document.getElementById("play-btn");
     let currentTime = 0;
-    // let isPaused = false;
     let playing = false;
     playBtn.addEventListener("click", async () => {
         await Tone.start();
@@ -276,24 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
             pianoPart.start("+0.1", currentTime);
             Tone.Transport.start();
             playing = true;
-            
-            // setInterval(() => {
-            //     const currentTime = Tone.Transport.seconds;
-            //     let activeIndex = -1;
-          
-            //     // Find the currently active chord based on playback time
-            //     array.forEach((chord, index) => {
-            //         console.log("chord.time="+timeToSeconds(chord.time) + " currentTime="+currentTime);
-            //         if (currentTime >= timeToSeconds(chord.time) && currentTime < timeToSeconds(chord.time) + durationToSeconds(chord.duration)) {
-            //             activeIndex = index;
-            //             console.log("REACHED INTERVAL");
-            //         }
-            //     });
-          
-            //     // Highlight the corresponding chord box
-            //     highlightChordBox(activeIndex);
-            //   }, 100); // Check every 100ms for smooth updates
-              
             const restartBtn = document.getElementById('restart-btn');
             restartBtn.style.display = "block";
             playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
@@ -310,17 +188,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const restartBtn = document.getElementById("restart-btn");
     restartBtn.addEventListener("click", async () => {
         console.log("RESTARTING NOW--currentTime="+currentTime);
-        // if (Tone.Transport.state !== "paused") {
-        // }
-        // if (pianoPart.state !== "stopped") {
-        // }
         currentTime = 0;
         Tone.Transport.stop();
         pianoPart.stop();
-        // Tone.Transport.start(0);
-        // pianoPart.start(0);
         playing = false;
         playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-        // await Tone.start();
     });
 });

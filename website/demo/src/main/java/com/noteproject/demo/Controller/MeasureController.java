@@ -29,7 +29,8 @@ public class MeasureController {
         System.out.println("test");
         return "success";
     }
-     @PostMapping("/createNewMeasure")
+    
+    @PostMapping("/createNewMeasure")
     @ResponseBody
     public List<Map<String, Object>> createNewMeasure(Model model) {
         System.out.println("reached create new measure post mapping");

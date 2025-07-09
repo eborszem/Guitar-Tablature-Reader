@@ -9,8 +9,7 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import com.noteproject.demo.Mapper.ChordRowMapper;
-import com.noteproject.demo.Model.Chord;
-import com.noteproject.demo.Model.Note;
+import com.noteproject.demo.Model.*;
 
 @Repository
 public class ChordRepository {
@@ -131,7 +130,5 @@ public class ChordRepository {
                 ps.setInt(9, chordNum);
             }
         });
-        
     }
-
 }
