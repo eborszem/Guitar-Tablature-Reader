@@ -49,10 +49,4 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
-
-    
-
-
-
-
 });
