@@ -1,3 +1,11 @@
+.interface {
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+}
 
 .composition-box {
     border: 2px solid rgb(0, 0, 0);

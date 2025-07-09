@@ -25,8 +25,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHomePage(Model model) {
-        System.out.println("START COMPOSITION PRINT");
-        System.out.println("END COMPOSITION PRINT");
         model.addAttribute("allMeasures", mr.getMeasures(globalCompositionId));
         model.addAttribute("allCompositions", cr.getAllCompositions());
         Composition compInfo;
@@ -48,18 +46,18 @@ public class HomeController {
         model.addAttribute("compositionInfo", compInfo);
 
         // print for testing
-        List<Chord> chords = chr.findChordsByCompositionId(1);
-        for (Chord c : chords) {
-            Note highE = c.getNote();
-            Note b = highE.next;
-            Note g = b.next;
-            Note d = g.next;
-            Note a = d.next;
-            Note lowE = a.next;
-            System.out.printf("E=%d, a=%d, d=%d, g=%d, b=%d, e=%d\n", lowE.getFretNumber(), a.getFretNumber(), d.getFretNumber(), g.getFretNumber(), b.getFretNumber(), highE.getFretNumber());
-            System.out.println("duration=" + highE.getDuration()); // duration is accessed through notes
-            System.out.println("id=" + c.getId() + ", measure id=" + c.getMeasureId());
-        }
+        // List<Chord> chords = chr.findChordsByCompositionId(1);
+        // for (Chord c : chords) {
+        //     Note highE = c.getNote();
+        //     Note b = highE.next;
+        //     Note g = b.next;
+        //     Note d = g.next;
+        //     Note a = d.next;
+        //     Note lowE = a.next;
+        //     System.out.printf("E=%d, a=%d, d=%d, g=%d, b=%d, e=%d\n", lowE.getFretNumber(), a.getFretNumber(), d.getFretNumber(), g.getFretNumber(), b.getFretNumber(), highE.getFretNumber());
+        //     System.out.println("duration=" + highE.getDuration()); // duration is accessed through notes
+        //     System.out.println("id=" + c.getId() + ", measure id=" + c.getMeasureId());
+        // }
         
         final String[][] FRETBOARD = {
             {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A"},

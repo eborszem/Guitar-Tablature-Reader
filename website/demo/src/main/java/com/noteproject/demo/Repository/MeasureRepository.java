@@ -209,7 +209,6 @@ public class MeasureRepository {
     }
 
     /* TODO: duplicate function from cs, fix */
-
     public Measure formatComposition(int compositionId) {
         // 1. group chords by their measure ids (relative position in measure)
         // 2. sort all measures by their measure number (relative position in composition)

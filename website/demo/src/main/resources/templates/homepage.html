@@ -24,41 +24,49 @@
 </head>
 <body>
     <div class="interface">
-        <span class="tabreader">GUITAR MUSIC READER</span>
-        <span class="title" th:text="${compositionInfo.title} + ' by ' + ${compositionInfo.composer}"></span>
-        <div class="button-container">
-            <button id="add-new-measure" class="button">Add Measure</button>
-            <button id="play-btn" class="play-btn"><i class="fa-solid fa-play"></i></button>
-            <!-- <button id="pause-btn" class="pause-btn"><i class="fa-solid fa-pause"></i></button> -->
-            <button id="restart-btn" class="restart-btn"><i class="fa-solid fa-arrow-rotate-left"></i></button>
-            <button id="new-composition" class="button">New Song</button>
-            
-
-            <form id="composition-form">
-                <!-- <label for="composition">Select song</label> -->
-                <div class="dropdown-wrapper">
-                    <select id="composition-dropdown" name="selectedComposition" class="composition-dropdown">
-                        <option value="" disabled selected>Change Song</option>
-                        <option th:each="composition : ${allCompositions}" 
-                                th:value="${composition.id}"
-                                th:text="${composition.title}"></option>
-                    </select>
-                </div>
-                <!-- <button type="submit">Submit</button> -->
-            </form>
+        <div class="toolbar">
+            <span class="tabreader">GUITAR MUSIC READER</span>
+            <div class="divider"></div>
+            <span class="title" th:text="${compositionInfo.title} + ' by ' + ${compositionInfo.composer}"></span>
+            <div class="button-container">
+                <!-- <button id="add-new-measure" class="button">Add Measure</button> -->
+                <!-- <button id="pause-btn" class="pause-btn"><i class="fa-solid fa-pause"></i></button> -->
+                <button id="new-composition" class="button">New Song</button>
+                <form id="composition-form">
+                    <!-- <label for="composition">Select song</label> -->
+                    <div class="dropdown-wrapper">
+                        <select id="composition-dropdown" name="selectedComposition" class="composition-dropdown">
+                            <option value="" disabled selected>Change Song</option>
+                            <option th:each="composition : ${allCompositions}" 
+                                    th:value="${composition.id}"
+                                    th:text="${composition.title}"></option>
+                        </select>
+                    </div>
+                    <!-- <button type="submit">Submit</button> -->
+                </form>
+            </div>
         </div>
 
+
         <!--volume control and bpm control are separate from the other buttons-->
-        <div class="slider-container">
-            <div class="slider-class">
-                <label for="volume">Volume:</label>
-                <input type="range" id="volume" class="slider" min="0" max="100" value="50" step="1">
-                <span id="volumeValue">50</span>
+        <div class="controls-affecting-audio">
+            <div class="control-btns">
+                <!-- play-btn goes with the sliders -->
+                <button id="play-btn" class="play-btn"><i class="fa-solid fa-play"></i></button>
+                <!-- restart btn is initially not visible -->
+                <button id="restart-btn" class="restart-btn"><i class="fa-solid fa-arrow-rotate-left"></i></button>
             </div>
-            <div class="slider-class">
-                <label for="bpm">BPM:</label>
-                <input type="range" id="bpm" class="slider" min="50" max="300" value="120" step="1">
-                <span id="bpmValue">120</span>
+            <div class="slider-container">
+                <div class="slider">
+                    <label for="volume">Volume</label>
+                    <input type="range" id="volume" class="slider" min="0" max="100" value="50" step="1">
+                    <span id="volumeValue">50</span>
+                </div>
+                <div class="slider">
+                    <label for="bpm">BPM</label>
+                    <input type="range" id="bpm" class="slider" min="50" max="300" value="120" step="1">
+                    <span id="bpmValue">120</span>
+                </div>
             </div>
         </div>
 
