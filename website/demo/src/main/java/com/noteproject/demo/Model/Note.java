@@ -3,15 +3,20 @@ public class Note {
     int duration;  // 1 beat, 2 beats, 4, 8, 16, etc.
     int fretNumber;
     int stringNumber;  // we use fretNumber and stringNumber to get note at 
-    int interval;  // relation of note to root (e.g. in the key of C, G would be 5)
     boolean rest;
-	String noteName;
     public Note next;
     public Note(int fretNumber, int stringNumber, int duration, boolean rest) {
         this.stringNumber = stringNumber;
         this.fretNumber = fretNumber;
         this.duration = duration;
         this.rest = rest;
+        this.next = null;
+    }
+
+    public Note(int fretNumber, int stringNumber, int duration) {
+        this.stringNumber = stringNumber;
+        this.fretNumber = fretNumber;
+        this.duration = duration;
         this.next = null;
     }
 
@@ -39,14 +44,6 @@ public class Note {
         this.stringNumber = stringNumber;
     }
 
-    public int getInterval() {
-        return this.interval;
-    }
-
-    public void setInterval(int interval) {
-        this.interval = interval;
-    }
-
     public boolean isRest() {
         return this.rest;
     }
@@ -57,14 +54,6 @@ public class Note {
 
     public void setRest(boolean rest) {
         this.rest = rest;
-    }
-
-    public String getNoteName() {
-        return this.noteName;
-    }
-
-    public void setNoteName(String noteName) {
-        this.noteName = noteName;
     }
 
     public Note getNext() {

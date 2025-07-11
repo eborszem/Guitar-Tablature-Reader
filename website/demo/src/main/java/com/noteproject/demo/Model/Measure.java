@@ -28,7 +28,6 @@ public class Measure {
         while (m.chord != null) {
             int duration = m.chord.note.duration;
             while (m.chord.note != null) {
-                System.out.print(m.chord.note.interval);
                 m.chord.note = m.chord.note.next;
             }
             System.out.print(":" + duration + "\n");

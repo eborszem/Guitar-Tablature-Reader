@@ -84,24 +84,4 @@ public class Chord {
         }
         return true;
     }
-
-    public void printAllNotes() {
-        System.out.println("Chord print start");
-        Note n = this.note;
-        while (n != null) {
-            System.out.println(n.interval);
-            n = n.next;
-        }
-        System.out.println("Chord print end");
-    }
-
-    public List<Integer> getAllNoteIntervals() {
-        List<Integer> notes = new ArrayList<>();
-        while (this.note != null) {
-            notes.add(this.note.interval);
-            this.note = this.note.getNext();//this.note.next;
-        }
-        return notes;
-    }
-
 }

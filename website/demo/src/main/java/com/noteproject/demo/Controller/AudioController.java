@@ -27,22 +27,19 @@ public class AudioController {
      * array containing the fretNumber, stringNumber, and duration.
      */
     @GetMapping("/play")
-    public ArrayList<ArrayList<int[]>> play(Model model) {
-        //String compositionString = fileService.readFile("composition.txt");
-        //Composition composition = new Composition().readComposition(compositionString);
-        //Measure measure = composition.getMeasure();
+    public ArrayList<ArrayList<Note>> play(Model model) {
         Measure measure = cs.formatComposition(HomeController.globalCompositionId);
         Measure m = measure;
-        ArrayList<ArrayList<int[]>> allChords = new ArrayList<>();
+        ArrayList<ArrayList<Note>> allChords = new ArrayList<>();
         while (m != null) {
             Chord chord = m.getChord();
             while (chord != null) {
                 Note note = chord.getNote();
-                ArrayList<int[]> notesInChord = new ArrayList<>(); // one note per string
+                ArrayList<Note> notesInChord = new ArrayList<>(); // one note per string
                 while (note != null) {
                     // read in fret number and string number to turn them into specific note
                     // read in duration to play for certain period of time
-                    notesInChord.add(new int[]{note.getFretNumber(), note.getStringNumber(), note.getDuration()});
+                    notesInChord.add(new Note(note.getFretNumber(), note.getStringNumber(), note.getDuration()));
                     note = note.next;
                 }
                 allChords.add(notesInChord);
@@ -50,7 +47,7 @@ public class AudioController {
             }
             m = m.next;
         }
-        System.out.println(allChords.toString());
+        System.out.println("chords arr=" + allChords);
         return allChords;
     }
 }

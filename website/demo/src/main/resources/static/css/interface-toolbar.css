@@ -85,7 +85,13 @@
     justify-content: center;
 }
 
+/* temporary fix */
+#add-new-measure {
+    display: none;    
+}
+
 .button-container .button:hover, .play-btn:hover, .pause-btn:hover, .restart-btn:hover {
+    background-color: rgb(233, 233, 233);
     transform: scale(1.05);
 }
 
@@ -125,6 +131,7 @@
 }
 
 .dropdown-wrapper:hover .composition-dropdown {
+    background-color: rgb(233, 233, 233);
     transform: scale(1.05);
 }
 

@@ -13,7 +13,7 @@ import org.springframework.ui.Model;
 
 @Controller
 public class HomeController {
-    public static int globalCompositionId = 1; // composition 1 is chosen by default
+    public static int globalCompositionId = 26; // composition 1 is chosen by default
     @Autowired
     CompositionRepository cr;
     @Autowired
