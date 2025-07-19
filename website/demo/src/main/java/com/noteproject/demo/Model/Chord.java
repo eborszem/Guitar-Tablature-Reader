@@ -1,5 +1,8 @@
 package com.noteproject.demo.Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Chord {
     Note note;  // notes in the chord
     Chord next;
@@ -14,6 +17,11 @@ public class Chord {
     
     public Chord() {
 
+    }
+
+    public Chord(String string, String string2, String string3, String string4, String string5, String string6,
+            int int1, int int2) {
+        //TODO Auto-generated constructor stub
     }
 
     public Note getNote() {
@@ -54,5 +62,26 @@ public class Chord {
 
     public void setChordNumber(int chordNumber) {
         this.chordNumber = chordNumber;
+    }
+
+    public List<Note> getAllNotes() {
+        List<Note> notes = new ArrayList<>();
+        Note n = this.note;
+        while (n != null) {
+            notes.add(n);
+            n = n.next;
+        }
+        return notes;
+    }
+
+    public boolean allRests() {
+        Note n = this.note;
+        while (n != null) {
+            if (n.fretNumber != -1) {
+                return false;
+            }
+            n = n.next;
+        }
+        return true;
     }
 }
