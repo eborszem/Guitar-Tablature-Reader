@@ -34,3 +34,6 @@ build/
 
 # db password file
 src/main/resources/db-password.properties
+
+.DS_Store
+website/.DS_Store

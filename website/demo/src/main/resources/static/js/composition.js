@@ -8,11 +8,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var submitNewComposition = document.getElementById("submit");
     var form = document.getElementById("popup");
+    const token = localStorage.getItem('jwt');
     submitNewComposition.addEventListener("click", function() {
+        console.log("TOKEN="+token);
         const regex = /^.+$/; // makes sure that the title and composer are not empty
         var title = document.getElementById("title").value;
         var composer = document.getElementById("composer").value;
-        if (!regex.test(title) && !regex.test(composer)) {
+        if (!token) {
+            alert("User not authenticated. Please log in.");
+        } else if (!regex.test(title) && !regex.test(composer)) {
             alert("Invalid title and composer");
         } else if (!regex.test(title)) {
             alert("Invalid title");
@@ -22,13 +26,18 @@ document.addEventListener("DOMContentLoaded", function() {
             $.ajax({
                 type: "POST",
                 url: "/newComposition",
-                data: {
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
                     title: title,
                     composer: composer
-                },
-                timeout: 5000,
+                }),
                 success: function(response) {
-                    location.reload();
+                    console.log("New composition created:", response);
+                    alert("Composition added!");
                 },
             });
         }
@@ -50,7 +59,11 @@ document.addEventListener("DOMContentLoaded", function() {
         const formData = new FormData(form);
         fetch('/changeComposition', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+            },
         })
         .then(response => response.text())
         .then(data => {

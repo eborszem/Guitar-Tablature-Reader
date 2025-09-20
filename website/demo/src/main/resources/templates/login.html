@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="result"></p>
+
+    <script>
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('http://localhost:8080/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                if (response.ok) {
+                    const token = await response.text();
+                    localStorage.setItem('jwt', token);
+                    document.getElementById('result').innerHTML = 
+                        '<strong>Success! Token:</strong> ' + token;
+                    window.location.href = '/'; // redirect to home page
+                } else {
+                    document.getElementById('result').innerHTML = 
+                        'Login failed: ' + response.status;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Error: ' + error;
+            }
+        }
+    </script>
+</body>
+</html>
