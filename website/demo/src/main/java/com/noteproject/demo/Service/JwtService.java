@@ -2,7 +2,10 @@ package com.noteproject.demo.Service;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -11,10 +14,20 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-
-    private static final String secret = "b797b0865993a367422626582c2070ef367ce63432a3e7c85e10aad59a49dd46";
-    private static final Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    @Value("${jwt.secret}")
+    private String secret;
+    
+    private Key key;
     private final long EXPIRATION = 1000 * 60 * 60; // 1 hr
+
+    @PostConstruct
+    public void init() {
+        key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public Key getKey() {
+        return key;
+    }
 
     public String generateToken(String username) {
         return Jwts.builder()

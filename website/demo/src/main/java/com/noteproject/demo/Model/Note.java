@@ -1,23 +1,21 @@
 package com.noteproject.demo.Model;
 public class Note {
-    int duration;  // 1 beat, 2 beats, 4, 8, 16, etc.
-    int fretNumber;
-    int stringNumber;  // we use fretNumber and stringNumber to get note at 
-    boolean rest;
-    public Note next;
+    private int duration;  // 1 beat, 2 beats, 4, 8, 16, etc.
+    private int fretNumber;
+    private int stringNumber;  // we use fretNumber and stringNumber to get note location on fretboard
+    private boolean rest;
+
     public Note(int fretNumber, int stringNumber, int duration, boolean rest) {
         this.stringNumber = stringNumber;
         this.fretNumber = fretNumber;
         this.duration = duration;
         this.rest = rest;
-        this.next = null;
     }
 
     public Note(int fretNumber, int stringNumber, int duration) {
         this.stringNumber = stringNumber;
         this.fretNumber = fretNumber;
         this.duration = duration;
-        this.next = null;
     }
 
     public int getDuration() {
@@ -55,13 +53,4 @@ public class Note {
     public void setRest(boolean rest) {
         this.rest = rest;
     }
-
-    public Note getNext() {
-        return this.next;
-    }
-
-    public void setNext(Note next) {
-        this.next = next;
-    }
-
 }

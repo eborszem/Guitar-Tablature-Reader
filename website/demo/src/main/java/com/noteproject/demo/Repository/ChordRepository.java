@@ -17,7 +17,7 @@ public class ChordRepository {
     public ChordRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-   
+
     public void deleteChordsInMeasure(int measureId) {
         String sql = "DELETE FROM Chords WHERE measure_id = ?";
         jdbcTemplate.update(sql, measureId);
@@ -71,13 +71,14 @@ public class ChordRepository {
             chordNum = 0;
         }
         String sql = "INSERT INTO Chords (measure_id, low_e_string, a_string, d_string, g_string, " +
-                     "b_string, high_e_string, duration, chord_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        Note high_e = c.getNote();
-        Note b = high_e.getNext();
-        Note g = b.getNext();
-        Note d = g.getNext();
-        Note a = d.getNext();
-        Note low_e = a.getNext();
+                    "b_string, high_e_string, duration, chord_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        List<Note> notes = c.getNotes();
+        Note high_e = notes.get(0);
+        Note b = notes.get(1);
+        Note g = notes.get(2);
+        Note d = notes.get(3);
+        Note a = notes.get(4);
+        Note low_e = notes.get(5);
         int duration = high_e.getDuration();
 
         System.out.println("==============TEST ADD CHORD PRINTING NOTES E to e==============");
@@ -104,12 +105,13 @@ public class ChordRepository {
     public void updateChord(Chord c, int measureId, int chordNum) {
         System.out.println("TEST UPDATE CHORD DUR");
         String sql = "UPDATE Chords SET low_e_string = ?, a_string = ?, d_string = ?, g_string = ?, b_string = ?, high_e_string = ?, duration = ? WHERE measure_id = ? AND chord_number = ?";
-        Note high_e = c.getNote();
-        Note b = high_e.getNext();
-        Note g = b.getNext();
-        Note d = g.getNext();
-        Note a = d.getNext();
-        Note low_e = a.getNext();
+        List<Note> notes = c.getNotes();
+        Note high_e = notes.get(0);
+        Note b = notes.get(1);
+        Note g = notes.get(2);
+        Note d = notes.get(3);
+        Note a = notes.get(4);
+        Note low_e = notes.get(5);
         int duration = high_e.getDuration();
         System.out.println("duration is" + duration);
         System.out.println("==============TEST UPDATE CHORD PRINTING NOTES E to e==============");

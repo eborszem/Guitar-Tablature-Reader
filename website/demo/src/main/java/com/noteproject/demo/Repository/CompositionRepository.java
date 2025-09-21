@@ -31,18 +31,24 @@ public class CompositionRepository {
     //     );
     // }
 
-    public List<Composition> getAllCompositions() {
-        String sql = "SELECT id, title FROM Compositions";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> 
-            new Composition(rs.getInt("id"), rs.getString("title"))
+    public List<Composition> getAllCompositions(Long userId) {
+        String sql = "SELECT id, title, composer, time, user_id FROM Compositions WHERE user_id = ?";
+        return jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> 
+            new Composition(
+                rs.getInt("id"),
+                rs.getString("title"),
+                rs.getString("composer"),
+                rs.getTimestamp("time"),
+                rs.getLong("user_id")
+            ),
+            userId
         );
     }
-   
-    public int insertCompositionIntoDB(String title, String composer) {
-        String sql = "INSERT INTO Compositions (title, composer, time, note_value, num_note_values_per_measure) VALUES (?, ?, ?, ?, ?)";
+    public int insertCompositionIntoDB(String title, String composer, Long userId) {
+        String sql = "INSERT INTO Compositions (title, composer, time, user_id) VALUES (?, ?, ?, ?)";
         Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-        int noteValue = 4;
-        int numNotesPerMeasure = 4;
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
             connection -> {
@@ -50,8 +56,7 @@ public class CompositionRepository {
                 ps.setString(1, title);
                 ps.setString(2, composer);
                 ps.setTimestamp(3, timestamp);
-                ps.setInt(4, noteValue);
-                ps.setInt(5, numNotesPerMeasure);
+                ps.setLong(4, userId);
                 return ps;
             },
             keyHolder
@@ -64,23 +69,19 @@ public class CompositionRepository {
         return compIdInt;
     }
 
-    public Composition getCompositionInfo(int compositionId) {
-        String sql = "SELECT title, composer, time FROM Compositions WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{compositionId}, (rs, rowNum) -> 
-            new Composition(rs.getString("title"), rs.getString("composer"), rs.getTimestamp("time"))
-        );
-    }
 
     public Composition getCompositionById(int compIdInt) {
-        String sql = "SELECT title, composer, time FROM Compositions WHERE id = ?";
+        String sql = "SELECT title, composer, time, user_id FROM Compositions WHERE id = ?";
     
         try {
             return jdbcTemplate.queryForObject(sql, new Object[]{compIdInt}, (rs, rowNum) -> {
                 // Extract only title, composer, and time
                 return new Composition(
+                    compIdInt,
                     rs.getString("title"),
                     rs.getString("composer"),
-                    rs.getTimestamp("time")
+                    rs.getTimestamp("time"),
+                    rs.getLong("user_id")
                 );
             });
         } catch (EmptyResultDataAccessException e) {

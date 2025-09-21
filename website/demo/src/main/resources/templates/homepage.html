@@ -43,7 +43,8 @@
                             <option value="" disabled selected>Change Song</option>
                             <option th:each="composition : ${allCompositions}" 
                                     th:value="${composition.id}"
-                                    th:text="${composition.title}"></option>
+                                    th:text="${composition.title}">
+                            </option>
                         </select>
                     </div>
                     <!-- <button type="submit">Submit</button> -->
@@ -93,25 +94,28 @@
                     <div class="string"></div>
                     <div class="string"></div>
                     <div class="string"></div>
-                    <div class="chord-container" th:each="chord1, chord1stat : ${measure1.allChords}">
+                    <!-- <div class="chord-container" th:each="chord1, chord1stat : ${measure1.allChords}"> -->
+                    <div class="chord-container" th:each="chord1, chord1stat : ${measure1.chords}">
                         <!-- <p class = "chord-name"th:text="'chord = ' + ${chord1}"></p> -->
                         <div class="duration-box">
-                            <!-- <span th:text="${chord1.note.duration}"></span> -->
-                            <!-- <img th:src="@{/images/${chord1.note.duration}.png}" alt="duration icon"> -->
-                            <img class="quarter-note" th:if="${chord1.note.duration == 1}" th:src="@{/images/1.png}" alt="quarter note"></img>
-                            <img class="half-note"th:if="${chord1.note.duration == 2}" th:src="@{/images/2.png}" alt="half note"></img>
-                            <img class="whole-note"th:if="${chord1.note.duration == 4}" th:src="@{/images/4.png}" alt="whole note"></img>
-                            <img class="eighth-note" th:if="${chord1.note.duration == 8}" th:src="@{/images/8.png}" alt="eighth note"></img>
-                            <img class="sixteenth-note"th:if="${chord1.note.duration == 16}" th:src="@{/images/16.png}" alt="sixteenth note"></img>
+                            <!-- <span th:text="${chord1.notes[0].duration}"></span> -->
+                            <!-- <img th:src="@{/images/${chord1.notes[0].duration}.png}" alt="duration icon"> -->
+                            <!-- the notes of the chord contain the duration -->
+                            <img class="quarter-note" th:if="${chord1.notes[0].duration == 1}" th:src="@{/images/1.png}" alt="quarter note"></img>
+                            <img class="half-note"th:if="${chord1.notes[0].duration == 2}" th:src="@{/images/2.png}" alt="half note"></img>
+                            <img class="whole-note"th:if="${chord1.notes[0].duration == 4}" th:src="@{/images/4.png}" alt="whole note"></img>
+                            <img class="eighth-note" th:if="${chord1.notes[0].duration == 8}" th:src="@{/images/8.png}" alt="eighth note"></img>
+                            <img class="sixteenth-note"th:if="${chord1.notes[0].duration == 16}" th:src="@{/images/16.png}" alt="sixteenth note"></img>
                         </div>
                         <div class="chord-box"
                             th:id="'measure' + ${measureStat.index} + 'chord' + ${chord1stat.index}"
                             th:attr="data-measure-id=${chord1.measureId},data-chord-num=${chord1.chordNumber}" 
                             th:onclick="'chordClicked(' + ${measureStat.index} + ','+ ${chord1stat.index} + ')'">
                             <!-- duration of chord is found via its notes -->
-                            <div th:each="note1 : ${chord1.allNotes}">
+                            <!-- <div th:each="note1 : ${chord1.allNotes}"> -->
+                            <div th:each="note1 : ${chord1.notes}">
                                 <p class="note"
-                                   th:attr="data-duration=${note1.duration},data-fret-number=${note1.fretNumber}">
+                                    th:attr="data-duration=${note1.duration},data-fret-number=${note1.fretNumber}">
                                     <!-- if not rest -->
                                     <span th:if="${note1.fretNumber == -1 or note1.fretNumber == -2}">X</span>
                                     <span th:unless="${note1.fretNumber == -1 or note1.fretNumber == -2}" th:text="${note1.fretNumber}"></span>

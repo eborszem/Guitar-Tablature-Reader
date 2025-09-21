@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var submitNewComposition = document.getElementById("submit");
     var form = document.getElementById("popup");
-    const token = localStorage.getItem('jwt');
+    const token = localStorage.getItem("jwt");
     submitNewComposition.addEventListener("click", function() {
         console.log("TOKEN="+token);
         const regex = /^.+$/; // makes sure that the title and composer are not empty
@@ -48,30 +48,50 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("popup").style.display = "none";
     });
 
-    const dropdown = document.getElementById('composition-dropdown');
-    dropdown.addEventListener('change', function() {
-        changeComposition();  // Call the function when an option is selected
-        console.log("testing");
-    });
+    // const dropdown = document.getElementById('composition-dropdown');
+    // dropdown.addEventListener('change', function() {
+    //     changeComposition();  // Call the function when an option is selected
+    //     console.log("testing");
+    // });
     // changing composition
-    function changeComposition() {
-        const form = document.getElementById('composition-form');
-        const formData = new FormData(form);
-        fetch('/changeComposition', {
-            method: 'POST',
-            body: formData,
+    const select = document.getElementById('composition-dropdown');
+    // const changeCompositionForm = document.getElementById('composition-form');
+    select.addEventListener('change', (e) => {
+        e.preventDefault();
+        const selectedId = select.value;
+        $.ajax({
+            type: "POST",
+            url: "/changeComposition",
             headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
+                "Authorization": "Bearer " + token
             },
-        })
-        .then(response => response.text())
-        .then(data => {
-            location.reload();
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify({
+                selectedId: selectedId,
+            }),
+            success: function(response) {
+                console.log(response);
+                // console.log("New composition created:", response);
+                // alert("Composition added!");
+            },
         });
-    }
+    });
+        
+        // fetch('/changeComposition', {
+        //     method: 'POST',
+        //     body: formData,
+        //     headers: {
+        //             "Authorization": "Bearer " + token,
+        //             "Content-Type": "application/json"
+        //     },
+        // })
+        // .then(response => response.text())
+        // .then(data => {
+        //     location.reload();
+        //     console.log(data);
+        // })
+        // .catch(error => {
+        //     console.error('Error:', error);
+        // });
 });

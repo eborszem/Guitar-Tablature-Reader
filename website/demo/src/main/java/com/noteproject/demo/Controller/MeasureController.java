@@ -37,20 +37,18 @@ public class MeasureController {
         //fileService.writeToFile("composition.txt");
         //public Note(int fretNumber, int stringNumber, int duration, boolean rest) {
         // we want to make a blank measure, with just one rest
-        Note wholeRest = new Note(-1, 0, 4, true);
-        Note wholeRest2 = new Note(-1, 1, 4, true);
-        Note wholeRest3 = new Note(-1, 2, 4, true);
-        Note wholeRest4 = new Note(-1, 3, 4, true);
-        Note wholeRest5 = new Note(-1, 4, 4, true);
-        Note wholeRest6 = new Note(-1, 5, 4, true);
-        wholeRest.next = wholeRest2;
-        wholeRest2.next = wholeRest3;
-        wholeRest3.next = wholeRest4;
-        wholeRest4.next = wholeRest5;
-        wholeRest5.next = wholeRest6;
+        List<Note> rests = new ArrayList<>();
+        rests.add(new Note(-1, 0, 4, true));
+        rests.add(new Note(-1, 1, 4, true));
+        rests.add(new Note(-1, 2, 4, true));
+        rests.add(new Note(-1, 3, 4, true));
+        rests.add(new Note(-1, 4, 4, true));
+        rests.add(new Note(-1, 5, 4, true));
         
-        Chord c = new Chord(wholeRest);
-        Measure m = new Measure(c);
+        Chord c = new Chord(rests);
+        List<Chord> chords = new ArrayList<>();
+        chords.add(c);
+        Measure m = new Measure(chords);
         
         int measureId = mr.addMeasureToRepo(m, HomeController.globalCompositionId);
 

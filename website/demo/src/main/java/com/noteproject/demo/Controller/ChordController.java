@@ -1,6 +1,10 @@
 package com.noteproject.demo.Controller;
 
 import org.springframework.stereotype.Controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,23 +59,24 @@ public class ChordController {
         // System.out.println("measure=" + measure + ", chord=" + chord + ", duration=" + duration);
         System.out.println("*****measureLocation=" + measureLocation + ", measureId=" + measureId);
         System.out.println("*****chord=" + chordLocation);
-        Measure measures = cs.formatComposition(HomeController.globalCompositionId);
+        Composition comp = cs.formatComposition(HomeController.globalCompositionId);
+        
         // navigate to the chord in the composition
-        for (int i = 0; i < measureLocation; i++) {
-            measures = measures.getNext();
-        }
-        Chord chords = measures.getChord();
-        for (int i = 0; i < chordLocation; i++) {
-            chords = chords.getNext();
-        }
+        // for (int i = 0; i < measureLocation; i++) {
+        //     measures = measures.getNext();
+        // }
+        Chord chord = comp.getMeasures().get(measureLocation).getChords().get(chordLocation);
+        // for (int i = 0; i < chordLocation; i++) {
+        //     chords = chords.getNext();
+        // }
         
         // duration must be accessed via a note
-        int dur = chords.getNote().getDuration();
+        int dur = chord.getNotes().get(0).getDuration();
         if (newDuration != 16 && newDuration != 8 && newDuration != 4 && newDuration != 2 && newDuration != 1) {
             newDuration = dur; // default to current duration
         }
 
-        System.out.println("TEST======="+chords.getNote().getDuration());
+        System.out.println("TEST======="+chord.getNotes().get(0).getDuration());
         System.out.println("new dur=" + newDuration);
         boolean durUpdate = false;
         // change duration, if it was changed
@@ -108,18 +113,20 @@ public class ChordController {
         if (updated_low_e_string == UNCHANGED) {
             val = original_low_e_string;
         }
-        Note low_e = new Note(val, 5, dur, false);
 
-        high_e.next = b;
-        b.next = g;
-        g.next = d;
-        d.next = a;
-        a.next = low_e;
+        Note low_e = new Note(val, 5, dur, false);
+        List<Note> notes = new ArrayList<>();
+        notes.add(high_e);
+        notes.add(b);
+        notes.add(g);
+        notes.add(d);
+        notes.add(a);
+        notes.add(low_e);
         System.out.println("==============CONTROLLER PRINTING NOTES E to e==============");
         System.out.println(low_e.getFretNumber() + ", " + a.getFretNumber() + ", " + d.getFretNumber() + ", " + g.getFretNumber() + ", " + b.getFretNumber() + ", " + high_e.getFretNumber());
         System.out.println("==============CONTROLLER DONE PRINTING NOTES E to e==============");
 
-        Chord updatedChord = new Chord(high_e);
+        Chord updatedChord = new Chord(notes);
         System.out.println("durUpdate="+durUpdate);
 
         if (durUpdate) {

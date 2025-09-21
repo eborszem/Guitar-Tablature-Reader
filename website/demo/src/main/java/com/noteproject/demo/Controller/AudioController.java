@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Chord;
+import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Note;
 import com.noteproject.demo.Repository.CompositionRepository;
 import com.noteproject.demo.Service.CompositionService;
@@ -28,24 +29,20 @@ public class AudioController {
      */
     @GetMapping("/play")
     public ArrayList<ArrayList<Note>> play(Model model) {
-        Measure measure = cs.formatComposition(HomeController.globalCompositionId);
-        Measure m = measure;
+        Composition comp = cs.formatComposition(HomeController.globalCompositionId);
         ArrayList<ArrayList<Note>> allChords = new ArrayList<>();
-        while (m != null) {
-            Chord chord = m.getChord();
-            while (chord != null) {
-                Note note = chord.getNote();
+        for (Measure m : comp.getMeasures()) {
+            List<Chord> chords = m.getChords();
+            for (Chord chord : chords) {
+                List<Note> notes = chord.getNotes();
                 ArrayList<Note> notesInChord = new ArrayList<>(); // one note per string
-                while (note != null) {
+                for (Note note : notes) {
                     // read in fret number and string number to turn them into specific note
                     // read in duration to play for certain period of time
                     notesInChord.add(new Note(note.getFretNumber(), note.getStringNumber(), note.getDuration()));
-                    note = note.next;
                 }
                 allChords.add(notesInChord);
-                chord = chord.getNext();
             }
-            m = m.next;
         }
         System.out.println("chords arr=" + allChords);
         return allChords;

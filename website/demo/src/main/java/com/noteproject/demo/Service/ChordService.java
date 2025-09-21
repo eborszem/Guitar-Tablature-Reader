@@ -47,15 +47,13 @@ public class ChordService {
         // 16th: .25
         int counter = 0;
         int totalBeatsUntilUpdatedChord = 0;
-        Chord dummy = new Chord();
-        Chord newMeasure = dummy; // a chord object points to multiple chords. essentially, it is a measure linked list
+        List<Chord> dummy = new ArrayList<>();
         System.out.println("DURATIONTEST");
         while (counter != chordNum) {
-            System.out.println("chord " + counter + ". high e string is " + chords.get(counter).getNote().getFretNumber());
-            int durationOfChord = chords.get(counter).getNote().getDuration();
+            System.out.println("chord " + counter + ". high e string is " + chords.get(counter).getNotes().get(0).getFretNumber());
+            int durationOfChord = chords.get(counter).getNotes().get(0).getDuration();
             totalBeatsUntilUpdatedChord += durationOfChord;
-            dummy.setNext(chords.get(counter));
-            dummy = dummy.getNext();
+            dummy.add(counter, (chords.get(counter)));
             counter++;
         }
 
@@ -110,38 +108,29 @@ public class ChordService {
             }
             System.out.println("updateDurations reached100");
 
+            dummy.add(updatedChord);
             // now add rests too
-            Chord dummy2 = new Chord();
-            Chord rests = dummy2;
+            List<Chord> rests = new ArrayList<>();
             for (double duration : remainders) {
                 int r = styleDur(duration);
                 System.out.println("remainder = " + r);
-                Note high_e = new Note(-1, -1, r, true);
-                Note b = new Note(-1, -1, r, true);
-                Note g = new Note(-1, -1, r, true);
-                Note d = new Note(-1, -1, r, true);
-                Note a = new Note(-1, -1, r, true);
-                Note low_e = new Note(-1, -1, r, true);
-                high_e.setNext(b);
-                b.setNext(g);
-                g.setNext(d);
-                d.setNext(a);
-                a.setNext(low_e);
-                dummy2.setNext(new Chord(high_e));
-                dummy2 = dummy2.getNext();
+                List<Note> notes = new ArrayList<>();
+                notes.add(new Note(-1, -1, r, true));
+                notes.add(new Note(-1, -1, r, true));
+                notes.add(new Note(-1, -1, r, true));
+                notes.add(new Note(-1, -1, r, true));
+                notes.add(new Note(-1, -1, r, true));
+                notes.add(new Note(-1, -1, r, true));
+                rests.add(new Chord(notes));
                 //addChord(c, measureId);
             }
-
-            dummy.setNext(updatedChord);
-            dummy = dummy.getNext();
-
-            dummy.setNext(rests.getNext());
-            dummy = dummy.getNext();
-
+            // dummy.setNext(rests.getNext());
+            // dummy = dummy.getNext();
+            
             
 
 
-            mr.editMeasure(newMeasure.getNext(), measureId, chords, chordNum + 1); // chordNum + 1 is the index where the remaining chords start, as the count'th measure is the chord who is being changed
+            mr.editMeasure(dummy, measureId, chords, chordNum + 1); // chordNum + 1 is the index where the remaining chords start, as the count'th measure is the chord who is being changed
 
             // need to update this chord in chord table, then
             // need to insert new rest chords into chords table

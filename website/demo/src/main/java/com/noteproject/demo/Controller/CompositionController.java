@@ -2,34 +2,112 @@ package com.noteproject.demo.Controller;
 
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.noteproject.demo.Model.Measure;
+import com.noteproject.demo.Entity.User;
+import com.noteproject.demo.Model.Composition;
+import com.noteproject.demo.Repository.CompositionRepository;
+import com.noteproject.demo.Repository.MeasureRepository;
+import com.noteproject.demo.Repository.UserRepository;
 import com.noteproject.demo.Service.CompositionService;
+import com.noteproject.demo.Service.JwtService;
 
 @Controller
 public class CompositionController {
     @Autowired
     CompositionService cs;
-      
+
+    @Autowired
+    CompositionRepository cr;
+
+    @Autowired
+    MeasureRepository mr;
+
+    @Autowired
+    UserRepository ur;
+
+    @Autowired
+    JwtService jwtService;
+
     @PostMapping("/changeComposition")
     @ResponseBody
-    public void changeComposition(@RequestParam("selectedComposition") String composition) {
-        System.out.println(composition + "!!!!!...");
-        HomeController.globalCompositionId = Integer.parseInt(composition);
+    public ResponseEntity<CompositionResponse> changeComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
+        int compositionId = Integer.valueOf(payload.get("selectedId"));
+        String token = authHeader.substring(7); // remove "Bearer "
+        String username = jwtService.extractUsername(token);
+        Optional<User> user = ur.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new IllegalStateException("User not found");
+        }
+
+        // get comp -> send all comp info data to /changeComposition ajax success
+        // change document.getElementById("xyz").innerText = comp.title/.author/etc
+
+        Composition compInfo = cr.getCompositionById(compositionId);
+        List<Measure> allMeasures = mr.findMeasuresByCompositionId(compositionId);
+        // System.out.println("/changeComposition Switching to " + compositionId);
+        HomeController.globalCompositionId = compositionId; // goal: get rid of this var
+        return ResponseEntity.ok(new CompositionResponse(compInfo, allMeasures));
     }
 
     @PostMapping("/newComposition")
     @ResponseBody
-    public void newComposition(@RequestBody Map<String, String> payload) {
+    public void newComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
         String title = payload.get("title");
         String composer = payload.get("composer");
         System.out.println("NEW COMP BEING ADDED");
+        System.out.println("AUTH HEADER="+authHeader);
+        String token = authHeader.substring(7); // remove "Bearer "
+        System.out.println("TOKEN="+token);
+        String username = jwtService.extractUsername(token);
+        Optional<User> user = ur.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new IllegalStateException("User not found");
+        }
+
+        Long userId = user.get().getId();
+        
+
         System.out.println("title=" + title + ", composer=" + composer);
-        HomeController.globalCompositionId = cs.addNewComposition(title, composer); // adds new comp and measure to tables
+        HomeController.globalCompositionId = cs.addNewComposition(title, composer, userId); // adds new comp and measure to tables
+    }
+
+    public class CompositionResponse {
+        private Composition comp;
+        private List<Measure> measures;
+
+        public CompositionResponse() {}
+
+        public CompositionResponse(Composition comp, List<Measure> measures) {
+            this.comp = comp;
+            this.measures = measures;
+        }
+
+        public Composition getComp() {
+            return comp;
+        }
+
+        public void setComp(Composition comp) {
+            this.comp = comp;
+        }
+
+        public List<Measure> getMeasures() {
+            return measures;
+        }
+
+        public void setMeasures(List<Measure> measures) {
+            this.measures = measures;
+        }
     }
 }
