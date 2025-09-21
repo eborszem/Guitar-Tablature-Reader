@@ -44,7 +44,7 @@ public class AudioController {
                 allChords.add(notesInChord);
             }
         }
-        System.out.println("chords arr=" + allChords);
+        // System.out.println("chords arr=" + allChords);
         return allChords;
     }
 }

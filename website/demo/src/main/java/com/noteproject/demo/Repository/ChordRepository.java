@@ -64,12 +64,7 @@ public class ChordRepository {
         System.out.println("TEST ADD CHORD");
         String str = "SELECT MAX(chord_number) FROM Chords WHERE measure_id = ?";
         Integer val = jdbcTemplate.queryForObject(str, new Object[]{measureId}, Integer.class);
-        int chordNum;
-        if (val != null) {
-            chordNum = val + 1;
-        } else {
-            chordNum = 0;
-        }
+        int chordNum = (val != null) ? val + 1 : 0;
         String sql = "INSERT INTO Chords (measure_id, low_e_string, a_string, d_string, g_string, " +
                     "b_string, high_e_string, duration, chord_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         List<Note> notes = c.getNotes();

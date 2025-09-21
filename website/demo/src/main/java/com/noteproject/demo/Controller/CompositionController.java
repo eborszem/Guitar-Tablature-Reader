@@ -77,7 +77,6 @@ public class CompositionController {
         }
 
         Long userId = user.get().getId();
-        
 
         System.out.println("title=" + title + ", composer=" + composer);
         HomeController.globalCompositionId = cs.addNewComposition(title, composer, userId); // adds new comp and measure to tables

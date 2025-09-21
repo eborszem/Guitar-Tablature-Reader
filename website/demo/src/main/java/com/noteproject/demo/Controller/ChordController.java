@@ -1,6 +1,7 @@
 package com.noteproject.demo.Controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +9,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.noteproject.demo.Model.*;
 import com.noteproject.demo.Repository.ChordRepository;
@@ -25,7 +24,7 @@ public class ChordController {
     @Autowired
     ChordService chs;
 
-    @RequestMapping(value = "/deleteChord", method = RequestMethod.POST)
+    @PostMapping("/deleteChord")
     public ResponseEntity<String> deleteChord(@RequestParam("measureId") int measureId, @RequestParam("chordLocation") int chordLocation) {
         chr.deleteChord(measureId, chordLocation);
         return new ResponseEntity<>("OK", HttpStatus.OK);
@@ -36,7 +35,7 @@ public class ChordController {
      * We also take in identifying information such as the unique measureId (as stored in database), measureLocation (relative
      * to the composition), and chordLocation (relative to the measureLocation).
      */
-    @RequestMapping(value = "/updateChord", method = RequestMethod.POST)
+    @PostMapping("/updateChord")
     public ResponseEntity<String> updateChord(@RequestParam("updated_low_e_string") int updated_low_e_string,
                                             @RequestParam("updated_a_string") int updated_a_string,
                                             @RequestParam("updated_d_string") int updated_d_string, 
@@ -89,32 +88,32 @@ public class ChordController {
         int val = updated_high_e_string;
         if (updated_high_e_string == UNCHANGED)
             val = original_high_e_string;
-        Note high_e = new Note(val, 0, dur, false);
+        Note high_e = new Note(val, 0, dur);
         val = updated_b_string;
         if (updated_b_string == UNCHANGED)
             val = original_b_string;
-        Note b = new Note(val, 1, dur, false);
+        Note b = new Note(val, 1, dur);
         val = updated_g_string;
         if (updated_g_string == UNCHANGED) {
             val = original_g_string;
         }
-        Note g = new Note(val, 2, dur, false);
+        Note g = new Note(val, 2, dur);
         val = updated_d_string;
         if (updated_d_string == UNCHANGED) {
             val = original_d_string;
         }
-        Note d = new Note(val, 3, dur, false);
+        Note d = new Note(val, 3, dur);
         val = updated_a_string;
         if (updated_a_string == UNCHANGED) {
             val = original_a_string;
         }
-        Note a = new Note(val, 4, dur, false);
+        Note a = new Note(val, 4, dur);
         val = updated_low_e_string;
         if (updated_low_e_string == UNCHANGED) {
             val = original_low_e_string;
         }
 
-        Note low_e = new Note(val, 5, dur, false);
+        Note low_e = new Note(val, 5, dur);
         List<Note> notes = new ArrayList<>();
         notes.add(high_e);
         notes.add(b);

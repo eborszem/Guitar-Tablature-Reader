@@ -53,6 +53,9 @@ public class HomeController {
 
         List<Measure> measures = mr.findMeasuresByCompositionId(globalCompositionId);
         for (Measure measure : measures) {
+            System.out.println("measure id: " + measure.getId() + " measure number: " + measure.getMeasureNumber());
+        }
+        for (Measure measure : measures) {
             measure.setChords(chr.findChordsByCompositionIdAndMeasureId(compInfo.getId(), measure.getId()));
         }
         model.addAttribute("allMeasures", measures);

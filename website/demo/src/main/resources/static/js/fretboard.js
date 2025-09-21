@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (notes[i] == INIT_REST || notes[i] == REST) {
                 notesText += "X"; // signifies no note
             } else {
+                console.log("FRETBOARD[" + i + "][" + notes[i] + "]=" + FRETBOARD[i][notes[i]]);
                 notesText += FRETBOARD[i][notes[i]]; // use: FRETBOARD[string number][fret number]
             }
             if (i < notes.length - 1) {

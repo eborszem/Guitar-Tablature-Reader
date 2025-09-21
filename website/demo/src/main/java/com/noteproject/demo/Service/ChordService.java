@@ -115,12 +115,12 @@ public class ChordService {
                 int r = styleDur(duration);
                 System.out.println("remainder = " + r);
                 List<Note> notes = new ArrayList<>();
-                notes.add(new Note(-1, -1, r, true));
-                notes.add(new Note(-1, -1, r, true));
-                notes.add(new Note(-1, -1, r, true));
-                notes.add(new Note(-1, -1, r, true));
-                notes.add(new Note(-1, -1, r, true));
-                notes.add(new Note(-1, -1, r, true));
+                notes.add(new Note(-1, -1, r));
+                notes.add(new Note(-1, -1, r));
+                notes.add(new Note(-1, -1, r));
+                notes.add(new Note(-1, -1, r));
+                notes.add(new Note(-1, -1, r));
+                notes.add(new Note(-1, -1, r));
                 rests.add(new Chord(notes));
                 //addChord(c, measureId);
             }
