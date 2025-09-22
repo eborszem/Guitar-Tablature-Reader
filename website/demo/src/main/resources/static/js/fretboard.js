@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
         $.ajax({
             type: "POST",
-            url: "/updateChord",
+            url: "/chord/update",
             data: {
                 updated_low_e_string: updated_low_e_string,
                 updated_a_string: updated_a_string,
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function() {
     deleteChordBtn.addEventListener("click", async () => {
         $.ajax({
             type: "POST",
-            url: "/deleteChord",
+            url: "/chord/delete",
             data: {
                 measureId: measureId,
                 chordLocation: chordLocation

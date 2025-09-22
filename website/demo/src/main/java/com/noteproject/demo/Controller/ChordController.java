@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.noteproject.demo.Model.*;
 import com.noteproject.demo.Service.ChordService;
 import com.noteproject.demo.Service.CompositionService;
-
+import org.springframework.web.bind.annotation.RequestMapping;
+@RequestMapping("/chord")
 @Controller
 public class ChordController {    
     @Autowired
@@ -22,7 +23,7 @@ public class ChordController {
     @Autowired
     ChordService chs;
 
-    @PostMapping("/deleteChord")
+    @PostMapping("/delete")
     public ResponseEntity<String> deleteChord(@RequestParam("measureId") int measureId, @RequestParam("chordLocation") int chordLocation) {
         chs.deleteChord(measureId, chordLocation);
         return new ResponseEntity<>("OK", HttpStatus.OK);
@@ -33,7 +34,7 @@ public class ChordController {
      * We also take in identifying information such as the unique measureId (as stored in database), measureLocation (relative
      * to the composition), and chordLocation (relative to the measureLocation).
      */
-    @PostMapping("/updateChord")
+    @PostMapping("/update")
     public ResponseEntity<String> updateChord(@RequestParam("updated_low_e_string") int updated_low_e_string,
                                             @RequestParam("updated_a_string") int updated_a_string,
                                             @RequestParam("updated_d_string") int updated_d_string, 

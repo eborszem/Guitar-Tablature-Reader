@@ -31,3 +31,4 @@ application.properties
 settings.json
 back_up.sql
 .DS_Store
+website/.DS_Store

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,6 +22,7 @@ import com.noteproject.demo.Service.MeasureService;
 
 import org.springframework.ui.Model;
 
+@RequestMapping("/measure")
 @Controller
 public class MeasureController {
     @Autowired
@@ -32,21 +34,13 @@ public class MeasureController {
     @Autowired
     UserRepository ur;
 
-    /* test function */
-    @PostMapping("/page")
-    @ResponseBody
-    public String testFunction(Model model) {
-        System.out.println("test");
-        return "success";
-    }
-
-    @PostMapping("/deleteMeasure")
+    @PostMapping("/delete")
     public ResponseEntity<String> deleteMeasure(@RequestParam("measureId") int measureId) {
         ms.deleteMeasure(measureId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
-    @PostMapping("/addMeasure")
+    @PostMapping("/add")
     public ResponseEntity<String> addMeasure(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
         System.out.println("reached create new measure post mapping");
         System.out.println("AUTH HEADER="+authHeader);
@@ -62,7 +56,7 @@ public class MeasureController {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
-    @PostMapping("/duplicateMeasure")
+    @PostMapping("/duplicate")
     public ResponseEntity<String> duplicateMeasure(@RequestParam("measureId") int measureId) {
         ms.duplicateMeasure(measureId, HomeController.globalCompositionId);
         return new ResponseEntity<>("OK", HttpStatus.OK);

@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             $.ajax({
                 type: "POST",
-                url: "/newComposition",
+                url: "/composition/new",
                 headers: {
                     "Authorization": "Bearer " + token
                 },
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const selectedId = select.value;
         $.ajax({
             type: "POST",
-            url: "/changeComposition",
+            url: "/composition/change",
             headers: {
                 "Authorization": "Bearer " + token
             },

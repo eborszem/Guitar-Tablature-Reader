@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("Token ->", token);
             $.ajax({
                 type: "POST",
-                url: "/addMeasure",
+                url: "/measure/add",
                 headers: {
                     "Authorization": "Bearer " + token
                 },
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // console.log("Deleting measure with id:", deleteMeasureId);
             $.ajax({
                 type: "POST",
-                url: "/deleteMeasure",
+                url: "/measure/delete",
                 data: {
                     measureId: deleteMeasureId
                 },

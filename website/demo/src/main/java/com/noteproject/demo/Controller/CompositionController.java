@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.noteproject.demo.Entity.User;
@@ -18,6 +19,7 @@ import com.noteproject.demo.Repository.UserRepository;
 import com.noteproject.demo.Service.CompositionService;
 import com.noteproject.demo.Service.JwtService;
 
+@RequestMapping("/composition")
 @Controller
 public class CompositionController {
     @Autowired
@@ -29,7 +31,7 @@ public class CompositionController {
     @Autowired
     JwtService jwtService;
 
-    @PostMapping("/changeComposition")
+    @PostMapping("/change")
     @ResponseBody
     public ResponseEntity<Composition> changeComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
         int compositionId = Integer.valueOf(payload.get("selectedId"));
@@ -45,7 +47,7 @@ public class CompositionController {
         return ResponseEntity.ok(comp);
     }
 
-    @PostMapping("/newComposition")
+    @PostMapping("/new")
     @ResponseBody
     public void newComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
         String title = payload.get("title");
