@@ -27,9 +27,6 @@ public class MeasureController {
     JwtService jwtService;
 
     @Autowired
-    MeasureRepository mr;
-
-    @Autowired
     MeasureService ms;
 
     @Autowired
@@ -45,7 +42,7 @@ public class MeasureController {
 
     @PostMapping("/deleteMeasure")
     public ResponseEntity<String> deleteMeasure(@RequestParam("measureId") int measureId) {
-        mr.deleteMeasure(measureId);
+        ms.deleteMeasure(measureId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 

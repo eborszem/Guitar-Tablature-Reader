@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.noteproject.demo.Entity.User;
 import com.noteproject.demo.Model.Composition;
-import com.noteproject.demo.Repository.CompositionRepository;
-import com.noteproject.demo.Repository.MeasureRepository;
 import com.noteproject.demo.Repository.UserRepository;
 import com.noteproject.demo.Service.CompositionService;
 import com.noteproject.demo.Service.JwtService;
@@ -24,12 +22,6 @@ import com.noteproject.demo.Service.JwtService;
 public class CompositionController {
     @Autowired
     CompositionService cs;
-
-    @Autowired
-    CompositionRepository cr;
-
-    @Autowired
-    MeasureRepository mr;
 
     @Autowired
     UserRepository ur;
@@ -48,7 +40,7 @@ public class CompositionController {
             throw new IllegalStateException("User not found");
         }
 
-        Composition comp = cr.getCompositionById(compositionId);
+        Composition comp = cs.getCompositionById(compositionId);
         HomeController.globalCompositionId = compositionId; // goal: get rid of this var
         return ResponseEntity.ok(comp);
     }

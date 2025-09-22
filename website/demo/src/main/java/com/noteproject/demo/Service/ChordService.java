@@ -115,4 +115,14 @@ public class ChordService {
         System.out.println("RETURNING CHANGE DURATION");
         
     }
+
+    public void deleteChord(int measureId, int chordLocation) {
+        chr.deleteChord(measureId, chordLocation);
+    }
+
+    public void updateChord(Chord chord, int measureId, int chordNum) {
+        chr.updateChord(chord, measureId, chordNum);
+    }
+
+
 }

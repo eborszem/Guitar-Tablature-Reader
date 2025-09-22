@@ -32,24 +32,6 @@ public class ChordRepository {
         jdbcTemplate.update(sql2, measureId, chordLocation);
     }
 
-    // public List<Chord> findChordsByCompositionId(int compositionId) {
-    //     String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ?";
-        
-    //     List<Chord> chords = jdbcTemplate.query(
-    //         sql,
-    //         (rs, rowNum) -> new Chord(
-    //             rs.getInt("id"),
-    //             rs.getInt("measure_id"),
-    //             rs.getInt("chord_number"),
-    //             // fetch notes for this chord
-    //             getNotes(rs.getInt("id"), rs.getInt("measure_id"))
-    //         ),
-    //         compositionId
-    //     );
-        
-    //     return chords;
-    // }
-
     public List<Chord> findChordsByCompositionIdAndMeasureId(int compositionId, int measureId) {
         String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ? AND c.measure_id = ? ORDER BY chord_number ASC";
         

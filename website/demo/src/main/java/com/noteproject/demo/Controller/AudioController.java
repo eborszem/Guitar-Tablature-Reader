@@ -3,7 +3,6 @@ package com.noteproject.demo.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.noteproject.demo.Model.Composition;
-import com.noteproject.demo.Repository.CompositionRepository;
 import com.noteproject.demo.Service.CompositionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +13,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 public class AudioController {
     @Autowired
-    CompositionRepository cr;
-    @Autowired
     CompositionService cs;
 
-    /*
-     * Sends all of the composition's chords (comprised of notes) and their durations to be played by the javascript synth.
-     * Returns an arraylist of chords. Chords are an arraylist of notes. Notes are stored as an integer
-     * array containing the fretNumber, stringNumber, and duration.
+    /**
+     * Sends the current composition as a JSON response to the /play endpoint
+     * JSON response is then used by the frontend to play the composition using Soundfont
      */
     @GetMapping("/play")
     public ResponseEntity<Composition> play(Model model) {
-        return ResponseEntity.ok(cr.getCompositionById(HomeController.globalCompositionId)); // replace globalCompositionId with param later?
+        Composition comp = cs.getCompositionById(HomeController.globalCompositionId); // TODO: REPLACE WITH PATH VARIABLE LATER
+        return ResponseEntity.ok(comp); // replace globalCompositionId with param later?
     }
 }

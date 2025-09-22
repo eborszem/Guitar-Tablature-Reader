@@ -1,25 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
     const token = localStorage.getItem("jwt");
-    // var newMeasure = document.getElementById("add-new-measure");
-    // newMeasure.addEventListener("click", function() {
-        
-    //     fetch("/createNewMeasure", {
-    //         method: "POST",
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         location.reload();
-    //         console.log("Received JSON:", data);  // Log the JSON to console
-    //         // Update the page with the new measure without reloading
-    //         // You can iterate over the response and dynamically add the new measure to the DOM
-    //         data.forEach(() => {
-    //             // console.log("frets:", chord.fretNumbers, "dur:", chord.duration, "measureId:", chord.measureId);
-    //             // TODO
-    //         });
-    //     })
-    //     .catch(error => console.error("Error fetching new measure:", error));
-    // });
-
     var addMeasureBtns = document.querySelectorAll(".add-measure");
     addMeasureBtns.forEach(function(btn) {
         btn.addEventListener("click", function() {

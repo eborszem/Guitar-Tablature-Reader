@@ -4,12 +4,12 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class Composition {
-    private List<Measure> measures;
-    private String title;
-    private int id;
-    private Timestamp timestamp;
-    private String composer;
-    private long userId;
+private List<Measure> measures;
+private String title;
+private int id;
+private Timestamp timestamp;
+private String composer;
+private long userId;
 
     public Composition(int id, String title, String composer, List<Measure> measures, Timestamp timestamp, long userId) {
         this.id = id;

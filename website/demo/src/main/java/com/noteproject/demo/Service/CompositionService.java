@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.noteproject.demo.Controller.HomeController;
 import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
@@ -24,32 +26,6 @@ public class CompositionService {
     final int NUM_STRINGS = 6;
     final int WHOLE_NOTE_DURATION = 4;
 
-    public Composition formatComposition(int compositionId) {
-        // 1. group chords by their measure ids (relative position in measure)
-        // 2. then add x chords to measure 0, then y chords to measure 1, etc.
-        // creates HashMap with measure ids as keys, and chords (that go into those measures) as values
-        // List<Chord> chords = chr.findChordsByCompositionId(compositionId);
-        // HashMap<Integer, List<Chord>> measureIdToChords = new HashMap<>();
-        // for (Chord c : chords) {
-        //     int measureId = c.getMeasureId();
-        //     List<Chord> arr;
-        //     if (!measureIdToChords.containsKey(measureId)) {
-        //         arr = new ArrayList<>();
-        //     } else {
-        //         arr = measureIdToChords.get(measureId);
-        //     }
-        //     arr.add(c);
-        //     measureIdToChords.put(measureId, arr);
-        // }
-        // Composition comp = cr.getCompositionById(compositionId);
-        // List<Measure> measures = comp.getMeasures();
-        // for (Measure m : measures) {
-        //     m.setChords(measureIdToChords.getOrDefault(m.getId(), new ArrayList<>()));
-        // }
-        // return new Composition(compositionId, comp.getTitle(), comp.getComposer(), measures, comp.getTimestamp(), comp.getUserId());
-        return cr.getCompositionById(compositionId);
-    }
-
     public int addNewComposition(String title, String composer, Long userId) {
         int compId = cr.insertCompositionIntoDB(title, composer, userId);
         List<Note> notes = new ArrayList<>();
@@ -62,6 +38,14 @@ public class CompositionService {
         Measure m = new Measure(chords);
         mr.addMeasureToRepo(m, compId, 0, false);
         return compId;
+    }
+
+    public List<Composition> getAllCompositions(Long userId) {
+        return cr.getAllCompositions(userId);
+    }
+
+    public Composition getCompositionById(int id) {
+        return cr.getCompositionById(id);
     }
     
 }

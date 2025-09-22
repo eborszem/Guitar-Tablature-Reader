@@ -9,9 +9,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 
 import com.noteproject.demo.Entity.User;
-import com.noteproject.demo.Model.*;
-import com.noteproject.demo.Repository.*;
-import com.noteproject.demo.Service.*;
+import com.noteproject.demo.Model.Composition;
+import com.noteproject.demo.Service.CompositionService;
+import com.noteproject.demo.Service.JwtService;
+import com.noteproject.demo.Repository.UserRepository;
+
 
 import org.springframework.ui.Model;
 
@@ -19,13 +21,7 @@ import org.springframework.ui.Model;
 public class HomeController {
     public static int globalCompositionId = 26; // composition 1 is chosen by default
     @Autowired
-    CompositionRepository cr;
-    @Autowired
     CompositionService cs;
-    @Autowired
-    MeasureRepository mr;
-    @Autowired
-    ChordRepository chr;
     @Autowired
     UserRepository ur;
     @Autowired
@@ -42,24 +38,16 @@ public class HomeController {
         }
         Long userId = user.get().getId();
         try {
-            comp = cr.getCompositionById(globalCompositionId);
+            comp = cs.getCompositionById(globalCompositionId);
         } catch  (EmptyResultDataAccessException e) { // compositions table is empty, so make an initial composition
             System.out.println("NO COMPOSITIONS EXIST: creating a new composition");
             globalCompositionId = cs.addNewComposition("initial composition", "new user", userId);
-            comp = cr.getCompositionById(globalCompositionId);
+            comp = cs.getCompositionById(globalCompositionId);
             initialCompositionExists = false;
         }
 
-        // List<Measure> measures = mr.findMeasuresByCompositionId(globalCompositionId);
-
-        // for (Measure measure : measures) {
-        //     System.out.println("measure id: " + measure.getId() + " measure number: " + measure.getMeasureNumber());
-        // // }
-        // for (Measure measure : comp.getMeasures()) {
-        //     measure.setChords(chr.findChordsByCompositionIdAndMeasureId(comp.getId(), measure.getId()));
-        // }
         model.addAttribute("allMeasures", comp.getMeasures());
-        model.addAttribute("allCompositions", cr.getAllCompositions(userId));
+        model.addAttribute("allCompositions", cs.getAllCompositions(userId));
 
         // reload to give program time to generate an initial composition
         if (!initialCompositionExists) {

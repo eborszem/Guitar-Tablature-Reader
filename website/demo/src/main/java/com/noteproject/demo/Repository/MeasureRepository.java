@@ -21,9 +21,6 @@ public class MeasureRepository {
     @Autowired
     ChordRepository chr;
 
-    @Autowired
-    CompositionRepository cr;
-
     public int addMeasureToRepo(Measure m, int compositionId, int measureNumber, boolean duplicating) {
         // Create a KeyHolder to capture the auto-generated key for the measure ID
         KeyHolder keyHolder = new GeneratedKeyHolder();

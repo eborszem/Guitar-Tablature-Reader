@@ -3,10 +3,10 @@ package com.noteproject.demo.Model;
 import java.util.List;
 
 public class Measure {
-    private List<Chord> chords;
-    private int id;
-    private int measureNumber;
-    private int compositionId;
+private List<Chord> chords;
+private int id;
+private int measureNumber;
+private int compositionId;
 
 	public Measure(List<Chord> chords) {
 		this.chords = chords;

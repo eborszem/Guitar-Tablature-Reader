@@ -32,21 +32,4 @@ document.addEventListener("DOMContentLoaded", function() {
             
         });
     });
-
-    /* If the user chooses to delete a chord */
-    var deleteChordBtn = document.getElementById("delete-chord-btn");
-    deleteChordBtn.addEventListener("click", async () => {
-        $.ajax({
-            type: "POST",
-            url: "/deleteChord",
-            data: {
-                measureId: measureId,
-                chordLocation: chordLocation
-            },
-            timeout: 5000,
-            success: function() {
-                location.reload();
-            }
-        });
-    });
 });

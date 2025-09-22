@@ -40,12 +40,16 @@ public class MeasureService {
         mr.addMeasureToRepo(new Measure(chords), compositionId, measureNumber + 1, false); // goes 1 after current measure
     }
 
-    // /* Same as above, but measure retains the chords from its "parent". */
+    // Same as above, but measure retains the chords from its "parent".
     public void duplicateMeasure(int measureId, int compositionId) {
         List<Chord> chords = chr.findChordsByCompositionIdAndMeasureId(compositionId, measureId);
         int measureNumber = mr.getMeasureNumber(compositionId, measureId);
         mr.incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
         mr.addMeasureToRepo(new Measure(chords), compositionId, measureNumber + 1, true); // goes 1 after current measure
+    }
+
+    public void deleteMeasure(int measureId) {
+        mr.deleteMeasure(measureId);
     }
 
 }

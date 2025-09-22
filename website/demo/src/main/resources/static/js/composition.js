@@ -77,21 +77,4 @@ document.addEventListener("DOMContentLoaded", function() {
             },
         });
     });
-        
-        // fetch('/changeComposition', {
-        //     method: 'POST',
-        //     body: formData,
-        //     headers: {
-        //             "Authorization": "Bearer " + token,
-        //             "Content-Type": "application/json"
-        //     },
-        // })
-        // .then(response => response.text())
-        // .then(data => {
-        //     location.reload();
-        //     console.log(data);
-        // })
-        // .catch(error => {
-        //     console.error('Error:', error);
-        // });
 });

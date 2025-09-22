@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.noteproject.demo.Model.*;
-import com.noteproject.demo.Repository.ChordRepository;
 import com.noteproject.demo.Service.ChordService;
 import com.noteproject.demo.Service.CompositionService;
 
@@ -19,14 +18,13 @@ import com.noteproject.demo.Service.CompositionService;
 public class ChordController {    
     @Autowired
     CompositionService cs;
-    @Autowired
-    ChordRepository chr;
+    
     @Autowired
     ChordService chs;
 
     @PostMapping("/deleteChord")
     public ResponseEntity<String> deleteChord(@RequestParam("measureId") int measureId, @RequestParam("chordLocation") int chordLocation) {
-        chr.deleteChord(measureId, chordLocation);
+        chs.deleteChord(measureId, chordLocation);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
@@ -58,7 +56,7 @@ public class ChordController {
         // System.out.println("measure=" + measure + ", chord=" + chord + ", duration=" + duration);
         System.out.println("*****measureLocation=" + measureLocation + ", measureId=" + measureId);
         System.out.println("*****chord=" + chordLocation);
-        Composition comp = cs.formatComposition(HomeController.globalCompositionId);
+        Composition comp = cs.getCompositionById(HomeController.globalCompositionId);
         
         // navigate to the chord in the composition
         // for (int i = 0; i < measureLocation; i++) {
@@ -133,7 +131,7 @@ public class ChordController {
             chs.updateDurations(newDuration, oldDur, updatedChord, measureId, chordLocation, HomeController.globalCompositionId);
         } else {
             // was above if previously, moved here to avoid possible bugs
-            chr.updateChord(updatedChord, measureId, chordLocation);
+            chs.updateChord(updatedChord, measureId, chordLocation);
         }
         return new ResponseEntity<>("Chord updated", HttpStatus.OK);
     }

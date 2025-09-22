@@ -177,6 +177,22 @@ document.addEventListener("DOMContentLoaded", function() {
         newDur = UNCHANGED;
     });
 
+    var deleteChordBtn = document.getElementById("delete-chord-btn");
+    deleteChordBtn.addEventListener("click", async () => {
+        $.ajax({
+            type: "POST",
+            url: "/deleteChord",
+            data: {
+                measureId: measureId,
+                chordLocation: chordLocation
+            },
+            timeout: 5000,
+            success: function() {
+                location.reload();
+            }
+        });
+    });
+
     // Clicking notes on fretboard to construct a chord
     document.querySelector('.string-rows').addEventListener('click', function(event) {
         if (event.target.classList.contains('note-btn')) {
