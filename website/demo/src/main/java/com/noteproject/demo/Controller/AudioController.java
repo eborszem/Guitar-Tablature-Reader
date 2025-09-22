@@ -29,23 +29,7 @@ public class AudioController {
      * array containing the fretNumber, stringNumber, and duration.
      */
     @GetMapping("/play")
-    public ArrayList<ArrayList<Note>> play(Model model) {
-        Composition comp = cs.formatComposition(HomeController.globalCompositionId);
-        ArrayList<ArrayList<Note>> allChords = new ArrayList<>();
-        for (Measure m : comp.getMeasures()) {
-            List<Chord> chords = m.getChords();
-            for (Chord chord : chords) {
-                List<Note> notes = chord.getNotes();
-                ArrayList<Note> notesInChord = new ArrayList<>(); // one note per string
-                for (Note note : notes) {
-                    // read in fret number and string number to turn them into specific note
-                    // read in duration to play for certain period of time
-                    notesInChord.add(new Note(note.getFretNumber(), note.getStringNumber(), note.getDuration()));
-                }
-                allChords.add(notesInChord);
-            }
-        }
-        System.out.println("chords arr=" + allChords);
-        return allChords;
+    public ResponseEntity<Composition> play(Model model) {
+        return ResponseEntity.ok(cr.getCompositionById(HomeController.globalCompositionId)); // replace globalCompositionId with param later?
     }
 }
