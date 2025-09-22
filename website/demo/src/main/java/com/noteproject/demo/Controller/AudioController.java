@@ -10,6 +10,7 @@ import com.noteproject.demo.Repository.CompositionRepository;
 import com.noteproject.demo.Service.CompositionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -44,7 +45,7 @@ public class AudioController {
                 allChords.add(notesInChord);
             }
         }
-        // System.out.println("chords arr=" + allChords);
+        System.out.println("chords arr=" + allChords);
         return allChords;
     }
 }

@@ -7,6 +7,17 @@ public class Chord {
     private int id;
     private int measureId;
     private int chordNumber;
+    /*
+     * idea: enum for duration. WHOLE, HALF, QUARTER, EIGHTH, SIXTEENTH
+     * after moving duration to chord
+     * 
+     */
+    public Chord(int id, int measureId, int chordNumber, List<Note> notes) {
+        this.id = id;
+        this.measureId = measureId;
+        this.chordNumber = chordNumber;
+        this.notes = notes;
+    }
 
     public Chord(List<Note> notes) {
         this.notes = notes;

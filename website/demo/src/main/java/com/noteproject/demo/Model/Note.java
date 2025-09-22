@@ -9,6 +9,7 @@ public class Note {
         this.fretNumber = fretNumber;
         this.duration = duration;
     }
+    
     public int getDuration() {
         return this.duration;
     }

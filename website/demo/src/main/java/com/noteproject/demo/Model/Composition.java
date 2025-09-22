@@ -32,7 +32,7 @@ public class Composition {
         return this.measures;
     }
 
-    public void setMeasure(List<Measure> measures) {
+    public void setMeasures(List<Measure> measures) {
         this.measures = measures;
     }
 

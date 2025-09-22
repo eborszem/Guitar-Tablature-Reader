@@ -11,10 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Entity.User;
 import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Repository.CompositionRepository;
@@ -42,7 +40,7 @@ public class CompositionController {
 
     @PostMapping("/changeComposition")
     @ResponseBody
-    public ResponseEntity<CompositionResponse> changeComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<Composition> changeComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
         int compositionId = Integer.valueOf(payload.get("selectedId"));
         String token = authHeader.substring(7); // remove "Bearer "
         String username = jwtService.extractUsername(token);
@@ -51,14 +49,9 @@ public class CompositionController {
             throw new IllegalStateException("User not found");
         }
 
-        // get comp -> send all comp info data to /changeComposition ajax success
-        // change document.getElementById("xyz").innerText = comp.title/.author/etc
-
-        Composition compInfo = cr.getCompositionById(compositionId);
-        List<Measure> allMeasures = mr.findMeasuresByCompositionId(compositionId);
-        // System.out.println("/changeComposition Switching to " + compositionId);
+        Composition comp = cr.getCompositionById(compositionId);
         HomeController.globalCompositionId = compositionId; // goal: get rid of this var
-        return ResponseEntity.ok(new CompositionResponse(compInfo, allMeasures));
+        return ResponseEntity.ok(comp);
     }
 
     @PostMapping("/newComposition")
@@ -80,33 +73,5 @@ public class CompositionController {
 
         System.out.println("title=" + title + ", composer=" + composer);
         HomeController.globalCompositionId = cs.addNewComposition(title, composer, userId); // adds new comp and measure to tables
-    }
-
-    public class CompositionResponse {
-        private Composition comp;
-        private List<Measure> measures;
-
-        public CompositionResponse() {}
-
-        public CompositionResponse(Composition comp, List<Measure> measures) {
-            this.comp = comp;
-            this.measures = measures;
-        }
-
-        public Composition getComp() {
-            return comp;
-        }
-
-        public void setComp(Composition comp) {
-            this.comp = comp;
-        }
-
-        public List<Measure> getMeasures() {
-            return measures;
-        }
-
-        public void setMeasures(List<Measure> measures) {
-            this.measures = measures;
-        }
     }
 }

@@ -34,7 +34,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHomePage(Model model, @CookieValue("jwt") String token) {
-        Composition compInfo;
+        Composition comp;
         boolean initialCompositionExists = true;
         String username = jwtService.extractUsername(token);
         Optional<User> user = ur.findByUsername(username);
@@ -43,22 +43,23 @@ public class HomeController {
         }
         Long userId = user.get().getId();
         try {
-            compInfo = cr.getCompositionById(globalCompositionId);
+            comp = cr.getCompositionById(globalCompositionId);
         } catch  (EmptyResultDataAccessException e) { // compositions table is empty, so make an initial composition
             System.out.println("NO COMPOSITIONS EXIST: creating a new composition");
             globalCompositionId = cs.addNewComposition("initial composition", "new user", userId);
-            compInfo = cr.getCompositionById(globalCompositionId);
+            comp = cr.getCompositionById(globalCompositionId);
             initialCompositionExists = false;
         }
 
-        List<Measure> measures = mr.findMeasuresByCompositionId(globalCompositionId);
-        for (Measure measure : measures) {
-            System.out.println("measure id: " + measure.getId() + " measure number: " + measure.getMeasureNumber());
-        }
-        for (Measure measure : measures) {
-            measure.setChords(chr.findChordsByCompositionIdAndMeasureId(compInfo.getId(), measure.getId()));
-        }
-        model.addAttribute("allMeasures", measures);
+        // List<Measure> measures = mr.findMeasuresByCompositionId(globalCompositionId);
+
+        // for (Measure measure : measures) {
+        //     System.out.println("measure id: " + measure.getId() + " measure number: " + measure.getMeasureNumber());
+        // // }
+        // for (Measure measure : comp.getMeasures()) {
+        //     measure.setChords(chr.findChordsByCompositionIdAndMeasureId(comp.getId(), measure.getId()));
+        // }
+        model.addAttribute("allMeasures", comp.getMeasures());
         model.addAttribute("allCompositions", cr.getAllCompositions(userId));
 
         // reload to give program time to generate an initial composition
@@ -66,7 +67,7 @@ public class HomeController {
             return "redirect:/page";
         }
         
-        model.addAttribute("compositionInfo", compInfo);
+        model.addAttribute("compositionInfo", comp);
 
         final String[][] FRETBOARD = {
             {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A"},
