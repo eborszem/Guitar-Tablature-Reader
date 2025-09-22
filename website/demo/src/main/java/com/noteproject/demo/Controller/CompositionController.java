@@ -2,7 +2,6 @@ package com.noteproject.demo.Controller;
 
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

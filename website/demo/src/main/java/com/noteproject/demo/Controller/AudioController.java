@@ -2,10 +2,7 @@ package com.noteproject.demo.Controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noteproject.demo.Model.Measure;
-import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Composition;
-import com.noteproject.demo.Model.Note;
 import com.noteproject.demo.Repository.CompositionRepository;
 import com.noteproject.demo.Service.CompositionService;
 
@@ -13,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.*;
 
 @RestController
 public class AudioController {

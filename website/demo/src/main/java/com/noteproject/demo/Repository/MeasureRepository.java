@@ -1,19 +1,14 @@
 package com.noteproject.demo.Repository;
 
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import com.noteproject.demo.Model.Note;
 import com.noteproject.demo.Model.Chord;
-import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
 
 @Repository
@@ -72,9 +67,8 @@ public class MeasureRepository {
     // Note: "Measure numbers" are the index of the measure in the composition. The lowest numbered measures are first, and the highest numbered measures are last
     // "Measure IDs" are different, being a unique identifier across all compositions (However, I still like to check the composition ID in order to be safe)
     public int getMeasureNumber(int compositionId, int measureId) {
-        System.out.println("*******compositionID=" + compositionId + ", measureID=" + measureId);
         String sql = "SELECT measure_number FROM Measures WHERE id = ? AND composition_id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{measureId, compositionId}, Integer.class);
+        return jdbcTemplate.queryForObject(sql, Integer.class, measureId, compositionId);
     }
 
     public void incrementMeasureNumbers(int compositionId, int measureNum) {

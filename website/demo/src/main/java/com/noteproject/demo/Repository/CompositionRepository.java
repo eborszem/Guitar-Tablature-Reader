@@ -10,11 +10,9 @@ import org.springframework.stereotype.Repository;
 import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Chord;
-import com.noteproject.demo.Model.Note;
 
 import java.sql.Timestamp;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository

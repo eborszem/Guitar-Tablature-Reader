@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import com.noteproject.demo.Model.*;
 
@@ -50,7 +51,7 @@ public class ChordRepository {
     // }
 
     public List<Chord> findChordsByCompositionIdAndMeasureId(int compositionId, int measureId) {
-        String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ? AND c.measure_id = ?";
+        String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ? AND c.measure_id = ? ORDER BY chord_number ASC";
         
         List<Chord> chords = jdbcTemplate.query(
             sql,
@@ -81,7 +82,7 @@ public class ChordRepository {
 
         jdbcTemplate.update(sql, new PreparedStatementSetter() {
             @Override
-            public void setValues(java.sql.PreparedStatement ps) throws SQLException {
+            public void setValues(@NonNull java.sql.PreparedStatement ps) throws SQLException {
                 ps.setObject(1, low_e.getFretNumber());
                 ps.setObject(2, a.getFretNumber());
                 ps.setObject(3, d.getFretNumber());

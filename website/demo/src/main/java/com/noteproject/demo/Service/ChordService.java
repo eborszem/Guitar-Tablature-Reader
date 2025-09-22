@@ -31,36 +31,23 @@ public class ChordService {
         return (int) dur;
     }
 
-    // TODO: current bug for case #1: new notes will always be added after all preexisting chords, when in reality no chords should move around
-    // caused by getting max chord number. need to use chordNum and readd every chord after it to the repo
     public void updateDurations(int newDuration, int oldDuration, Chord updatedChord, int measureId, int chordNum, int compositionId) {
         List<Chord> chords = chr.findChordsByCompositionIdAndMeasureId(compositionId, measureId);
-        // maintain sorted order
-        chords.sort((c1, c2) -> Integer.compare(c1.getChordNumber(), c2.getChordNumber()));
-
-        double newDur = convertDur(newDuration);
-        double oldDur = convertDur(oldDuration);
+        double newDur = convertDur(newDuration), oldDur = convertDur(oldDuration);
         // w: 4
         // h: 2
         // q: 1
         // 8th: .5 
         // 16th: .25
         int counter = 0;
-        int totalBeatsUntilUpdatedChord = 0;
         List<Chord> dummy = new ArrayList<>();
         System.out.println("DURATIONTEST");
         while (counter != chordNum) {
-            System.out.println("chord " + counter + ". high e string is " + chords.get(counter).getNotes().get(0).getFretNumber());
-            int durationOfChord = chords.get(counter).getNotes().get(0).getDuration();
-            totalBeatsUntilUpdatedChord += durationOfChord;
+            // System.out.println("chord " + counter + ". high e string is " + chords.get(counter).getNotes().get(0).getFretNumber());
             dummy.add(counter, (chords.get(counter)));
             counter++;
         }
 
-        System.out.println("AFTER WHILE LOOP");
-        //Measure timeSig = getTimeSignature(compositionId);
-        //int maxBeatsPerMeasure = timeSig.getNoteValue() * timeSig.getNumNoteValuesPerMeasure();
-        //int remainingBeats = maxBeatsPerMeasure - totalBeatsUntilUpdatedChord;
         /*
          * Cases:
          * newDuration < dur: chord will play for newDuration time, remaining dur - newDuration time becomes rests
@@ -87,7 +74,7 @@ public class ChordService {
             // 4 - 1 = 3
             // 16 - 1 = 15
             // 1
-            // 16 
+            // 16
             while (remainder > 0) {
                 if (remainder - 4 >= 0) { // whole note
                     remainders.add(4.0);
@@ -106,8 +93,6 @@ public class ChordService {
                     remainder -= .25;
                 }
             }
-            System.out.println("updateDurations reached100");
-
             dummy.add(updatedChord);
             // now add rests too
             List<Chord> rests = new ArrayList<>();
@@ -122,18 +107,8 @@ public class ChordService {
                 notes.add(new Note(-1, -1, r));
                 notes.add(new Note(-1, -1, r));
                 rests.add(new Chord(notes));
-                //addChord(c, measureId);
             }
-            // dummy.setNext(rests.getNext());
-            // dummy = dummy.getNext();
-            
-            
-
-
             mr.editMeasure(dummy, measureId, chords, chordNum + 1); // chordNum + 1 is the index where the remaining chords start, as the count'th measure is the chord who is being changed
-
-            // need to update this chord in chord table, then
-            // need to insert new rest chords into chords table
         } else { // if newDur > oldDur
 
         }
