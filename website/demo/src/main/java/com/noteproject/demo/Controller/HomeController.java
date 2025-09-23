@@ -40,7 +40,7 @@ public class HomeController {
 
         // reload to give program time to generate an initial composition
         if (!initialCompositionExists) {
-            return "redirect:/page";
+            return "redirect:/";
         }
         
         model.addAttribute("compositionInfo", compInfo);
