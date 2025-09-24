@@ -92,26 +92,6 @@
     opacity: 1;
 }
 
-.time-sig-box {
-    border: 1px solid black;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-width: 60px;
-    max-width: 60px;
-    height: 94px;
-    position: relative;
-}
-
-/* not currently used*/
-.chord-name {
-    font-size: 10px;
-}
-
 .note {
     display: flex;
     margin: 0;
@@ -131,7 +111,6 @@
 
 .chord-box {
     opacity: 1;
-    transition: opacity 0.5s ease;
     cursor: pointer;
 }
 
@@ -140,10 +119,83 @@
     z-index: 0;
 }
 
-.chord-box.active {
+.chord-buttons {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+
+.chord-box .chord-buttons * {
+    pointer-events: auto; /* buttons take events */
+}
+
+.chord-box  .chord-buttons  .delete-chord {
+    opacity: 0;
+    /* display: none; */
+    /* position: absolute;
+    /* bottom: -26%; */
+    /* left: 5%; */
+    /* cursor: pointer;
+    font-size: 20px;
+    color: black;
+    background-color:rgb(244, 244, 244);
+    border: 2px solid black;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out; */
+}
+
+.chord-box:hover .chord-buttons .delete-chord {
     opacity: 1;
-    color: red;
-    background-color: blue;
+}
+
+.chord-box .chord-buttons .add-chord {
+    /* display: none; */
+    opacity: 0;
+    /* position: absolute;
+    bottom: -26%;
+    left: 20%;
+    cursor: pointer;
+    font-size: 20px;
+    color: black;
+    background-color:rgb(244, 244, 244);
+    border: 2px solid black;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out; */
+}
+
+.chord-box:hover .chord-buttons .add-chord {
+    opacity: 1;
+}
+
+.chord-box .chord-buttons .duplicate-chord {
+    /* display: none; */
+    opacity: 0;
+    /* position: absolute;
+    bottom: -26%;
+    left: 35%;
+    cursor: pointer;
+    font-size: 20px;
+    color: black;
+    background-color:rgb(244, 244, 244);
+    border: 2px solid black;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out; */
+}
+
+.chord-box:hover .chord-buttons .duplicate-chord {
+    opacity: 1;
 }
 
 .chord-container {

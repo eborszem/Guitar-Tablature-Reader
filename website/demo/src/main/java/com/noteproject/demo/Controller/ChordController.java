@@ -41,36 +41,23 @@ public class ChordController {
     UserRepository ur;
 
     final int NUM_STRINGS = 6;
+    final int REST = -1;
 
-    @PostMapping("/delete")
-    public ResponseEntity<String> deleteChord(@RequestParam("measureId") int measureId, @RequestParam("chordLocation") int chordLocation) {
-        chs.deleteChord(measureId, chordLocation);
-        return new ResponseEntity<>("OK", HttpStatus.OK);
-    }
-
-    /* Basically, this code runs when the user confirms they want to change a chord via the virtual fretboard 
-     * (which appears when the user clicks a chord). updateChord() takes in the updated and old string values. 
-     * We also take in identifying information such as the unique measureId (as stored in database), measureLocation (relative
-     * to the composition), and chordLocation (relative to the measureLocation).
-     */
     @PostMapping("/update")
     public ResponseEntity<Chord> updateChord(@RequestBody Map<String, Object> payload, @RequestHeader("Authorization") String authHeader) {
-        System.out.println("reached update chord post mapping");
         String token = authHeader.substring(7); // remove "Bearer "
-        System.out.println("TOKEN="+token);
         String username = jwtService.extractUsername(token);
         Optional<User> user = ur.findByUsername(username);
         if (user.isEmpty()) {
             throw new IllegalStateException("User not found");
         }
 
-        int compositionId = (Integer) payload.get("compositionId");
+        // int compositionId = (Integer) payload.get("compositionId");
         int measureId = (Integer) payload.get("measureId");
         int chordId = (Integer) payload.get("chordId");
         Object newDurationObj = payload.get("newDuration");
         String newDurationStr = newDurationObj.toString();
         ChordDuration newDuration = ChordDuration.valueOf(newDurationStr);
-
 
         @SuppressWarnings("unchecked")
         List<Integer> updatedNoteFrets = (List <Integer>) payload.get("updatedNotes");
@@ -79,19 +66,57 @@ public class ChordController {
             updatedNotes.add(new Note(updatedNoteFrets.get(stringIdx), stringIdx));
         }
 
-        Composition comp = cs.getCompositionById(compositionId); 
         Chord oldChord = chs.findChordByMeasureIdAndChordId(measureId, chordId);
-        List<Note> oldNotes = oldChord.getNotes();
-            
-        Chord updatedChord = new Chord(chordId, measureId, oldChord.getChordNumber(), updatedNotes, newDuration);
-        // if (durUpdate) {
-        //     System.out.println("newDuration="+newDuration+", oldDur="+oldDur);
-        //     chs.updateDurations(newDuration, oldDur, updatedChord, measureId, chordLocation, HomeController.globalCompositionId);
-        // } else {
-            // was above if previously, moved here to avoid possible bugs
+        Chord updatedChord = new Chord(chordId, measureId, oldChord.getIndex(), updatedNotes, newDuration);
         chs.updateChord(updatedChord, measureId, chordId);
-        // }
         return ResponseEntity.ok(updatedChord);
+    }
+
+    // get measureId, get chordId of chord we clicked "add" on. from these params, get the chord index
+    // of that chord in the measure.
+    // then, create a new chord (in respective measure) with that chord index + 1,
+    // and push all other chords back by 1
+    @PostMapping("/add")
+    public ResponseEntity<Chord> addChord(@RequestBody Map<String, Object> payload, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+        Optional<User> user = ur.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new IllegalStateException("User not found");
+        }
+        int measureId = Integer.parseInt((String) payload.get("measureId"));
+        int chordId = Integer.parseInt((String) payload.get("chordId"));
+        return ResponseEntity.ok(chs.addChord(measureId, chordId));
+    }
+
+    @PostMapping("/duplicate")
+    public ResponseEntity<Chord> duplicateChord(@RequestBody Map<String, Object> payload, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+        Optional<User> user = ur.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new IllegalStateException("User not found");
+        }
+        int measureId = Integer.parseInt((String) payload.get("measureId"));
+        int chordId = Integer.parseInt((String) payload.get("chordId"));
+        return ResponseEntity.ok(chs.duplicateChord(measureId, chordId));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Map<String, String>> deleteChord(@RequestBody Map<String, Object> payload, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+        Optional<User> user = ur.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new IllegalStateException("User not found");
+        }
+        int measureId = Integer.parseInt((String) payload.get("measureId"));
+        int chordId = Integer.parseInt((String) payload.get("chordId"));
+        int chordIndex = Integer.parseInt((String) payload.get("chordIndex"));
+        chs.deleteChord(measureId, chordId, chordIndex);
+        return ResponseEntity.ok(Map.of(
+            "message", "Chord deleted"
+        ));
     }
 
 }

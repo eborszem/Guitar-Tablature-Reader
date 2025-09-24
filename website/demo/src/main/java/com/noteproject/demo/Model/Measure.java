@@ -3,18 +3,18 @@ package com.noteproject.demo.Model;
 import java.util.List;
 
 public class Measure {
-private List<Chord> chords;
-private int id;
-private int measureNumber;
-private int compositionId;
+    private int id;
+    private int index; // placement of measure relative to other measures in composition
+    private int compositionId;
+    private List<Chord> chords;
 
 	public Measure(List<Chord> chords) {
 		this.chords = chords;
 	}
     
-    public Measure(int id, int measureNumber, int compositionId) {
+    public Measure(int id, int index, int compositionId) {
         this.id = id;
-        this.measureNumber = measureNumber;
+        this.index = index;
         this.compositionId = compositionId;
 	}
 
@@ -42,11 +42,11 @@ private int compositionId;
         this.compositionId = setCompositionId;
     }
 
-    public int getMeasureNumber() {
-        return this.measureNumber;
+    public int getIndex() {
+        return this.index;
     }
 
-    public void setMeasureNumber(int measureNumber) {
-        this.measureNumber = measureNumber;
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

@@ -1,7 +1,7 @@
 package com.noteproject.demo.Model;
 public class Note {
     private int fretNumber;
-    private int stringNumber;  // we use fretNumber and stringNumber to get note location on fretboard
+    private int stringNumber;  // fretNumber and stringNumber are used to get coordinates of note on fretboard
 
     public Note(int fretNumber, int stringNumber) {
         this.fretNumber = fretNumber;

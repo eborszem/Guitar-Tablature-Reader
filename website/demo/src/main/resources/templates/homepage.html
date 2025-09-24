@@ -18,6 +18,7 @@
     <script type="text/javascript" th:src="@{/js/composition.js}"></script>
     <script type="text/javascript" th:src="@{/js/fretboard.js}"></script>
     <script type="text/javascript" th:src="@{/js/measure.js}"></script>
+    <script type="text/javascript" th:src="@{/js/chord.js}"></script>
     <!-- <script type="text/javascript" th:src="@{/js/sound.js}"></script> -->
     <script type="module" th:src="@{/js/sound.js}"></script>
 
@@ -91,8 +92,10 @@
                         
                         <div class="chord-box"
                             th:attr="data-measure-id=${measure1.id},
-                            data-duration=${chord1.duration.name()}"
-                            th:id="'measure' + ${measure1.measureNumber} + 'chord' + ${chord1.chordNumber}"
+                            data-duration=${chord1.duration.name()},
+                            data-chord-id=${chord1.id},
+                            data-chord-index=${chord1.index}"
+                            th:id="'measure' + ${measure1.index} + 'chord' + ${chord1.index}"
                             th:onclick="'chordClicked(this,' + ${composition.id} + ',' + ${measure1.id} + ',' + ${chord1.id} + ')'"
                         >
                             <div th:each="note1 : ${chord1.notes}">
@@ -104,6 +107,11 @@
                                     <span th:if="${note1.fretNumber == -1 or note1.fretNumber == -2}">X</span>
                                     <span th:unless="${note1.fretNumber == -1 or note1.fretNumber == -2}" th:text="${note1.fretNumber}"></span>
                                 </p>
+                            </div>
+                            <div class="chord-buttons">
+                                <button class="delete-chord"><i class="fa-solid fa-trash"></i></button>
+                                <button class="add-chord"><i class="fa-solid fa-plus"></i></button>
+                                <button class="duplicate-chord"><i class="fa-solid fa-copy"></i></button>
                             </div>
                         </div>
                     </div>
@@ -156,12 +164,12 @@
                         <img th:src="@{/images/SIXTEENTH.png}" alt="sixteenth note">
                     </button>
                 </div>
-                <div class="delete-chord-wrapper">
+                <!-- <div class="delete-chord-wrapper">
                     <button id="delete-chord-btn">
                         <span>Delete Chord</span>
                         <i class="fa-solid fa-trash"></i>
                     </button>
-                </div>
+                </div> -->
                 <button id="confirm-btn" class="button">Confirm Changes</button>
             </div>
         </div>

@@ -22,7 +22,7 @@ public class MeasureService {
     ChordRepository chr;
     /* Create new measure,
      * then increment all following measures by 1,
-     * then add new measure to database with measure number (gotten from measureId) + 1.
+     * then add new measure to database with measure index (gotten from measureId) + 1.
      * This method retains the order of measures.
      */
     final int NUM_STRINGS = 6;
@@ -31,21 +31,19 @@ public class MeasureService {
         for (int i = 0; i < NUM_STRINGS; i++) {
             notes.add(new Note(-1, i));
         }
-        // measureNumber is the position of the measure in the composition
-        int measureNumber = mr.getMeasureNumber(compositionId, measureId);
-        // System.out.println("***measure number=" + measureNumber);
-        mr.incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
+        int measureIndex = mr.getMeasureIndex(compositionId, measureId);
+        mr.incrementMeasureIndices(compositionId, measureIndex); // increment all measures after the new measure to keep order
         List<Chord> chords = new ArrayList<>();
         chords.add(new Chord(notes, ChordDuration.WHOLE)); // a single chord of rests
-        mr.addMeasureToRepo(new Measure(chords), compositionId, measureNumber + 1, false); // goes 1 after current measure
+        mr.addMeasureToRepo(new Measure(chords), compositionId, measureIndex + 1, false); // goes 1 after current measure
     }
 
     // Same as above, but measure retains the chords from its "parent".
     public void duplicateMeasure(int measureId, int compositionId) {
         List<Chord> chords = chr.findChordsByCompositionIdAndMeasureId(compositionId, measureId);
-        int measureNumber = mr.getMeasureNumber(compositionId, measureId);
-        mr.incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
-        mr.addMeasureToRepo(new Measure(chords), compositionId, measureNumber + 1, true); // goes 1 after current measure
+        int measureIndex = mr.getMeasureIndex(compositionId, measureId);
+        mr.incrementMeasureIndices(compositionId, measureIndex); // increment all measures after the new measure to keep order
+        mr.addMeasureToRepo(new Measure(chords), compositionId, measureIndex + 1, true); // goes 1 after current measure
     }
 
     public void deleteMeasure(int measureId) {

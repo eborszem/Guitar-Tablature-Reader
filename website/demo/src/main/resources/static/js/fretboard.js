@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 newDuration: newDur
             }),
             success: function(response) {
-                // location.reload();
+                location.reload();
                 console.log("Chord updated successfully:", response);
             }
         });
@@ -204,22 +204,6 @@ document.addEventListener("DOMContentLoaded", function() {
         newDur = "QUARTER";
         btnArr = null;
     }
-
-    var deleteChordBtn = document.getElementById("delete-chord-btn");
-    deleteChordBtn.addEventListener("click", async () => {
-        $.ajax({
-            type: "POST",
-            url: "/chord/delete",
-            data: {
-                measureId: measureId,
-                chordLocation: chordLocation
-            },
-            timeout: 5000,
-            success: function() {
-                location.reload();
-            }
-        });
-    });
 
     // Clicking notes on fretboard to construct a chord
     document.querySelector('.string-rows').addEventListener('click', function(event) {
@@ -261,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 // update string to have a rest
                 // -2 represents rest here to avoid bug involving -1 in updateChord() in DemoController
                 switch (parseInt(string, 10)) {
-                    case 6: updatedStrings[E] = REST; break;
+                    case 6: updatedStrings[LOW_E] = REST; break;
                     case 5 : updatedStrings[A] = REST; break;
                     case 4 : updatedStrings[D] = REST; break;
                     case 3 : updatedStrings[G] = REST; break;

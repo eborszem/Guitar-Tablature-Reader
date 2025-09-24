@@ -1,11 +1,14 @@
 package com.noteproject.demo.Repository;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import com.noteproject.demo.Model.*;
@@ -20,19 +23,9 @@ public class ChordRepository {
 
     @Autowired
     NotesRepository nr;
+
+    private final int REST = -1;
     
-    public void deleteChordsInMeasure(int measureId) {
-        String sql = "DELETE FROM Chords WHERE measure_id = ?";
-        jdbcTemplate.update(sql, measureId);
-    }
-
-    public void deleteChord(int measureId, int chordLocation) {
-        String sql = "DELETE FROM Chords WHERE measure_id = ? AND chord_number = ?";
-        jdbcTemplate.update(sql, measureId, chordLocation);
-        String sql2 = "UPDATE Chords SET chord_number = chord_number - 1 WHERE measure_id = ? AND chord_number > ?";
-        jdbcTemplate.update(sql2, measureId, chordLocation);
-    }
-
     public List<Chord> findChordsByCompositionIdAndMeasureId(int compositionId, int measureId) {
         String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ? AND c.measure_id = ? ORDER BY chord_number ASC";
         
@@ -97,4 +90,70 @@ public class ChordRepository {
             }
         });
     }
+
+	public Chord addChord(int measureId, int chordId, Chord prev) {
+        String incrementSql = "UPDATE Chords SET chord_number = chord_number + 1 WHERE measure_id = ? AND chord_number > ?";
+        jdbcTemplate.update(incrementSql, measureId, prev.getIndex());
+        String insertSql = "INSERT INTO Chords (measure_id, low_e_string, a_string, d_string, g_string, b_string, high_e_string, duration, chord_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(insertSql, new String[]{"id"});
+            ps.setInt(1, measureId);
+            ps.setInt(2, REST);
+            ps.setInt(3, REST);
+            ps.setInt(4, REST);
+            ps.setInt(5, REST);
+            ps.setInt(6, REST);
+            ps.setInt(7, REST);
+            ps.setString(8, ChordDuration.QUARTER.name());
+            ps.setInt(9, prev.getIndex() + 1);
+            return ps;
+        }, keyHolder);
+        try {
+            int newChordId = keyHolder.getKey().intValue(); // id of newly inserted chord
+            return findChordByMeasureIdAndChordId(measureId, newChordId); // return the newly added chord
+        } catch (Exception e) {
+            return new Chord();
+        }
+	}
+
+    public Chord duplicateChord(int measureId, int chordId, Chord original) {
+        String incrementSql = "UPDATE Chords SET chord_number = chord_number + 1 WHERE measure_id = ? AND chord_number > ?";
+        jdbcTemplate.update(incrementSql, measureId, original.getIndex());
+        String insertSql = "INSERT INTO Chords (measure_id, low_e_string, a_string, d_string, g_string, b_string, high_e_string, duration, chord_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(insertSql, new String[]{"id"});
+            ps.setInt(1, measureId);
+            ps.setInt(2, original.getNotes().get(5).getFretNumber());
+            ps.setInt(3, original.getNotes().get(4).getFretNumber());
+            ps.setInt(4, original.getNotes().get(3).getFretNumber());
+            ps.setInt(5, original.getNotes().get(2).getFretNumber());
+            ps.setInt(6, original.getNotes().get(1).getFretNumber());
+            ps.setInt(7, original.getNotes().get(0).getFretNumber());
+            ps.setString(8, original.getDuration().name());
+            ps.setInt(9, original.getIndex() + 1);
+            return ps;
+        }, keyHolder);
+        try {
+            int newChordId = keyHolder.getKey().intValue(); // id of newly inserted chord
+            return findChordByMeasureIdAndChordId(measureId, newChordId); // return the duplicatd chord
+        } catch (Exception e) {
+            return new Chord();
+        }
+    }
+
+    public void deleteChord(int measureId, int chordId, int chordNumber) {
+        String deleteSql = "DELETE FROM Chords WHERE measure_id = ? AND id = ?";
+        jdbcTemplate.update(deleteSql, measureId, chordId);
+        String updateSql = "UPDATE Chords SET chord_number = chord_number - 1 WHERE measure_id = ? AND chord_number > ?";
+        jdbcTemplate.update(updateSql, measureId, chordNumber);
+    }
+
+    public void deleteChordsInMeasure(int measureId) {
+        String sql = "DELETE FROM Chords WHERE measure_id = ?";
+        jdbcTemplate.update(sql, measureId);
+    }
+
+
 }

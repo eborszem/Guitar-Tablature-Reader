@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.noteproject.demo.Entity.User;
-import com.noteproject.demo.Repository.MeasureRepository;
 import com.noteproject.demo.Repository.UserRepository;
 import com.noteproject.demo.Service.JwtService;
 import com.noteproject.demo.Service.MeasureService;
-
-import org.springframework.ui.Model;
 
 @RequestMapping("/measure")
 @Controller

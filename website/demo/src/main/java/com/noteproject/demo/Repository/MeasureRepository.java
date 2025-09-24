@@ -22,7 +22,7 @@ public class MeasureRepository {
     @Autowired
     ChordRepository chr;
 
-    public int addMeasureToRepo(Measure m, int compositionId, int measureNumber, boolean duplicating) {
+    public int addMeasureToRepo(Measure m, int compositionId, int measureIndex, boolean duplicating) {
         // Create a KeyHolder to capture the auto-generated key for the measure ID
         KeyHolder keyHolder = new GeneratedKeyHolder();
         // Insert measure and retrieve the auto-generated ID
@@ -31,7 +31,7 @@ public class MeasureRepository {
             connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
                 ps.setInt(1, compositionId);
-                ps.setInt(2, measureNumber);
+                ps.setInt(2, measureIndex);
                 return ps;
             },
             keyHolder
@@ -71,17 +71,14 @@ public class MeasureRepository {
         return measureId;
     }
 
-
-    // Note: "Measure numbers" are the index of the measure in the composition. The lowest numbered measures are first, and the highest numbered measures are last
-    // "Measure IDs" are different, being a unique identifier across all compositions (However, I still like to check the composition ID in order to be safe)
-    public int getMeasureNumber(int compositionId, int measureId) {
+    public int getMeasureIndex(int compositionId, int measureId) {
         String sql = "SELECT measure_number FROM Measures WHERE id = ? AND composition_id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, measureId, compositionId);
     }
 
-    public void incrementMeasureNumbers(int compositionId, int measureNum) {
+    public void incrementMeasureIndices(int compositionId, int measureIndex) {
         String sql = "UPDATE Measures SET measure_number = measure_number + 1 WHERE composition_id = ? AND measure_number > ?";
-        jdbcTemplate.update(sql, compositionId, measureNum);
+        jdbcTemplate.update(sql, compositionId, measureIndex);
     }
 
     public void deleteMeasure(int measureId) {
@@ -89,20 +86,6 @@ public class MeasureRepository {
         chr.deleteChordsInMeasure(measureId);
         jdbcTemplate.update(sql, measureId);
     }
-
-    // Get all measures in a composition, sorted by measure number (aka their relative position in the composition)
-    // public List<Measure> findMeasuresByCompositionId(int compositionId) {
-    //     String sql = "SELECT * FROM Measures WHERE composition_id = ? ORDER BY measure_number ASC";
-    //     PreparedStatementCreator psc = connection -> {
-    //         PreparedStatement ps = connection.prepareStatement(sql);
-    //         ps.setInt(1, compositionId);
-    //         return ps;
-    //     };
-        
-    //     RowMapper<Measure> rowMapper = new MeasureRowMapper();
-        
-    //     return jdbcTemplate.query(psc, rowMapper);
-    // }
 
     /*
      * params: 

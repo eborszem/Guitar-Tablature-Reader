@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.noteproject.demo.Controller.HomeController;
 import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;

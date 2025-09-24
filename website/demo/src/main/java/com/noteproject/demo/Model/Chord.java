@@ -3,23 +3,18 @@ package com.noteproject.demo.Model;
 import java.util.List;
 
 public class Chord {
-    private List<Note> notes;
     private int id;
     private int measureId;
-    private int chordNumber;
-    private ChordDuration duration;  // 1 beat, 2 beats, 4, 8 (.5 beats), 16 (.25 beats), etc.
-    /*
-     * idea: enum for duration. WHOLE, HALF, QUARTER, EIGHTH, SIXTEENTH
-     * after moving duration to chord
-     * 
-     */
-
-
-
-    public Chord(int id, int measureId, int chordNumber, List<Note> notes, ChordDuration duration) {
+    private int index; // placement of chord relative to other chords in measure
+    private List<Note> notes;
+    private ChordDuration duration;
+    
+    public enum ChordDuration { WHOLE, HALF, QUARTER, EIGHTH, SIXTEENTH }
+    
+    public Chord(int id, int measureId, int index, List<Note> notes, ChordDuration duration) {
         this.id = id;
         this.measureId = measureId;
-        this.chordNumber = chordNumber;
+        this.index = index;
         this.notes = notes;
         this.duration = duration;
     }
@@ -31,13 +26,6 @@ public class Chord {
     
     public Chord() {}
 
-    public enum ChordDuration {
-        WHOLE,
-        HALF,
-        QUARTER,
-        EIGHTH,
-        SIXTEENTH
-    }
 
     public List<Note> getNotes() {
         return this.notes;
@@ -63,12 +51,12 @@ public class Chord {
         this.measureId = measureId;
     }
 
-    public int getChordNumber() {
-        return this.chordNumber;
+    public int getIndex() {
+        return this.index;
     }
 
-    public void setChordNumber(int chordNumber) {
-        this.chordNumber = chordNumber;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public ChordDuration getDuration() {
