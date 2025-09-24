@@ -1,5 +1,12 @@
 package com.noteproject.demo.Controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,34 +41,48 @@ public class AuthController {
 
     @PostMapping("/auth/register")
     @ResponseBody
-    public String register(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return jwtService.generateToken(user.getUsername());
+        try {
+            userRepository.save(user);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Username '" + user.getUsername() + "' is already taken.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+        String token = jwtService.generateToken(user.getUsername());
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/auth/login")
     @ResponseBody
-    public String login(@RequestBody User user, HttpServletResponse response) {
-        authenticationManager.authenticate(
+    public ResponseEntity<?> login(@RequestBody User user, HttpServletResponse response) {
+        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
+        if (existingUser.isEmpty()) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Username does not exist.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+        try {
+            authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-        );
+            );
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Incorrect password.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        }
         String token = jwtService.generateToken(user.getUsername());
         Cookie cookie = new Cookie("jwt", token);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60); // 1 hour
         response.addCookie(cookie);
-        return token;
+        return ResponseEntity.ok(token);
     }
 
     @GetMapping("/login")
     public String loginPage() {
         return "login";
-    }
-
-    @GetMapping("/register")
-    public String registerPage() {
-        return "register";
     }
 }
