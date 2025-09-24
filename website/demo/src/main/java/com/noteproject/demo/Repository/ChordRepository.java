@@ -62,6 +62,24 @@ public class ChordRepository {
         return chord;
     }
 
+    public Chord findChordByMeasureIdAndChordIndex(int measureId, int chordIdx) {
+        String sql = "SELECT * FROM chords WHERE measure_id = ? AND chord_number = ?";
+        
+        Chord chord = jdbcTemplate.queryForObject(
+            sql,
+            (rs, rowNum) -> new Chord(
+                rs.getInt("id"),
+                measureId,
+                chordIdx,
+                nr.getNotes(rs.getInt("id"),measureId),
+                ChordDuration.valueOf(rs.getString("duration"))
+            ),
+            measureId,
+            chordIdx
+        );
+        return chord;
+    }
+
     public void updateChord(Chord c, int measureId, int chordId) {
         String sql = "UPDATE Chords SET low_e_string = ?, a_string = ?, d_string = ?, g_string = ?, b_string = ?, high_e_string = ?, duration = ? WHERE measure_id = ? AND id = ?";
         List<Note> notes = c.getNotes();
@@ -143,11 +161,11 @@ public class ChordRepository {
         }
     }
 
-    public void deleteChord(int measureId, int chordId, int chordNumber) {
+    public void deleteChord(int measureId, int chordId, int chordIndex) {
         String deleteSql = "DELETE FROM Chords WHERE measure_id = ? AND id = ?";
         jdbcTemplate.update(deleteSql, measureId, chordId);
         String updateSql = "UPDATE Chords SET chord_number = chord_number - 1 WHERE measure_id = ? AND chord_number > ?";
-        jdbcTemplate.update(updateSql, measureId, chordNumber);
+        jdbcTemplate.update(updateSql, measureId, chordIndex);
     }
 
     public void deleteChordsInMeasure(int measureId) {
@@ -155,5 +173,22 @@ public class ChordRepository {
         jdbcTemplate.update(sql, measureId);
     }
 
-
+    public void swapChord(Chord cur, Chord swap) {
+        int curIdx = cur.getIndex();
+        int swapIdx = swap.getIndex();
+        int measureId = cur.getMeasureId();
+        String sql =    "UPDATE Chords " +
+                        "SET chord_number = CASE " +
+                            "WHEN id = ? THEN ? " +
+                            "WHEN id = ? THEN ? " +
+                        "END " +
+                        "WHERE measure_id = ? " +
+                        "AND id IN (?, ?)";
+        jdbcTemplate.update(sql,
+            cur.getId(), swapIdx,
+            swap.getId(), curIdx,
+            measureId,
+            cur.getId(), swap.getId()
+        );
+    }
 }

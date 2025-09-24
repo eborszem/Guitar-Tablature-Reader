@@ -119,4 +119,21 @@ public class ChordController {
         ));
     }
 
+    @PostMapping("/swap")
+    public ResponseEntity<Map<String, String>> swapChord(@RequestBody Map<String, Object> payload, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String username = jwtService.extractUsername(token);
+        Optional<User> user = ur.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new IllegalStateException("User not found");
+        }
+        int measureId = Integer.parseInt((String) payload.get("measureId"));
+        int chordId = Integer.parseInt((String) payload.get("chordId"));
+        String direction = (String) payload.get("direction"); // left or right
+        chs.swapChord(measureId, chordId, direction);
+        return ResponseEntity.ok(Map.of(
+            "message", "Chords swapped"
+        ));
+    }
+
 }

@@ -14,8 +14,12 @@ public class ChordService {
         return chr.findChordByMeasureIdAndChordId(measureId, chordId);
     }
 
-    public void deleteChord(int measureId, int chordId, int chordNumber) {
-        chr.deleteChord(measureId, chordId, chordNumber);
+    public Chord findChordByMeasureIdAndChordIndex(int measureId, int chordIdx) {
+        return chr.findChordByMeasureIdAndChordIndex(measureId, chordIdx);
+    }
+
+    public void deleteChord(int measureId, int chordId, int chordIndex) {
+        chr.deleteChord(measureId, chordId, chordIndex);
     }
 
     public void updateChord(Chord updatedChord, int measureId, int chordId) {
@@ -30,6 +34,14 @@ public class ChordService {
     public Chord duplicateChord(int measureId, int chordId) {
         Chord original = findChordByMeasureIdAndChordId(measureId, chordId);
         return chr.duplicateChord(measureId, chordId, original);
+    }
+
+    public void swapChord(int measureId, int chordId, String direction) {
+        Chord cur = findChordByMeasureIdAndChordId(measureId, chordId);
+        int offset = direction.equals("LEFT") ? -1 : 1;
+        Chord swap = findChordByMeasureIdAndChordIndex(measureId, cur.getIndex() + offset);
+        if (swap == null) return;
+        chr.swapChord(cur, swap);
     }
 
 

@@ -89,4 +89,33 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    var swapChordBtns = document.querySelectorAll(".swap-chord");
+    swapChordBtns.forEach(function(btn) {
+        btn.addEventListener("click", function(event) {
+            event.stopPropagation(); // prevent fretboard popup from appearing
+            let chordBox = btn.closest('.chord-box');
+            let measureId = chordBox.getAttribute('data-measure-id');
+            let chordId = chordBox.getAttribute('data-chord-id');
+            let direction = btn.getAttribute('data-direction')
+            $.ajax({
+                type: "POST",
+                url: "/chord/swap",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    measureId: measureId,
+                    chordId: chordId,
+                    direction: direction
+                }),
+                success: function(response) {
+                    location.reload();
+                    // console.log("New chord created:", response);
+                },
+            });
+        });
+    });
+
 });

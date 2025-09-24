@@ -130,7 +130,6 @@
     align-items: center;
     gap: 10px;
     z-index: 10;
-    pointer-events: auto;
 }
 
 
@@ -140,6 +139,7 @@
 
 .chord-box  .chord-buttons  .delete-chord {
     opacity: 0;
+    cursor: pointer;
     /* display: none; */
     /* position: absolute;
     /* bottom: -26%; */
@@ -161,6 +161,7 @@
 .chord-box .chord-buttons .add-chord {
     /* display: none; */
     opacity: 0;
+    cursor: pointer;
     /* position: absolute;
     bottom: -26%;
     left: 20%;
@@ -181,6 +182,7 @@
 .chord-box .chord-buttons .duplicate-chord {
     /* display: none; */
     opacity: 0;
+    cursor: pointer;
     /* position: absolute;
     bottom: -26%;
     left: 35%;
@@ -195,6 +197,15 @@
 }
 
 .chord-box:hover .chord-buttons .duplicate-chord {
+    opacity: 1;
+}
+
+.chord-box .chord-buttons .swap-chord {
+    opacity: 0;
+    cursor: pointer;
+}
+
+.chord-box:hover .chord-buttons .swap-chord {
     opacity: 1;
 }
 
