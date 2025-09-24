@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Chord;
+import com.noteproject.demo.Model.Chord.ChordDuration;
 
 import java.sql.Timestamp;
 import java.sql.PreparedStatement;
@@ -105,7 +106,8 @@ public class CompositionRepository {
                         measure.getId(),
                         rs.getInt("chord_number"),
                         // fetch notes for this chord
-                        nr.getNotes(rs.getInt("id"), measure.getId())
+                        nr.getNotes(rs.getInt("id"), measure.getId()),
+                        ChordDuration.valueOf(rs.getString("duration"))
                     ),
                     measure.getId()
                 );

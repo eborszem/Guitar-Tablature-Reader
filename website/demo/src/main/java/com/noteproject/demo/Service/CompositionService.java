@@ -10,6 +10,7 @@ import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Note;
+import com.noteproject.demo.Model.Chord.ChordDuration;
 import com.noteproject.demo.Repository.ChordRepository;
 import com.noteproject.demo.Repository.CompositionRepository;
 import com.noteproject.demo.Repository.MeasureRepository;
@@ -30,9 +31,9 @@ public class CompositionService {
         int compId = cr.insertCompositionIntoDB(title, composer, userId);
         List<Note> notes = new ArrayList<>();
         for (int i = 0; i < NUM_STRINGS; i++) {
-            notes.add(new Note(-1, i, WHOLE_NOTE_DURATION));
+            notes.add(new Note(-1, i));
         }
-        Chord c = new Chord(notes);
+        Chord c = new Chord(notes, ChordDuration.WHOLE);
         List<Chord> chords = new ArrayList<>();
         chords.add(c);
         Measure m = new Measure(chords);

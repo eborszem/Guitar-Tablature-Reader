@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import com.noteproject.demo.Model.*;
+import com.noteproject.demo.Model.Chord.ChordDuration;
 
 @Repository
 public class ChordRepository {
@@ -41,8 +42,8 @@ public class ChordRepository {
                 rs.getInt("id"),
                 measureId,
                 rs.getInt("chord_number"),
-                // fetch notes for this chord
-                nr.getNotes(rs.getInt("id"),measureId)
+                nr.getNotes(rs.getInt("id"),measureId),
+                ChordDuration.valueOf(rs.getString("duration"))
             ),
             measureId,
             compositionId
@@ -50,18 +51,37 @@ public class ChordRepository {
         return chords;
     }
 
-    public void updateChord(Chord c, int measureId, int chordNum) {
-        System.out.println("TEST UPDATE CHORD DUR");
-        String sql = "UPDATE Chords SET low_e_string = ?, a_string = ?, d_string = ?, g_string = ?, b_string = ?, high_e_string = ?, duration = ? WHERE measure_id = ? AND chord_number = ?";
+    public Chord findChordByMeasureIdAndChordId(int measureId, int chordId) {
+        String sql = "SELECT * FROM chords WHERE measure_id = ? AND id = ?";
+        
+        Chord chord = jdbcTemplate.queryForObject(
+            sql,
+            (rs, rowNum) -> new Chord(
+                chordId,
+                measureId,
+                rs.getInt("chord_number"),
+                nr.getNotes(rs.getInt("id"),measureId),
+                ChordDuration.valueOf(rs.getString("duration"))
+            ),
+            measureId,
+            chordId
+        );
+        return chord;
+    }
+
+    public void updateChord(Chord c, int measureId, int chordId) {
+        String sql = "UPDATE Chords SET low_e_string = ?, a_string = ?, d_string = ?, g_string = ?, b_string = ?, high_e_string = ?, duration = ? WHERE measure_id = ? AND id = ?";
         List<Note> notes = c.getNotes();
+        for (Note n : notes) {
+            System.out.println("{note} " + n.getFretNumber());
+        }
         Note high_e = notes.get(0);
         Note b = notes.get(1);
         Note g = notes.get(2);
         Note d = notes.get(3);
         Note a = notes.get(4);
         Note low_e = notes.get(5);
-        int duration = high_e.getDuration();
-
+        ChordDuration duration = c.getDuration();
         jdbcTemplate.update(sql, new PreparedStatementSetter() {
             @Override
             public void setValues(@NonNull java.sql.PreparedStatement ps) throws SQLException {
@@ -71,9 +91,9 @@ public class ChordRepository {
                 ps.setObject(4, g.getFretNumber());
                 ps.setObject(5, b.getFretNumber());
                 ps.setObject(6, high_e.getFretNumber());
-                ps.setObject(7, duration);
+                ps.setObject(7, duration.name());
                 ps.setInt(8, measureId);
-                ps.setInt(9, chordNum);
+                ps.setInt(9, chordId);
             }
         });
     }

@@ -20,13 +20,12 @@ public class NotesRepository {
         return jdbcTemplate.query(sql, rs -> {
             List<Note> notes = new ArrayList<>();
             if (rs.next()) {
-                int duration = rs.getInt("duration");
-                notes.add(new Note(rs.getInt("high_e_string"), 0, duration));
-                notes.add(new Note(rs.getInt("b_string"), 1, duration));
-                notes.add(new Note(rs.getInt("g_string"), 2, duration));
-                notes.add(new Note(rs.getInt("d_string"), 3, duration));
-                notes.add(new Note(rs.getInt("a_string"), 4, duration));
-                notes.add(new Note(rs.getInt("low_e_string"), 5, duration));
+                notes.add(new Note(rs.getInt("high_e_string"), 0));
+                notes.add(new Note(rs.getInt("b_string"), 1));
+                notes.add(new Note(rs.getInt("g_string"), 2));
+                notes.add(new Note(rs.getInt("d_string"), 3));
+                notes.add(new Note(rs.getInt("a_string"), 4));
+                notes.add(new Note(rs.getInt("low_e_string"), 5));
             }
             return notes;
         }, chordId, measureId);

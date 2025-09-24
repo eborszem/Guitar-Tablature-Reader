@@ -1,23 +1,13 @@
 package com.noteproject.demo.Model;
 public class Note {
-    private int duration;  // 1 beat, 2 beats, 4, 8, 16, etc.
     private int fretNumber;
     private int stringNumber;  // we use fretNumber and stringNumber to get note location on fretboard
 
-    public Note(int fretNumber, int stringNumber, int duration) {
-        this.stringNumber = stringNumber;
+    public Note(int fretNumber, int stringNumber) {
         this.fretNumber = fretNumber;
-        this.duration = duration;
+        this.stringNumber = stringNumber;
     }
     
-    public int getDuration() {
-        return this.duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
     public int getFretNumber() {
         return this.fretNumber;
     }

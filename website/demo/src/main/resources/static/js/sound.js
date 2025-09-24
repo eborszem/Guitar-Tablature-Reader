@@ -1,10 +1,4 @@
 import Soundfont from 'https://esm.sh/soundfont-player';
-// Define note values
-const WHOLE_NOTE = 4;
-const HALF_NOTE = 2;
-const QUARTER_NOTE = 1;
-const EIGHTH_NOTE = 8;
-const SIXTEENTH_NOTE = 16;
 window.FRETBOARD = [
     ["E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5"],
     ["B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5"],
@@ -22,14 +16,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     /* BPM (beats per minute) CONTROL */
     
-    let curBpm = localStorage.getItem('bpm') || 120;
+    let curBpm = localStorage.getItem('bpm') || 60;
     const bpmSlider = document.getElementById('bpm');
     
     bpmSlider.addEventListener('change', async (event) => {
         let bpmSliderInt = parseInt(bpmSlider.value, 10);
         if (isNaN(bpmSliderInt)) {
-            bpmSlider.value = 120;
-            bpmSliderInt = 120; // default for invalid input
+            bpmSlider.value = 60;
+            bpmSliderInt = 60; // default for invalid input
         }
         if (bpmSliderInt < 50) {
             bpmSlider.value = 50;
@@ -83,14 +77,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                         let chords = measure.chords;
                         chords.forEach(chord => {
                             let notes = chord.notes;
-                            let dur = notes[0].duration; // 
-                            // accounting for 8th and 16th notes really being doubles relative to a quarter note (which has a duration of 1)
-                            if (dur == EIGHTH_NOTE) {
-                                dur = 0.5;
-                            } else if (dur == SIXTEENTH_NOTE) {
-                                dur = 0.25;
+                            let dur = chord.duration;
+                            let durInteger = 0;
+                            // convert duration enum to number of beats
+                            if (dur == "WHOLE") {
+                                durInteger = 4;
+                            } else if (dur == "HALF") {
+                                durInteger = 2;
+                            } else if (dur == "QUARTER") {
+                                durInteger = 1;
+                            } else if (dur == "EIGHTH") {
+                                durInteger = 0.5;
+                            } else if (dur == "SIXTEENTH") {
+                                durInteger = 0.25;
                             }
-                            dur *= (60 / curBpm);
+                            durInteger *= (60 / curBpm);
                             let chordArray = [];
                             for (let i = 0; i < notes.length; i++) {
                                 let string = notes[i].stringNumber;
@@ -100,9 +101,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                             array.push({
                                 time: t,
                                 chord: chordArray,
-                                duration: dur
+                                duration: durInteger
                             });
-                            t += dur;
+                            t += durInteger;
                         });
                         resolve(array);
                     });

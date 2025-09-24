@@ -5,19 +5,6 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.addEventListener("click", function() {
             let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
             let addMeasureId = chordBox.getAttribute('data-measure-id'); // the new measure will be added after this one
-            // console.log("Adding measure with id:", addMeasureId);
-            // $.ajax({
-            //     type: "POST",
-            //     url: "/addMeasure",
-            //     data: {
-            //         measureId: addMeasureId
-            //     },
-            //     timeout: 5000,
-            //     success: function(response) {
-            //         // console.log("Measure added successfully:" + response);
-            //         location.reload();
-            //     }
-            // });
             console.log("Adding measure with id:", addMeasureId);
             console.log("Token ->", token);
             $.ajax({

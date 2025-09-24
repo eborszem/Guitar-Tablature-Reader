@@ -1,5 +1,7 @@
 package com.noteproject.demo.Entity;
 
+import com.noteproject.demo.Model.Chord.ChordDuration;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -31,8 +33,9 @@ public class Chord {
     @Column(name = "high_e_string")
     private String highEString;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "duration")
-    private Integer duration;
+    private ChordDuration duration;
 
     @Column(name = "chord_number")
     private Integer chordNumber;
@@ -101,11 +104,11 @@ public class Chord {
         this.highEString = highEString;
     }
 
-    public Integer getDuration() {
+    public ChordDuration getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(ChordDuration duration) {
         this.duration = duration;
     }
 

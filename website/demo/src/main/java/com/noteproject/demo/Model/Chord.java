@@ -7,23 +7,37 @@ public class Chord {
     private int id;
     private int measureId;
     private int chordNumber;
+    private ChordDuration duration;  // 1 beat, 2 beats, 4, 8 (.5 beats), 16 (.25 beats), etc.
     /*
      * idea: enum for duration. WHOLE, HALF, QUARTER, EIGHTH, SIXTEENTH
      * after moving duration to chord
      * 
      */
-    public Chord(int id, int measureId, int chordNumber, List<Note> notes) {
+
+
+
+    public Chord(int id, int measureId, int chordNumber, List<Note> notes, ChordDuration duration) {
         this.id = id;
         this.measureId = measureId;
         this.chordNumber = chordNumber;
         this.notes = notes;
+        this.duration = duration;
     }
 
-    public Chord(List<Note> notes) {
+    public Chord(List<Note> notes, ChordDuration duration) {
         this.notes = notes;
+        this.duration = duration;
     }
     
     public Chord() {}
+
+    public enum ChordDuration {
+        WHOLE,
+        HALF,
+        QUARTER,
+        EIGHTH,
+        SIXTEENTH
+    }
 
     public List<Note> getNotes() {
         return this.notes;
@@ -55,5 +69,13 @@ public class Chord {
 
     public void setChordNumber(int chordNumber) {
         this.chordNumber = chordNumber;
+    }
+
+    public ChordDuration getDuration() {
+        return this.duration;
+    }
+
+    public void setDuration(ChordDuration duration) {
+        this.duration = duration;
     }
 }

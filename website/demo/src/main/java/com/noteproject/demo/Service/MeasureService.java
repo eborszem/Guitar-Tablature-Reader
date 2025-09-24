@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Note;
+import com.noteproject.demo.Model.Chord.ChordDuration;
 import com.noteproject.demo.Repository.ChordRepository;
 import com.noteproject.demo.Repository.MeasureRepository;
 
@@ -24,19 +25,18 @@ public class MeasureService {
      * then add new measure to database with measure number (gotten from measureId) + 1.
      * This method retains the order of measures.
      */
+    final int NUM_STRINGS = 6;
     public void addMeasure(int measureId, int compositionId) {
-        final int NUM_STRINGS = 6;
-        final int WHOLE_NOTE_DURATION = 4;
         List<Note> notes = new ArrayList<>();
         for (int i = 0; i < NUM_STRINGS; i++) {
-            notes.add(new Note(-1, i, WHOLE_NOTE_DURATION));
+            notes.add(new Note(-1, i));
         }
         // measureNumber is the position of the measure in the composition
         int measureNumber = mr.getMeasureNumber(compositionId, measureId);
         // System.out.println("***measure number=" + measureNumber);
         mr.incrementMeasureNumbers(compositionId, measureNumber); // increment all measures after the new measure to keep order
         List<Chord> chords = new ArrayList<>();
-        chords.add(new Chord(notes)); // a single chord of rests
+        chords.add(new Chord(notes, ChordDuration.WHOLE)); // a single chord of rests
         mr.addMeasureToRepo(new Measure(chords), compositionId, measureNumber + 1, false); // goes 1 after current measure
     }
 

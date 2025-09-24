@@ -27,6 +27,15 @@ public class HomeController {
     @Autowired
     JwtService jwtService;
 
+    final String[][] FRETBOARD = {
+        {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A"},
+        {"B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E"},
+        {"G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C"},
+        {"D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G"},
+        {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D"},
+        {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A"},
+    };
+
     @GetMapping("/")
     public String getHomePage(Model model, @CookieValue("jwt") String token) {
         Composition comp;
@@ -45,27 +54,17 @@ public class HomeController {
             comp = cs.getCompositionById(globalCompositionId);
             initialCompositionExists = false;
         }
-
-        model.addAttribute("allMeasures", comp.getMeasures());
-        model.addAttribute("allCompositions", cs.getAllCompositions(userId));
-
+        
         // reload to give program time to generate an initial composition
         if (!initialCompositionExists) {
-            return "redirect:/page";
+            return "redirect:/";
         }
         
-        model.addAttribute("compositionInfo", comp);
+        model.addAttribute("composition", comp);
+        model.addAttribute("allCompositions", cs.getAllCompositions(userId));
 
-        final String[][] FRETBOARD = {
-            {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A"},
-            {"B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E"},
-            {"G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C"},
-            {"D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G"},
-            {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D"},
-            {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A"},
-        };
         model.addAttribute("fretboard", FRETBOARD);
-        return "homepage";
+        return "homepage"; // todo: CHANGE TO JSON?
     }
 
 }

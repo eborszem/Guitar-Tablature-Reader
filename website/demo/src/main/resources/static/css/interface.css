@@ -165,26 +165,26 @@
     z-index: 1;
 }
 
-.duration-box .whole-note {
+.duration-WHOLE {
     width: 15px;
     height: auto;
 }
 
-.duration-box .half-note {
+.duration-HALF {
     width: 10px;
     height: auto;
 }
 
-.duration-box .quarter-note {
+.duration-QUARTER {
     width: 10px;
     height: auto;
 }
 
-.duration-box .eighth-note {
+.duration-EIGHTH {
     width: 17px;
     height: auto;
 }
-.duration-box .sixteenth-note {
+.duration-SIXTEENTH {
     width: 17px;
     height: auto;
 }

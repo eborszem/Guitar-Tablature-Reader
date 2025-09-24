@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import com.noteproject.demo.Model.Note;
 import com.noteproject.demo.Model.Chord;
+import com.noteproject.demo.Model.Chord.ChordDuration;
 import com.noteproject.demo.Model.Measure;
 
 @Repository
@@ -48,14 +49,14 @@ public class MeasureRepository {
         List<Chord> chords = m.getChords();
         for (int i = 0; i < chords.size(); i++) {
             Chord c = chords.get(i);
+            ChordDuration duration = c.getDuration();
             Note high_e_string = c.getNotes().get(0);
             Note b_string = c.getNotes().get(1);
             Note g_string = c.getNotes().get(2);
             Note d_string = c.getNotes().get(3);
             Note a_string = c.getNotes().get(4);
             Note low_e_string = c.getNotes().get(5);
-            int duration = low_e_string.getDuration();
-            jdbcTemplate.update(sql2, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, i);
+            jdbcTemplate.update(sql2, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration.name());
         }
         return measureId;
     }
@@ -109,6 +110,7 @@ public class MeasureRepository {
         // add measure (first chord up to last new rest)
         for (; i < newMeasure.size(); i++) {
             Chord chord = newMeasure.get(i);
+            ChordDuration duration = chord.getDuration();
             List<Note> notes = chord.getNotes();
             Note high_e_string = notes.get(0);
             Note b_string = notes.get(1);
@@ -116,13 +118,13 @@ public class MeasureRepository {
             Note d_string = notes.get(3);
             Note a_string = notes.get(4);
             Note low_e_string = notes.get(5);
-            int duration = low_e_string.getDuration();
-            jdbcTemplate.update(sql, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, i);
+            jdbcTemplate.update(sql, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration.name(), i);
         }
         // now add remaining chords after the last new rest
         System.out.println("edited measure, remaining chords: ");
         while (idx < chords.size()) {
             Chord chord = chords.get(idx++);
+            ChordDuration duration = chord.getDuration();
             List<Note> notes = chord.getNotes();
             Note high_e_string = notes.get(0);
             Note b_string = notes.get(1);
@@ -130,8 +132,7 @@ public class MeasureRepository {
             Note d_string = notes.get(3);
             Note a_string = notes.get(4);
             Note low_e_string = notes.get(5);
-            int duration = low_e_string.getDuration();
-            jdbcTemplate.update(sql, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration, i++);
+            jdbcTemplate.update(sql, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration.name(), i++);
             System.out.println(duration + ": " + low_e_string.getFretNumber() + " " + a_string.getFretNumber() + " " + d_string.getFretNumber() + " " + g_string.getFretNumber() + " " + b_string.getFretNumber() + " " + high_e_string.getFretNumber());
         }
     }
