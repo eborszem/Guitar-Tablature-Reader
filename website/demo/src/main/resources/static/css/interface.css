@@ -170,20 +170,13 @@
     height: auto;
 }
 
-.duration-HALF {
-    width: 10px;
-    height: auto;
-}
-
+.duration-HALF,
 .duration-QUARTER {
     width: 10px;
     height: auto;
 }
 
-.duration-EIGHTH {
-    width: 17px;
-    height: auto;
-}
+.duration-EIGHTH,
 .duration-SIXTEENTH {
     width: 17px;
     height: auto;

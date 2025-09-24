@@ -56,7 +56,17 @@ public class MeasureRepository {
             Note d_string = c.getNotes().get(3);
             Note a_string = c.getNotes().get(4);
             Note low_e_string = c.getNotes().get(5);
-            jdbcTemplate.update(sql2, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration.name());
+            jdbcTemplate.update(sql2,
+                measureId, 
+                low_e_string.getFretNumber(),
+                a_string.getFretNumber(),
+                d_string.getFretNumber(),
+                g_string.getFretNumber(),
+                b_string.getFretNumber(),
+                high_e_string.getFretNumber(),
+                duration.name(),
+                i
+            );
         }
         return measureId;
     }
