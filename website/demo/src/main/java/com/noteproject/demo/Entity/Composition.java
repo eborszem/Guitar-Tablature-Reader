@@ -21,11 +21,9 @@ public class Composition {
     @Column(name = "time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime time;
 
-    @Column(name = "note_value")
-    private Integer noteValue;
-
-    @Column(name = "num_note_values_per_measure")
-    private Integer numNoteValuesPerMeasure;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     public Composition() {}
 
@@ -61,19 +59,11 @@ public class Composition {
         this.time = time;
     }
 
-    public Integer getNoteValue() {
-        return noteValue;
+    public User getUser() {
+        return user;
     }
 
-    public void setNoteValue(Integer noteValue) {
-        this.noteValue = noteValue;
-    }
-
-    public Integer getNumNoteValuesPerMeasure() {
-        return numNoteValuesPerMeasure;
-    }
-
-    public void setNumNoteValuesPerMeasure(Integer numNoteValuesPerMeasure) {
-        this.numNoteValuesPerMeasure = numNoteValuesPerMeasure;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

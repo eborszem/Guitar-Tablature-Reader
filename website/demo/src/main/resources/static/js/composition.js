@@ -7,12 +7,15 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     var submitNewComposition = document.getElementById("submit");
-    var form = document.getElementById("popup");
+    const token = localStorage.getItem("jwt");9/
     submitNewComposition.addEventListener("click", function() {
+        console.log("TOKEN="+token);
         const regex = /^.+$/; // makes sure that the title and composer are not empty
         var title = document.getElementById("title").value;
         var composer = document.getElementById("composer").value;
-        if (!regex.test(title) && !regex.test(composer)) {
+        if (!token) {
+            alert("User not authenticated. Please log in.");
+        } else if (!regex.test(title) && !regex.test(composer)) {
             alert("Invalid title and composer");
         } else if (!regex.test(title)) {
             alert("Invalid title");
@@ -21,14 +24,22 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             $.ajax({
                 type: "POST",
-                url: "/newComposition",
-                data: {
+                url: "/composition/new",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
                     title: title,
                     composer: composer
-                },
-                timeout: 5000,
+                }),
                 success: function(response) {
-                    location.reload();
+                    const id = Object.values(response)[0];
+                    console.log(response);
+                    console.log(id);
+                    document.getElementById("popup").style.display = "none";
+                    window.location.href = `/song?compositionId=${id}`;
                 },
             });
         }
@@ -38,27 +49,4 @@ document.addEventListener("DOMContentLoaded", function() {
     cancelNewComposition.addEventListener("click", function() {
         document.getElementById("popup").style.display = "none";
     });
-
-    const dropdown = document.getElementById('composition-dropdown');
-    dropdown.addEventListener('change', function() {
-        changeComposition();  // Call the function when an option is selected
-        console.log("testing");
-    });
-    // changing composition
-    function changeComposition() {
-        const form = document.getElementById('composition-form');
-        const formData = new FormData(form);
-        fetch('/changeComposition', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text())
-        .then(data => {
-            location.reload();
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
 });

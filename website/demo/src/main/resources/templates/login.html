@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login or Sign Up</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fa-solid fa-guitar"></i> GUITAR MUSIC READER</h1>
+        <div class="login-box">
+            <h2>Login</h2>
+            <input type="text" id="login-username" placeholder="Username">
+            <input type="password" id="login-password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <p id="login-result" class="result"></p>
+        </div>
+        
+        <div class="signup-box">
+            <h2>Sign Up</h2>
+            <input type="text" id="register-username" placeholder="Username">
+            <input type="password" id="register-password" placeholder="Password">
+            <button onclick="register()">Register</button>
+            <p id="register-result" class="result"></p>
+        </div>
+
+    </div>
+    <script>
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                const response = await fetch('http://localhost:8080/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                if (response.ok) {
+                    const token = await response.text();
+                    localStorage.setItem('jwt', token);
+                    // document.getElementById('login-result').innerHTML = 
+                    //     '<strong>Success! Token:</strong> ' + token;
+                    document.getElementById('login-result').innerHTML = 
+                        '<strong>Success!';
+                    document.getElementById('login-result').classList.add('success');
+                    window.location.href = '/'; // redirect to home page
+                } else {
+                    const errorData = await response.json();
+                    document.getElementById('login-result').innerHTML = 
+                        'Login failed: ' + errorData.error;
+                }
+            } catch (error) {
+                document.getElementById('login-result').innerHTML = 'Error: ' + error;
+            }
+        }
+        async function register() {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            
+            try {
+                const response = await fetch('http://localhost:8080/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('register-result').innerHTML = 
+                        '<strong>Registration successful!</strong> You can now log in.';
+                    document.getElementById('register-result').classList.add('success');
+                    document.getElementById('register-username').value = ''
+                    document.getElementById('register-password').value = ''
+                } else {
+                    const errorData = await response.json();
+                    document.getElementById('register-result').innerHTML = 
+                        'Registration failed: ' + (errorData.error);
+                }
+            } catch (error) {
+                document.getElementById('register-result').innerHTML = 'Error: ' + error;
+            }
+        }
+    </script>
+</body>
+</html>

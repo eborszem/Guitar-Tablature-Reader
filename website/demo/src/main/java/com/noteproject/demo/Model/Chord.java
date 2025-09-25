@@ -1,43 +1,38 @@
 package com.noteproject.demo.Model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Chord {
-    Note note;  // notes in the chord
-    Chord next;
     private int id;
     private int measureId;
-    private int chordNumber;
+    private int index; // placement of chord relative to other chords in measure
+    private List<Note> notes;
+    private ChordDuration duration;
+    
+    public enum ChordDuration { WHOLE, HALF, QUARTER, EIGHTH, SIXTEENTH }
+    
+    public Chord(int id, int measureId, int index, List<Note> notes, ChordDuration duration) {
+        this.id = id;
+        this.measureId = measureId;
+        this.index = index;
+        this.notes = notes;
+        this.duration = duration;
+    }
 
-    public Chord(Note note) {
-        this.note = note;
-        this.next = null;
+    public Chord(List<Note> notes, ChordDuration duration) {
+        this.notes = notes;
+        this.duration = duration;
     }
     
-    public Chord() {
+    public Chord() {}
 
+
+    public List<Note> getNotes() {
+        return this.notes;
     }
 
-    public Chord(String string, String string2, String string3, String string4, String string5, String string6,
-            int int1, int int2) {
-        //TODO Auto-generated constructor stub
-    }
-
-    public Note getNote() {
-        return this.note;
-    }
-
-    public void setNote(Note note) {
-        this.note = note;
-    }
-
-    public Chord getNext() {
-        return this.next;
-    }
-
-    public void setNext(Chord next) {
-        this.next = next;
+    public void setNote(List<Note> notes) {
+        this.notes = notes;
     }
 
     public int getId() {
@@ -56,32 +51,19 @@ public class Chord {
         this.measureId = measureId;
     }
 
-    public int getChordNumber() {
-        return this.chordNumber;
+    public int getIndex() {
+        return this.index;
     }
 
-    public void setChordNumber(int chordNumber) {
-        this.chordNumber = chordNumber;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
-    public List<Note> getAllNotes() {
-        List<Note> notes = new ArrayList<>();
-        Note n = this.note;
-        while (n != null) {
-            notes.add(n);
-            n = n.next;
-        }
-        return notes;
+    public ChordDuration getDuration() {
+        return this.duration;
     }
 
-    public boolean allRests() {
-        Note n = this.note;
-        while (n != null) {
-            if (n.fretNumber != -1) {
-                return false;
-            }
-            n = n.next;
-        }
-        return true;
+    public void setDuration(ChordDuration duration) {
+        this.duration = duration;
     }
 }

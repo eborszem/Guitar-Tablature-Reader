@@ -1,44 +1,30 @@
 document.addEventListener("DOMContentLoaded", function() {
-    /* 
-     * There are currently two "add measure" buttons. One is at the top of the page, and the other is shown when the user hovers over a measure. 
-     * These two buttons are immediately below.
-     */
-    var newMeasure = document.getElementById("add-new-measure");
-    newMeasure.addEventListener("click", function() {
-        fetch("/createNewMeasure", {
-            method: "POST",
-        })
-        .then(response => response.json())
-        .then(data => {
-            location.reload();
-            console.log("Received JSON:", data);  // Log the JSON to console
-            // Update the page with the new measure without reloading
-            // You can iterate over the response and dynamically add the new measure to the DOM
-            data.forEach(chord => {
-                // console.log("frets:", chord.fretNumbers, "dur:", chord.duration, "measureId:", chord.measureId);
-                // TODO
-            });
-        })
-        .catch(error => console.error("Error fetching new measure:", error));
-    });
-
+    const token = localStorage.getItem("jwt");
     var addMeasureBtns = document.querySelectorAll(".add-measure");
     addMeasureBtns.forEach(function(btn) {
         btn.addEventListener("click", function() {
             let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
             let addMeasureId = chordBox.getAttribute('data-measure-id'); // the new measure will be added after this one
-            // console.log("Adding measure with id:", addMeasureId);
+            let compositionId = chordBox.getAttribute('data-composition-id');
+            console.log("ADDING AFTER", compositionId);
+            console.log("Adding measure with id:", addMeasureId);
+            console.log("Token ->", token);
             $.ajax({
                 type: "POST",
-                url: "/addMeasure",
-                data: {
-                    measureId: addMeasureId
+                url: "/measure/add",
+                headers: {
+                    "Authorization": "Bearer " + token
                 },
-                timeout: 5000,
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    compositionId: compositionId,
+                    measureId: addMeasureId
+                }),
                 success: function(response) {
-                    // console.log("Measure added successfully:" + response);
                     location.reload();
-                }
+                    // console.log("New measure created:", response);
+                },
             });
         });
     });
@@ -49,17 +35,22 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.addEventListener("click", function() {
             let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
             let deleteMeasureId = chordBox.getAttribute('data-measure-id');
+            let compositionId = chordBox.getAttribute('data-composition-id');
             // console.log("Deleting measure with id:", deleteMeasureId);
             $.ajax({
                 type: "POST",
-                url: "/deleteMeasure",
+                url: "/measure/delete",
                 data: {
-                    measureId: deleteMeasureId
+                    measureId: deleteMeasureId,
+                    compositionId: compositionId
                 },
                 timeout: 5000,
                 success: function(response) {
                     // console.log("Measure deleted successfully:" + response);
                     location.reload();
+                },
+                error: function() {
+                    alert("Error: Last measure in a song cannot be deleted.");
                 }
             });
         });
@@ -71,11 +62,13 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.addEventListener("click", function() {
             let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
             let dupeMeasureId = chordBox.getAttribute('data-measure-id'); // the new measure will be added after this one
+            let compositionId = chordBox.getAttribute('data-composition-id');
             // console.log("Duping measure with id:", dupeMeasureId);
             $.ajax({
                 type: "POST",
-                url: "/duplicateMeasure",
+                url: "/measure/duplicate",
                 data: {
+                    compositionId: compositionId,
                     measureId: dupeMeasureId
                 },
                 timeout: 5000,

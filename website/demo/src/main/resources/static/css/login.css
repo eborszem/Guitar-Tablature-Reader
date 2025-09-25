@@ -1,0 +1,87 @@
+* {
+    font-family: 'Ubuntu', sans-serif;
+    box-sizing: border-box;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 2em;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+    width: 500px;
+    align-items: center;
+    justify-content: center;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    outline: none;
+    border-color: #2980b9;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #2980b9;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1f6391;
+    transform: scale(1.03);
+}
+
+.result {
+    margin-top: 10px;
+    font-size: 0.95em;
+    text-align: center;
+    color: #e74c3c;
+}
+
+.success {
+    color: #27ae60;
+}
+
+hr {
+    margin: 30px 0;
+    border: 0;
+    border-top: 1px solid #ccc;
+}
