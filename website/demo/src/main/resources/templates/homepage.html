@@ -75,51 +75,57 @@
         <div class="composition-box">
             <div th:each="measure1 : ${composition.measures}">
                 <div class="measure-box">
-                    <div class="string"></div>
-                    <div class="string"></div>
-                    <div class="string"></div>
-                    <div class="string"></div>
-                    <div class="string"></div>
-                    <div class="string"></div>
-                    <div class="chord-container" th:each="chord1 : ${measure1.chords}">
-                        <div class="duration-box" >
-                            <img
-                                th:src="@{'/images/' + ${chord1.duration} + '.png'}"
-                                th:alt="${chord1.duration + ' note'}"
-                                th:classappend="'duration-' + ${chord1.duration}"
-                            />
-                        </div>
-                        
-                        <div class="chord-box"
-                            th:attr="data-measure-id=${measure1.id},
-                            data-duration=${chord1.duration.name()},
-                            data-chord-id=${chord1.id},
-                            data-chord-index=${chord1.index}"
-                            th:id="'measure' + ${measure1.index} + 'chord' + ${chord1.index}"
-                            th:onclick="'chordClicked(this,' + ${composition.id} + ',' + ${measure1.id} + ',' + ${chord1.id} + ')'"
-                        >
-                            <div th:each="note1 : ${chord1.notes}">
-                                <p class="note"
-                                    th:attr="data-duration=${chord1.duration.name()},
-                                    data-fret-number=${note1.fretNumber}"
-                                >
-                                    <!-- if not rest -->
-                                    <span th:if="${note1.fretNumber == -1 or note1.fretNumber == -2}">X</span>
-                                    <span th:unless="${note1.fretNumber == -1 or note1.fretNumber == -2}" th:text="${note1.fretNumber}"></span>
-                                </p>
+                    <div class="string" th:each="i : ${#numbers.sequence(1,6)}"></div>
+                        <div th:each="chord1 : ${measure1.chords}">
+                            <div class="duration-box" >
+                                <img
+                                    th:src="@{'/images/' + ${chord1.duration} + '.png'}"
+                                    th:alt="${chord1.duration + ' note'}"
+                                    th:classappend="'duration-' + ${chord1.duration}"
+                                />
                             </div>
-                            <div class="chord-buttons">
-                                <button class="delete-chord"><i class="fa-solid fa-trash"></i></button>
-                                <button class="add-chord"><i class="fa-solid fa-plus"></i></button>
-                                <button class="duplicate-chord"><i class="fa-solid fa-copy"></i></button>
-                                <button class="swap-chord" th:attr="data-direction='LEFT'">L</button>
-                                <button class="swap-chord" th:attr="data-direction='RIGHT'">R</button>
+                            
+                            <div 
+                                class="chord-box"
+                                th:attr="data-measure-id=${measure1.id},
+                                data-duration=${chord1.duration.name()},
+                                data-chord-id=${chord1.id},
+                                data-chord-index=${chord1.index}"
+                                th:id="'measure' + ${measure1.index} + 'chord' + ${chord1.index}"
+                                th:onclick="'chordClicked(this,' + ${composition.id} + ',' + ${measure1.id} + ',' + ${chord1.id} + ')'"
+                            >
+                                <div class="chord-buttons">
+                                    <div class="swap-buttons">
+                                        <button class="swap-chord" th:attr="data-direction='LEFT'">L</button>
+                                        <button class="swap-chord" th:attr="data-direction='RIGHT'">R</button>
+                                    </div>
+    
+                                    <div class="edit-buttons">
+                                        <button class="delete-chord"><i class="fa-solid fa-trash"></i></button>
+                                        <button class="add-chord"><i class="fa-solid fa-plus"></i></button>
+                                        <button class="duplicate-chord"><i class="fa-solid fa-copy"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <div th:each="note1 : ${chord1.notes}">
+                                    <p class="note"
+                                        th:attr="data-duration=${chord1.duration.name()},
+                                        data-fret-number=${note1.fretNumber}"
+                                    >
+                                        <!-- if not rest -->
+                                        <span th:if="${note1.fretNumber == -1 or note1.fretNumber == -2}">X</span>
+                                        <span th:unless="${note1.fretNumber == -1 or note1.fretNumber == -2}" th:text="${note1.fretNumber}"></span>
+                                    </p>
+                                </div>
+                                
                             </div>
                         </div>
+
+                    <div class="measure-buttons">
+                        <button class="delete-measure"><i class="fa-solid fa-trash"></i></button>
+                        <button class="add-measure"><i class="fa-solid fa-plus"></i></button>
+                        <button class="duplicate-measure"><i class="fa-solid fa-copy"></i></button>
                     </div>
-                    <button class="delete-measure"><i class="fa-solid fa-trash"></i></button>
-                    <button class="add-measure"><i class="fa-solid fa-plus"></i></button>
-                    <button class="duplicate-measure"><i class="fa-solid fa-copy"></i></button>
                 </div>
             </div>
         </div>

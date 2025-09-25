@@ -8,11 +8,11 @@
 }
 
 .composition-box {
-    border: 2px solid rgb(0, 0, 0);
+    /* border: 2px solid rgb(0, 0, 0); */
     padding: 10px;
     display: flex;
     margin-bottom: 10px;
-    width: 75%;
+    /* width: 75%; */
     min-height: 500px;
     flex-wrap: wrap;
     border-radius: 15px;
@@ -22,81 +22,55 @@
 }
 
 .measure-box {
-    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
     border: 1px solid black;
     padding: 0;
-    display: flex;
-    flex: 1;
-    justify-content: space-evenly;
-    align-items: center;
+    margin-bottom: 5px;
     min-width: 240px;
-    max-width: 240px;
-    height: 94px;
+    width: auto;
+    height: 90px;
     position: relative;
 }
 
-.measure-box .delete-measure {
-    /* display: none; */
-    position: absolute;
-    bottom: -26%;
-    left: 5%;
-    cursor: pointer;
-    font-size: 20px;
-    color: black;
-    background-color:rgb(244, 244, 244);
-    border: 2px solid black;
-    border-radius: 10px;
+.measure-box .measure-buttons .delete-measure,
+.measure-box .measure-buttons .add-measure,
+.measure-box .measure-buttons .duplicate-measure {
     opacity: 0;
-    transition: opacity 0.1s ease-in-out;
+    cursor: pointer;
+    transition: opacity 0.1s ease;
 }
 
-.measure-box:hover .delete-measure {
+.measure-box:hover .measure-buttons .delete-measure,
+.measure-box:hover .measure-buttons .add-measure,
+.measure-box:hover .measure-buttons .duplicate-measure {
     opacity: 1;
-}
-
-.measure-box .add-measure {
-    /* display: none; */
-    position: absolute;
-    bottom: -26%;
-    left: 20%;
-    cursor: pointer;
-    font-size: 20px;
-    color: black;
-    background-color:rgb(244, 244, 244);
-    border: 2px solid black;
-    border-radius: 10px;
-    opacity: 0;
-    transition: opacity 0.1s ease-in-out;
-}
-
-.measure-box:hover .add-measure {
-    opacity: 1;
-}
-
-.measure-box .duplicate-measure {
-    /* display: none; */
-    position: absolute;
-    bottom: -26%;
-    left: 35%;
-    cursor: pointer;
-    font-size: 20px;
-    color: black;
-    background-color:rgb(244, 244, 244);
-    border: 2px solid black;
-    border-radius: 10px;
-    opacity: 0;
-    transition: opacity 0.1s ease-in-out;
 }
 
 .measure-box:hover .duplicate-measure {
     opacity: 1;
 }
 
+.measure-buttons {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    z-index: 10;
+    transform: translateY(60px);
+}
+
+
 .note {
     display: flex;
     margin: 0;
     padding: 0;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
     text-align: center;
 }
@@ -106,126 +80,89 @@
     margin: 0;
     padding: 0;
     z-index: 1;
-    min-width: 10px;
+    /* min-width: 10px; */
 }
 
-.chord-box {
-    opacity: 1;
-    cursor: pointer;
-}
-
-.chord-box {
-    position: relative;
-    z-index: 0;
-}
 
 .chord-buttons {
     position: absolute;
-    top: 0;
-    left: 100%;
-    height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 20px;
+    z-index: 10;
+}
+
+.swap-buttons {
+    position: absolute;
+    left: -25px;
+    top: 50%;
+    /* transform: translateY(-30%); */
+    display: flex;
+    flex-direction: column;
     gap: 10px;
     z-index: 10;
 }
 
-
-.chord-box .chord-buttons * {
-    pointer-events: auto; /* buttons take events */
+.edit-buttons {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    /* transform: translateY(-30%); */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10;
 }
 
-.chord-box  .chord-buttons  .delete-chord {
-    opacity: 0;
-    cursor: pointer;
-    /* display: none; */
-    /* position: absolute;
-    /* bottom: -26%; */
-    /* left: 5%; */
-    /* cursor: pointer;
-    font-size: 20px;
-    color: black;
-    background-color:rgb(244, 244, 244);
-    border: 2px solid black;
-    border-radius: 10px;
-    opacity: 0;
-    transition: opacity 0.1s ease-in-out; */
-}
-
-.chord-box:hover .chord-buttons .delete-chord {
-    opacity: 1;
-}
-
-.chord-box .chord-buttons .add-chord {
-    /* display: none; */
-    opacity: 0;
-    cursor: pointer;
-    /* position: absolute;
-    bottom: -26%;
-    left: 20%;
-    cursor: pointer;
-    font-size: 20px;
-    color: black;
-    background-color:rgb(244, 244, 244);
-    border: 2px solid black;
-    border-radius: 10px;
-    opacity: 0;
-    transition: opacity 0.1s ease-in-out; */
-}
-
-.chord-box:hover .chord-buttons .add-chord {
-    opacity: 1;
-}
-
-.chord-box .chord-buttons .duplicate-chord {
-    /* display: none; */
-    opacity: 0;
-    cursor: pointer;
-    /* position: absolute;
-    bottom: -26%;
-    left: 35%;
-    cursor: pointer;
-    font-size: 20px;
-    color: black;
-    background-color:rgb(244, 244, 244);
-    border: 2px solid black;
-    border-radius: 10px;
-    opacity: 0;
-    transition: opacity 0.1s ease-in-out; */
-}
-
-.chord-box:hover .chord-buttons .duplicate-chord {
-    opacity: 1;
-}
-
+.chord-box .chord-buttons .delete-chord,
+.chord-box .chord-buttons .add-chord,
+.chord-box .chord-buttons .duplicate-chord,
 .chord-box .chord-buttons .swap-chord {
     opacity: 0;
     cursor: pointer;
+    transition: opacity 0.1s ease;
 }
 
+.chord-box:hover .chord-buttons .delete-chord,
+.chord-box:hover .chord-buttons .add-chord,
+.chord-box:hover .chord-buttons .duplicate-chord,
 .chord-box:hover .chord-buttons .swap-chord {
     opacity: 1;
 }
 
-.chord-container {
+.chord-box {
     position: relative;
     display: inline-block;
+    z-index: 0;
+    display: flex; 
+    flex-direction: column;
+    cursor: pointer;
+    padding: 15px;
+    width: 40px;
+    transform: translate(17.4px, -40px);
 }
 
+
 .duration-box {
-    position: absolute;
+    display: flex;
+    flex-direction: row;
+    position: relative;
     top: -44px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 24%;
+    height: 30px;
+    width: 30px;
+    transform: translate(6px, 5px);
     /* background-color: #171717; */
     /* background-color:rgb(244, 244, 244); */
     /* color: white; */
-    padding: 2px 5px;
+    /* padding: 2px 5px; */
     border-radius: 3px;
     font-size: 0.8em;
     z-index: 1;
+    justify-content: center;
+    align-items: center;
 }
 
 .duration-WHOLE {
@@ -252,32 +189,9 @@
     position: absolute;
 }
 
-.string:nth-child(1) {
-    top: 15%;
-    z-index: 0;
-}
-
-.string:nth-child(2) {
-    top: 29%;
-    z-index: 0;
-}
-
-.string:nth-child(3) {
-    top: 43%;
-    z-index: 0;
-}
-
-.string:nth-child(4) {
-    top: 57%;
-    z-index: 0;
-}
-
-.string:nth-child(5) {
-    top: 71%;
-    z-index: 0;
-}
-
-.string:nth-child(6) {
-    top: 85%;
-    z-index: 0;
-}
+.string:nth-child(1) { top: 12.852px; z-index: 0; }
+.string:nth-child(2) { top: 25.704px; z-index: 0; }
+.string:nth-child(3) { top: 38.556px; z-index: 0; }
+.string:nth-child(4) { top: 51.408px; z-index: 0; }
+.string:nth-child(5) { top: 64.26px; z-index: 0; }
+.string:nth-child(6) { top: 77.112px; z-index: 0; }
