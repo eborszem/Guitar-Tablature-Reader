@@ -35,15 +35,11 @@ public class HomeController {
         {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D"},
         {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A"},
     };
-
+  
     @GetMapping("/")
     public String getHomePage(Model model, @CookieValue(value = "jwt", required = false) String token) {
         List<Composition> allCompositions = cs.getAllCompositions();
-        if (allCompositions.isEmpty()) {
-            model.addAttribute("noCompositions", true);
-        } else {
-            model.addAttribute("noCompositions", false);
-        }
+        model.addAttribute("noCompositions", allCompositions.isEmpty());
         model.addAttribute("allCompositions", allCompositions);
         
         if (token != null && !token.isEmpty()) {
