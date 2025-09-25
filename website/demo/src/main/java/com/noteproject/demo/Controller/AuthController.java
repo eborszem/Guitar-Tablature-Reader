@@ -81,6 +81,17 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
+
+    @GetMapping("/auth/logout")
+    public String logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwt", "");
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // Delete cookie immediately
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
+
     @GetMapping("/login")
     public String loginPage() {
         return "login";

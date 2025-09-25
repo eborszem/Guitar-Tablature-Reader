@@ -7,8 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     var submitNewComposition = document.getElementById("submit");
-    var form = document.getElementById("popup");
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem("jwt");9/
     submitNewComposition.addEventListener("click", function() {
         console.log("TOKEN="+token);
         const regex = /^.+$/; // makes sure that the title and composer are not empty
@@ -36,8 +35,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     composer: composer
                 }),
                 success: function(response) {
-                    console.log("New composition created:", response);
-                    alert("Composition added!");
+                    const id = Object.values(response)[0];
+                    console.log(response);
+                    console.log(id);
+                    document.getElementById("popup").style.display = "none";
+                    window.location.href = `/song?compositionId=${id}`;
                 },
             });
         }
@@ -46,35 +48,5 @@ document.addEventListener("DOMContentLoaded", function() {
     var cancelNewComposition = document.getElementById("cancel");
     cancelNewComposition.addEventListener("click", function() {
         document.getElementById("popup").style.display = "none";
-    });
-
-    // const dropdown = document.getElementById('composition-dropdown');
-    // dropdown.addEventListener('change', function() {
-    //     changeComposition();  // Call the function when an option is selected
-    //     console.log("testing");
-    // });
-    // changing composition
-    const select = document.getElementById('composition-dropdown');
-    // const changeCompositionForm = document.getElementById('composition-form');
-    select.addEventListener('change', (e) => {
-        e.preventDefault();
-        const selectedId = select.value;
-        $.ajax({
-            type: "POST",
-            url: "/composition/change",
-            headers: {
-                "Authorization": "Bearer " + token
-            },
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify({
-                selectedId: selectedId,
-            }),
-            success: function(response) {
-                console.log(response);
-                // console.log("New composition created:", response);
-                // alert("Composition added!");
-            },
-        });
     });
 });

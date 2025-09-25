@@ -37,7 +37,9 @@ public class MeasureController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addMeasure(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<Map<String, String>> addMeasure(
+        @RequestBody Map<String, String> payload,
+        @RequestHeader("Authorization") String authHeader) {
         System.out.println("reached create new measure post mapping");
         System.out.println("AUTH HEADER="+authHeader);
         String token = authHeader.substring(7); // remove "Bearer "
@@ -48,13 +50,14 @@ public class MeasureController {
             throw new IllegalStateException("User not found");
         }
         int measureId = Integer.valueOf(payload.get("measureId"));
-        ms.addMeasure(measureId, HomeController.globalCompositionId);
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        int compositionId = Integer.valueOf(payload.get("compositionId"));
+        ms.addMeasure(measureId, compositionId);
+        return ResponseEntity.ok(Map.of("status", "OK"));
     }
 
     @PostMapping("/duplicate")
-    public ResponseEntity<String> duplicateMeasure(@RequestParam("measureId") int measureId) {
-        ms.duplicateMeasure(measureId, HomeController.globalCompositionId);
+    public ResponseEntity<String> duplicateMeasure(@RequestParam("compositionId") int compositionId, @RequestParam("measureId") int measureId) {
+        ms.duplicateMeasure(measureId, compositionId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 

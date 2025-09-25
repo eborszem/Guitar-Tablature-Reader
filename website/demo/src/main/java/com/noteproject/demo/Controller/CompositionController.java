@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.noteproject.demo.Entity.User;
@@ -33,8 +34,12 @@ public class CompositionController {
 
     @PostMapping("/change")
     @ResponseBody
-    public ResponseEntity<Composition> changeComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
-        int compositionId = Integer.valueOf(payload.get("selectedId"));
+    public ResponseEntity<Composition> changeComposition (
+        @RequestBody Map<String, String> payload, 
+        @RequestHeader("Authorization") String authHeader,
+        @RequestParam(name = "compositionId") Integer compositionId
+    ) {
+        // int compositionId = Integer.valueOf(payload.get("selectedId"));
         String token = authHeader.substring(7); // remove "Bearer "
         String username = jwtService.extractUsername(token);
         Optional<User> user = ur.findByUsername(username);
@@ -43,13 +48,12 @@ public class CompositionController {
         }
 
         Composition comp = cs.getCompositionById(compositionId);
-        HomeController.globalCompositionId = compositionId; // goal: get rid of this var
         return ResponseEntity.ok(comp);
     }
 
     @PostMapping("/new")
     @ResponseBody
-    public void newComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<Map<String, Integer>> newComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
         String title = payload.get("title");
         String composer = payload.get("composer");
         System.out.println("NEW COMP BEING ADDED");
@@ -61,10 +65,8 @@ public class CompositionController {
         if (user.isEmpty()) {
             throw new IllegalStateException("User not found");
         }
-
         Long userId = user.get().getId();
-
-        System.out.println("title=" + title + ", composer=" + composer);
-        HomeController.globalCompositionId = cs.addNewComposition(title, composer, userId); // adds new comp and measure to tables
+        int compositionId = cs.addNewComposition(title, composer, userId); // adds new comp and measure to tables
+        return ResponseEntity.ok(Map.of("compositionId", compositionId));
     }
 }

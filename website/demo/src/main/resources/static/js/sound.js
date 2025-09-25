@@ -1,194 +1,141 @@
 import Soundfont from 'https://esm.sh/soundfont-player';
-window.FRETBOARD = [
-    ["E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5"],
-    ["B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5"],
-    ["G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5"],
-    ["D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4"],
-    ["A2", "A#2", "B2", "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4"],
-    ["E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", "C3", "C#3", "D3", "D#3",  "E3", "F3", "F#3", "G3", "G#3", "A3"],
-];
-let array = []; // array of notes to be played
-document.addEventListener("DOMContentLoaded", async () => {
+
+    window.FRETBOARD = [
+        ["E4","F4","F#4","G4","G#4","A4","A#4","B4","C5","C#5","D5","D#5","E5","F5","F#5","G5","G#5","A5"],
+        ["B3","C4","C#4","D4","D#4","E4","F4","F#4","G4","G#4","A4","A#4","B4","C5","C#5","D5","D#5","E5"],
+        ["G3","G#3","A3","A#3","B3","C4","C#4","D4","D#4","E4","F4","F#4","G4","G#4","A4","A#4","B4","C5"],
+        ["D3","D#3","E3","F3","F#3","G3","G#3","A3","A#3","B3","C4","C#4","D4","D#4","E4","F4","F#4","G4"],
+        ["A2","A#2","B2","C3","C#3","D3","D#3","E3","F3","F#3","G3","G#3","A3","A#3","B3","C4","C#4","D4"],
+        ["E2","F2","F#2","G2","G#2","A2","A#2","B2","C3","C#3","D3","D#3","E3","F3","F#3","G3","G#3","A3"]
+    ];
+
+    let array = [];
+    let playingNotes = [];
+    let playing = false;
+    let audioStartTime = 0;
+    let elapsed = 0;
+    let restartBtnToggled = false;
+    let compositionId = -1;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+
     window.ac = new AudioContext();
-    let gainNode = ac.createGain();
+    const gainNode = ac.createGain();
     gainNode.connect(ac.destination);
-    let player = await Soundfont.instrument(ac, 'acoustic_guitar_nylon', { destination: gainNode });
-    
-    /* BPM (beats per minute) CONTROL */
-    
-    let curBpm = localStorage.getItem('bpm') || 60;
+    window.gainNode = gainNode;
+
+
+    window.player = await Soundfont.instrument(ac, 'acoustic_guitar_nylon', { destination: gainNode });
+
+    let curBpm = parseInt(localStorage.getItem('bpm') || 60, 10);
     const bpmSlider = document.getElementById('bpm');
-    
-    bpmSlider.addEventListener('change', async (event) => {
-        let bpmSliderInt = parseInt(bpmSlider.value, 10);
-        if (isNaN(bpmSliderInt)) {
-            bpmSlider.value = 60;
-            bpmSliderInt = 60; // default for invalid input
-        }
-        if (bpmSliderInt < 50) {
-            bpmSlider.value = 50;
-            bpmSliderInt = 50;
-        } else if (bpmSliderInt > 300) {
-            bpmSlider.value = 300;
-            bpmSliderInt = 300;
-        }
-        curBpm = bpmSliderInt;
-        localStorage.setItem('bpm', curBpm); // save bpm
+    bpmSlider.value = curBpm;
+
+    bpmSlider.addEventListener('change', () => {
+        let bpm = parseInt(bpmSlider.value, 10);
+        bpm = Math.min(Math.max(bpm, 50), 300);
+        bpmSlider.value = bpm;
+        curBpm = bpm;
+        localStorage.setItem('bpm', bpm);
         restart();
     });
 
-    /* VOLUME CONTROL */
-    let curVolume = localStorage.getItem('volume') || 50;
+    let curVolume = parseInt(localStorage.getItem('volume') || 50, 10);
     gainNode.gain.value = curVolume / 100;
     const volumeSlider = document.getElementById('volume');
     const volumeValue = document.getElementById('volumeValue');
-    const savedVolume = localStorage.getItem('volume') || 50;
-    volumeSlider.value = savedVolume;
-    volumeValue.textContent = savedVolume;
-    // update volume value when volume changes
-    volumeSlider.addEventListener('input', async (event) => {
-        let curVolume = event.target.value;
-        volumeValue.textContent = curVolume;
-        gainNode.gain.value = curVolume / 100;
-        localStorage.setItem('volume', curVolume);
-        console.log("volume="+curVolume);
-        console.log("gainNode.gain.value="+gainNode.gain.value)
-        array = await loadChordsToPlay(); // update array with new volume
+    volumeSlider.value = curVolume;
+    volumeValue.textContent = curVolume;
+
+    volumeSlider.addEventListener('input', (event) => {
+        const vol = parseInt(event.target.value, 10);
+        gainNode.gain.value = vol / 100;
+        volumeValue.textContent = vol;
+        localStorage.setItem('volume', vol);
     });
 
-    array = await loadChordsToPlay();
-
-    loadChordsToPlay();
-    function loadChordsToPlay() {
+    async function loadChordsToPlay(compositionId) {
+        array = [];
         return new Promise((resolve, reject) => {
-            let t = 0; // time in seconds
-            $.ajax({
-                url: '/play',
-                method: 'GET',
-                success: function(composition) {
-                    // composition is a JSON object representing the composition
-                    // it contains an array of measures, each measure contains an 
-                    // array of chords, and each chord contains an array of notes
-                    // notes have stringNumber, fretNumber, and duration
-                    console.log("composition received:");
-                    console.log(composition);
-                    let measures = composition.measures;
-                    measures.forEach(measure => {
-                        let chords = measure.chords;
-                        chords.forEach(chord => {
-                            let notes = chord.notes;
-                            let dur = chord.duration;
-                            let durInteger = 0;
-                            // convert duration enum to number of beats
-                            if (dur == "WHOLE") {
-                                durInteger = 4;
-                            } else if (dur == "HALF") {
-                                durInteger = 2;
-                            } else if (dur == "QUARTER") {
-                                durInteger = 1;
-                            } else if (dur == "EIGHTH") {
-                                durInteger = 0.5;
-                            } else if (dur == "SIXTEENTH") {
-                                durInteger = 0.25;
-                            }
-                            durInteger *= (60 / curBpm);
-                            let chordArray = [];
-                            for (let i = 0; i < notes.length; i++) {
-                                let string = notes[i].stringNumber;
-                                let fret = notes[i].fretNumber;
-                                chordArray.push(FRETBOARD[string][fret]);
-                            }
-                            array.push({
-                                time: t,
-                                chord: chordArray,
-                                duration: durInteger
-                            });
-                            t += durInteger;
-                        });
-                        resolve(array);
-                    });
-                },
-                error: function(error) {
-                    console.log('Error:', error);
-                    reject(error);
-                }
+        $.ajax({
+            url: '/play',
+            data: { compositionId },
+            method: 'GET',
+            success: (composition) => {
+            let t = 0;
+            composition.measures.forEach(measure => {
+                measure.chords.forEach(chord => {
+                const durMap = { WHOLE: 4, HALF: 2, QUARTER: 1, EIGHTH: 0.5, SIXTEENTH: 0.25 };
+                const durInteger = (durMap[chord.duration] || 1) * (60 / curBpm);
+                const chordArray = chord.notes.map(n => FRETBOARD[n.stringNumber][n.fretNumber]);
+                array.push({ time: t, chord: chordArray, duration: durInteger });
+                t += durInteger;
+                });
             });
+            resolve(array);
+            },
+            error: (err) => reject(err)
+        });
         });
     }
 
-    /* Play, pause, and resume buttons */
-    let audioStartTime = 0;
-    let elapsed = 0;
-    // let playbackStartTime = null;
-    let restartBtnToggled = false;
-    let playing = false;
-    let playingNotes = [];
-
-    
     const playBtn = document.getElementById("play-btn");
     playBtn.addEventListener("click", async () => {
+        compositionId = playBtn.getAttribute('data-composition-id');
         if (!playing) {
-            await ac.resume();
-            audioStartTime = ac.currentTime - elapsed;
-            const resumeTime = ac.currentTime;
-            console.log("resumed at", resumeTime, "seconds");
-            array.forEach((val) => {
-                console.log(val);
-                if (elapsed > val.time) {
-                    // already played, skip note
-                    return;
-                }
-                const relativeTime = val.time - elapsed;
-                val.chord.forEach(async (note) => {
-                    console.log(note);
-                    if (relativeTime >= 0) {
-                        let playingNote = await player.play(note, resumeTime + relativeTime, val.duration, { destination: gainNode });
-                        playingNotes.push(playingNote);
-                    }
-                });
+        await loadChordsToPlay(compositionId);
+        await ac.resume(); // only resume on user gesture
+        audioStartTime = ac.currentTime - elapsed;
+
+        array.forEach(val => {
+            if (elapsed > val.time) return; // skip already played
+            const relativeTime = val.time - elapsed;
+            val.chord.forEach(note => {
+            const playingNote = player.play(note, ac.currentTime + relativeTime, val.duration);
+            if (playingNote) playingNotes.push(playingNote);
             });
-            if (!restartBtnToggled) {
-                toggleRestartBtn();
-            }
-            playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        });
+
+        if (!restartBtnToggled) toggleRestartBtn();
+        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        playing = true;
         } else {
-            elapsed = ac.currentTime - audioStartTime;
-            await ac.suspend();
-            playingNotes.forEach((note) => {
-                try {
-                    note.stop();
-                } catch (e) {}
-            });
-            playingNotes = [];
-            console.log("paused at", elapsed, "seconds");
-            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        elapsed = ac.currentTime - audioStartTime;
+        await ac.suspend();
+        playingNotes.forEach(note => { if (note) note.stop(); });
+        playingNotes = [];
+        playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        playing = false;
         }
-        playing = !playing;
     });
-    
 
     function toggleRestartBtn() {
         const restartBtn = document.getElementById('restart-btn');
         restartBtn.style.display = "block";
         restartBtnToggled = true;
-    };
+    }
 
     const restartBtn = document.getElementById("restart-btn");
-    restartBtn.addEventListener("click", async () => {
-        restart();
-    });
+    restartBtn.addEventListener("click", async () => restart());
+
+    async function killAudioContext() {
+        if (window.ac) await window.ac.close();
+        window.ac = new AudioContext();
+        const gainNode = ac.createGain();
+        gainNode.connect(ac.destination);
+        window.gainNode = gainNode;
+        window.player = await Soundfont.instrument(ac, 'acoustic_guitar_nylon', { destination: gainNode });
+    }
+
     async function restart() {
-        playingNotes.forEach((note) => {
-            try {
-                note.stop();
-            } catch (e) {}
-        });
+        playingNotes.forEach(note => { if (note) note.stop(); });
+        playingNotes = [];
         elapsed = 0;
         playing = false;
-        playingNotes = [];
-        await ac.suspend();
-        array = await loadChordsToPlay(); // reset in case bpm changed
-        audioStartTime = ac.currentTime;
+
+        await killAudioContext();
+        await loadChordsToPlay(compositionId);
+
         playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
         restartBtn.style.display = 'none';
         restartBtnToggled = false;

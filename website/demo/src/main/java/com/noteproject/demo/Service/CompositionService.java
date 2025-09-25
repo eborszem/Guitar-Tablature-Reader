@@ -25,12 +25,13 @@ public class CompositionService {
 
     final int NUM_STRINGS = 6;
     final int WHOLE_NOTE_DURATION = 4;
+    final int REST = -1;
 
     public int addNewComposition(String title, String composer, Long userId) {
         int compId = cr.insertCompositionIntoDB(title, composer, userId);
         List<Note> notes = new ArrayList<>();
         for (int i = 0; i < NUM_STRINGS; i++) {
-            notes.add(new Note(-1, i));
+            notes.add(new Note(REST, i));
         }
         Chord c = new Chord(notes, ChordDuration.WHOLE);
         List<Chord> chords = new ArrayList<>();
@@ -40,12 +41,20 @@ public class CompositionService {
         return compId;
     }
 
-    public List<Composition> getAllCompositions(Long userId) {
-        return cr.getAllCompositions(userId);
+    public List<Composition> getUserCompositions(Long userId) {
+        return cr.getUserCompositions(userId);
+    }
+
+    public List<Composition> getAllCompositions() {
+        return cr.getAllCompositions();
     }
 
     public Composition getCompositionById(int id) {
         return cr.getCompositionById(id);
+    }
+
+    public boolean isOwner(long userId, int compositionId) {
+        return cr.checkCompositionOwnership(userId, compositionId);
     }
     
 }

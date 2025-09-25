@@ -26,8 +26,8 @@ public class CompositionRepository {
     @Autowired
     NotesRepository nr;
 
-    public List<Composition> getAllCompositions(Long userId) {
-        String sql = "SELECT id, title, composer, time, user_id FROM Compositions WHERE user_id = ?";
+    public List<Composition> getUserCompositions(Long userId) {
+        String sql = "SELECT id, title, composer, time, user_id FROM Compositions WHERE user_id = ? ORDER BY time DESC, title";
         return jdbcTemplate.query(
             sql,
             (rs, rowNum) -> 
@@ -39,6 +39,20 @@ public class CompositionRepository {
                 rs.getLong("user_id")
             ),
             userId
+        );
+    }
+    public List<Composition> getAllCompositions() {
+        String sql = "SELECT id, title, composer, time, user_id FROM Compositions ORDER BY title";
+        return jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> 
+            new Composition(
+                rs.getInt("id"),
+                rs.getString("title"),
+                rs.getString("composer"),
+                rs.getTimestamp("time"),
+                rs.getLong("user_id")
+            )
         );
     }
 
@@ -123,6 +137,12 @@ public class CompositionRepository {
             e.printStackTrace();
             throw new RuntimeException("Error retrieving composition", e);
         }
+    }
+
+    public boolean checkCompositionOwnership(long userId, int compositionId) {
+        String sql = "SELECT COUNT(*) FROM Compositions WHERE id = ? AND user_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, compositionId, userId);
+        return !(count == null || count == 0);
     }
     
     

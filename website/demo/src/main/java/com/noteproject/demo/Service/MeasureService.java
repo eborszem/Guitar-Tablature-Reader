@@ -40,7 +40,7 @@ public class MeasureService {
 
     // Same as above, but measure retains the chords from its "parent".
     public void duplicateMeasure(int measureId, int compositionId) {
-        List<Chord> chords = chr.findChordsByCompositionIdAndMeasureId(compositionId, measureId);
+        List<Chord> chords = chr.findChordsByMeasureId(measureId);
         int measureIndex = mr.getMeasureIndex(compositionId, measureId);
         mr.incrementMeasureIndices(compositionId, measureIndex); // increment all measures after the new measure to keep order
         mr.addMeasureToRepo(new Measure(chords), compositionId, measureIndex + 1, true); // goes 1 after current measure

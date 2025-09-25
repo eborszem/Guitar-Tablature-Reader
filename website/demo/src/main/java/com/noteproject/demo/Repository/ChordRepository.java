@@ -26,8 +26,8 @@ public class ChordRepository {
 
     private final int REST = -1;
     
-    public List<Chord> findChordsByCompositionIdAndMeasureId(int compositionId, int measureId) {
-        String sql = "SELECT c.* FROM chords c JOIN measures m ON c.measure_id = m.id WHERE m.composition_id = ? AND c.measure_id = ? ORDER BY chord_number ASC";
+    public List<Chord> findChordsByMeasureId(int measureId) {
+        String sql = "SELECT * FROM Chords WHERE measure_id = ?";
         
         List<Chord> chords = jdbcTemplate.query(
             sql,
@@ -38,8 +38,7 @@ public class ChordRepository {
                 nr.getNotes(rs.getInt("id"),measureId),
                 ChordDuration.valueOf(rs.getString("duration"))
             ),
-            measureId,
-            compositionId
+            measureId
         );
         return chords;
     }

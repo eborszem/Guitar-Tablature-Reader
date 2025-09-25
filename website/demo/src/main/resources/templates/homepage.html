@@ -1,209 +1,90 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.2/Tone.min.js"></script>
-    <!-- unused: <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Songs</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <!-- js and css -->
-    <link rel="stylesheet" th:href="@{/css/index.css}">
-    <link rel="stylesheet" th:href="@{/css/interface.css}">
-    <link rel="stylesheet" th:href="@{/css/interface-toolbar.css}">
-    <link rel="stylesheet" th:href="@{/css/virtual-fretboard.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/homepage.css}">
     <script type="text/javascript" th:src="@{/js/composition.js}"></script>
-    <script type="text/javascript" th:src="@{/js/fretboard.js}"></script>
-    <script type="text/javascript" th:src="@{/js/measure.js}"></script>
-    <script type="text/javascript" th:src="@{/js/chord.js}"></script>
-    <!-- <script type="text/javascript" th:src="@{/js/sound.js}"></script> -->
-    <script type="module" th:src="@{/js/sound.js}"></script>
-
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div class="interface">
-        <div class="toolbar">
-            <span class="tabreader">GUITAR MUSIC READER</span>
-            <div class="divider"></div>
-            <span class="title" th:text="${composition.title} + ' by ' + ${composition.composer}"></span>
-            <div class="button-container">
-                <button id="add-new-measure" class="button"></button>
-                <button id="new-composition" class="button">New Song</button>
-                <form id="composition-form">
-                    <div class="dropdown-wrapper">
-                        <select id="composition-dropdown" name="selectedComposition" class="composition-dropdown">
-                            <option value="" disabled selected>Change Song</option>
-                            <option 
-                                th:each="comp : ${allCompositions}" 
-                                th:value="${comp.id}"
-                                th:text="${comp.title}">
-                            </option>
-                        </select>
-                    </div>
-                </form>
-            </div>
+    <h1><i class="fa-solid fa-guitar"></i> GUITAR MUSIC READER</h1>
+
+    <div th:if="${!loggedIn}" class="login">
+        <a href="/login"><i class="fa fa-sign-in-alt"></i> Login</a>
+    </div>
+    <div th:if="${loggedIn}" class="login">
+        <a href="/auth/logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" id="song-search" placeholder="Search songs..." />
+    </div>
+    <div class="song-columns">
+        <div class="user-songs">
+            <th:block th:if="${loggedIn}">
+                <button id="new-composition" class="new-composition"><i class="fa-solid fa-plus"></i></button>
+            </th:block>
+            <h2>Your Songs</h2>
+            <ul>
+                <li th:each="composition : ${userCompositions}">
+                    <a 
+                        th:href="@{'/song?compositionId=' + ${composition.id}}" 
+                        th:text="${composition.title}"
+                    >
+                        Composition Name
+                    </a>
+                </li>
+                <li th:if="${!loggedIn}" style="color: #c00; font-weight: bold;">
+                    Log in to make your own songs
+                </li>
+            </ul>
         </div>
 
-
-        <!--volume control and bpm control are separate from the other buttons-->
-        <div class="controls-affecting-audio">
-            <div class="control-btns">
-                <!-- play-btn goes with the sliders -->
-                <button id="play-btn" class="play-btn"><i class="fa-solid fa-play"></i></button>
-                <!-- restart btn is initially not visible -->
-                <button id="restart-btn" class="restart-btn"><i class="fa-solid fa-arrow-rotate-left"></i></button>
-            </div>
-
-            <div class="slider-container">
-                <div class="slider">
-                    <label for="volume">Volume</label>
-                    <input type="range" id="volume" class="slider" min="0" max="100" value="50" step="1">
-                    <span id="volumeValue">50</span>
-                </div>
-
-                <div class="slider">
-                    <label for="bpm">BPM</label>
-                    <input type="number" id="bpm" class="slider" min="50" max="300" value="120" step="1">
-                </div>
-            </div>
+        <div>
+            <h2>All Songs</h2>
+            <ul>
+                <li th:each="composition : ${allCompositions}">
+                    <a 
+                        th:href="@{'/song?compositionId=' + ${composition.id}}" 
+                        th:text="${composition.title}"
+                    >
+                        Composition Name
+                    </a>
+                </li>
+            </ul>
         </div>
 
-        <div class="composition-box">
-            <div th:each="measure1 : ${composition.measures}">
-                <div class="measure-box">
-                    <div class="string" th:each="i : ${#numbers.sequence(1,6)}"></div>
-                        <div th:each="chord1 : ${measure1.chords}">
-                            <div class="duration-box" >
-                                <img
-                                    th:src="@{'/images/' + ${chord1.duration} + '.png'}"
-                                    th:alt="${chord1.duration + ' note'}"
-                                    th:classappend="'duration-' + ${chord1.duration}"
-                                />
-                            </div>
-                            
-                            <div 
-                                class="chord-box"
-                                th:attr="data-measure-id=${measure1.id},
-                                data-duration=${chord1.duration.name()},
-                                data-chord-id=${chord1.id},
-                                data-chord-index=${chord1.index}"
-                                th:id="'measure' + ${measure1.index} + 'chord' + ${chord1.index}"
-                                th:onclick="'chordClicked(this,' + ${composition.id} + ',' + ${measure1.id} + ',' + ${chord1.id} + ')'"
-                            >
-                                <div class="chord-buttons">
-                                    <div class="swap-buttons">
-                                        <button class="swap-chord" th:attr="data-direction='LEFT'">L</button>
-                                        <button class="swap-chord" th:attr="data-direction='RIGHT'">R</button>
-                                    </div>
-    
-                                    <div class="edit-buttons">
-                                        <button class="delete-chord"><i class="fa-solid fa-trash"></i></button>
-                                        <button class="add-chord"><i class="fa-solid fa-plus"></i></button>
-                                        <button class="duplicate-chord"><i class="fa-solid fa-copy"></i></button>
-                                    </div>
-                                </div>
-                                
-                                <div th:each="note1 : ${chord1.notes}">
-                                    <p class="note"
-                                        th:attr="data-duration=${chord1.duration.name()},
-                                        data-fret-number=${note1.fretNumber}"
-                                    >
-                                        <!-- if not rest -->
-                                        <span th:if="${note1.fretNumber == -1 or note1.fretNumber == -2}">X</span>
-                                        <span th:unless="${note1.fretNumber == -1 or note1.fretNumber == -2}" th:text="${note1.fretNumber}"></span>
-                                    </p>
-                                </div>
-                                
-                            </div>
-                        </div>
-
-                    <div class="measure-buttons">
-                        <button class="delete-measure"><i class="fa-solid fa-trash"></i></button>
-                        <button class="add-measure"><i class="fa-solid fa-plus"></i></button>
-                        <button class="duplicate-measure"><i class="fa-solid fa-copy"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
         
-        <div id="chordModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <span class="virtual-fretboard">VIRTUAL FRETBOARD</span>
-                <div class="string-rows">
-                    <div class="string-col" th:each="i : ${#numbers.sequence(1, 6)}" th:id="'row-' + ${i}">
-                        <div class="note-btn-div">
-                            <span class="string-row" th:each="j : ${#numbers.sequence(0, 17)}">
-                                <button th:text="${fretboard[i - 1][j]}" class="note-btn" th:id="${i} + '-' + ${j}" th:attr="data-string=${i}, data-fret=${j}"></button>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="tablature-wrapper">
-                        <div class="tablature-number-row" th:each="i : ${#numbers.sequence(0, 17)}">
-                            <span th:text="${i}" class="tablature-number"></span>
-                        </div>
-                    </div>
-                    <p id="notesDisplay"></p>
-                </div>
-                <div class="duration-wrapper">
-                    <span class="duration-types">Change Duration</span>
-                    <button class="whole-duration" id="whole-duration">
-                        <span>Whole note</span>
-                        <img th:src="@{/images/WHOLE.png}" alt="whole note">
-                    </button>
-                    <button class="half-duration" id="half-duration">
-                        <span>Half note</span>
-                        <img th:src="@{/images/HALF.png}" alt="half note">
-                    </button>
-                    <button class="quarter-duration" id="quarter-duration">
-                        <span>Quarter note</span>
-                        <img th:src="@{/images/QUARTER.png}" alt="quarter note">
-                    </button>
-                    <button class="eighth-duration" id="eighth-duration">
-                        <span>Eighth note</span>
-                        <img th:src="@{/images/EIGHTH.png}" alt="eighth note">
-                    </button>
-                    <button class="sixteenth-duration" id="sixteenth-duration">
-                        <span>Sixteenth note</span>
-                        <img th:src="@{/images/SIXTEENTH.png}" alt="sixteenth note">
-                    </button>
-                </div>
-                <!-- <div class="delete-chord-wrapper">
-                    <button id="delete-chord-btn">
-                        <span>Delete Chord</span>
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div> -->
-                <button id="confirm-btn" class="button">Confirm Changes</button>
-            </div>
-        </div>
-
-        <div id="popup" class="popup">
-            <div class="popup-content">
-                <h2>Enter song's title and composer</h2>
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
-                <label for="composer">Composer:</label>
-                <input type="text" id="composer" name="composer" required>
-                <button id="submit">Submit</button>
-                <button id="cancel">Cancel</button>
-            </div>
+    </div>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>Enter song's title and composer</h2>
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            <label for="composer">Composer:</label>
+            <input type="text" id="composer" name="composer" required>
+            <button id="submit">Submit</button>
+            <button id="cancel">Cancel</button>
         </div>
     </div>
-    
-    <span class="timestamp" th:text="'Created ' + ${#dates.format(composition.timestamp, 'hh:mm a')} + ' on ' + ${#dates.format(composition.timestamp, 'MMMM dd, yyyy')}"></span>
-    <!-- Include jQuery -->
-    
-    
     <script>
-
-
-        
+        document.addEventListener("DOMContentLoaded", () => {
+            const searchInput = document.getElementById("song-search");
+            searchInput.addEventListener("input", () => {
+                const query = searchInput.value.toLowerCase();
+                document.querySelectorAll(".song-columns > div:nth-child(1) ul li").forEach(li => {
+                    const title = li.textContent.toLowerCase();
+                    li.style.display = title.includes(query) ? "" : "none";
+                });
+                document.querySelectorAll(".song-columns > div:nth-child(2) ul li").forEach(li => {
+                    const title = li.textContent.toLowerCase();
+                    li.style.display = title.includes(query) ? "" : "none";
+                });
+            });
+        });
     </script>
-
 </body>
 </html>

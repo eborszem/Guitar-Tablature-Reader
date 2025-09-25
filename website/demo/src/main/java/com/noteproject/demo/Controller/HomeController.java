@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 
 import com.noteproject.demo.Entity.User;
@@ -19,7 +19,6 @@ import org.springframework.ui.Model;
 
 @Controller
 public class HomeController {
-    public static int globalCompositionId = 2; // composition 1 is chosen by default
     @Autowired
     CompositionService cs;
     @Autowired
@@ -37,34 +36,40 @@ public class HomeController {
     };
 
     @GetMapping("/")
-    public String getHomePage(Model model, @CookieValue("jwt") String token) {
-        Composition comp;
-        boolean initialCompositionExists = true;
-        String username = jwtService.extractUsername(token);
-        Optional<User> user = ur.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new IllegalStateException("User not found");
+    public String getHomePage(Model model, @CookieValue(value = "jwt", required = false) String token) {
+        model.addAttribute("allCompositions", cs.getAllCompositions());
+        if (token != null && !token.isEmpty()) {
+            String username = jwtService.extractUsername(token);
+            Optional<User> user = ur.findByUsername(username);
+            if (user.isPresent()) {
+                Long userId = user.get().getId();
+                model.addAttribute("userCompositions", cs.getUserCompositions(userId));
+                model.addAttribute("loggedIn", true);
+            }
+        } else {
+            model.addAttribute("loggedIn", false);
         }
-        Long userId = user.get().getId();
-        try {
-            comp = cs.getCompositionById(globalCompositionId);
-        } catch  (EmptyResultDataAccessException e) { // compositions table is empty, so make an initial composition
-            System.out.println("NO COMPOSITIONS EXIST: creating a new composition");
-            globalCompositionId = cs.addNewComposition("initial composition", "new user", userId);
-            comp = cs.getCompositionById(globalCompositionId);
-            initialCompositionExists = false;
-        }
-        
-        // reload to give program time to generate an initial composition
-        if (!initialCompositionExists) {
-            return "redirect:/";
-        }
-        
-        model.addAttribute("composition", comp);
-        model.addAttribute("allCompositions", cs.getAllCompositions(userId));
+        return "homepage";
+    }
 
+    @GetMapping("/song")
+    public String getSongPage(Model model, @CookieValue(value = "jwt", required = false) String token, @RequestParam(name = "compositionId") Integer compositionId) {
+        Composition comp = cs.getCompositionById(compositionId);
+        model.addAttribute("composition", comp);
         model.addAttribute("fretboard", FRETBOARD);
-        return "homepage"; // todo: CHANGE TO JSON?
+        if (token != null && !token.isEmpty()) {
+            String username = jwtService.extractUsername(token);
+            Optional<User> user = ur.findByUsername(username);
+            if (user.isPresent()) {
+                User u = user.get();
+                model.addAttribute("loggedIn", true);
+                model.addAttribute("isOwner", cs.isOwner(u.getId(), compositionId));
+            }
+        } else {
+            model.addAttribute("loggedIn", false);
+            model.addAttribute("isOwner", false);
+        }
+        return "songpage";
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class AudioController {
@@ -20,8 +21,8 @@ public class AudioController {
      * JSON response is then used by the frontend to play the composition using Soundfont
      */
     @GetMapping("/play")
-    public ResponseEntity<Composition> play(Model model) {
-        Composition comp = cs.getCompositionById(HomeController.globalCompositionId); // TODO: REPLACE WITH PATH VARIABLE LATER
-        return ResponseEntity.ok(comp); // replace globalCompositionId with param later?
+    public ResponseEntity<Composition> play(@RequestParam(name = "compositionId") int compositionId) {
+        Composition comp = cs.getCompositionById(compositionId);
+        return ResponseEntity.ok(comp);
     }
 }
