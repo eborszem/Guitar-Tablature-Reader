@@ -1,5 +1,6 @@
 package com.noteproject.demo.Controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.web.bind.annotation.CookieValue;
@@ -37,7 +38,14 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHomePage(Model model, @CookieValue(value = "jwt", required = false) String token) {
-        model.addAttribute("allCompositions", cs.getAllCompositions());
+        List<Composition> allCompositions = cs.getAllCompositions();
+        if (allCompositions.isEmpty()) {
+            model.addAttribute("noCompositions", true);
+        } else {
+            model.addAttribute("noCompositions", false);
+        }
+        model.addAttribute("allCompositions", allCompositions);
+        
         if (token != null && !token.isEmpty()) {
             String username = jwtService.extractUsername(token);
             Optional<User> user = ur.findByUsername(username);
@@ -45,6 +53,8 @@ public class HomeController {
                 Long userId = user.get().getId();
                 model.addAttribute("userCompositions", cs.getUserCompositions(userId));
                 model.addAttribute("loggedIn", true);
+            } else {
+                model.addAttribute("loggedIn", false);
             }
         } else {
             model.addAttribute("loggedIn", false);
@@ -64,6 +74,8 @@ public class HomeController {
                 User u = user.get();
                 model.addAttribute("loggedIn", true);
                 model.addAttribute("isOwner", cs.isOwner(u.getId(), compositionId));
+            } else {
+                model.addAttribute("loggedIn", false);
             }
         } else {
             model.addAttribute("loggedIn", false);

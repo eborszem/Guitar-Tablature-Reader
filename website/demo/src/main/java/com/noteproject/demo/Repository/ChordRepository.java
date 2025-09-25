@@ -161,6 +161,9 @@ public class ChordRepository {
     }
 
     public void deleteChord(int measureId, int chordId, int chordIndex) {
+        String countSql = "SELECT COUNT(*) FROM Chords WHERE measure_id = ?";
+        Integer count = jdbcTemplate.queryForObject(countSql, Integer.class, measureId);
+        if (count == null || count <= 1) return;
         String deleteSql = "DELETE FROM Chords WHERE measure_id = ? AND id = ?";
         jdbcTemplate.update(deleteSql, measureId, chordId);
         String updateSql = "UPDATE Chords SET chord_number = chord_number - 1 WHERE measure_id = ? AND chord_number > ?";

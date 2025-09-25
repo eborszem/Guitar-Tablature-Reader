@@ -56,6 +56,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     location.reload();
                     console.log("Chord deleted:", response);
                 },
+                error: function() {
+                    alert("Error: Not allowed to delete last chord in measure. Try deleting the measure instead.");
+                }
             });
         });
     });
@@ -112,8 +115,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 }),
                 success: function(response) {
                     location.reload();
+
                     // console.log("New chord created:", response);
                 },
+                error: function() {
+                    alert("Error: Chords are not allowed to change measures.");
+                }
             });
         });
     });

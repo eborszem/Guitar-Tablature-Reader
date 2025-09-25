@@ -163,12 +163,6 @@
                         <img th:src="@{/images/SIXTEENTH.png}" alt="sixteenth note">
                     </button>
                 </div>
-                <!-- <div class="delete-chord-wrapper">
-                    <button id="delete-chord-btn">
-                        <span>Delete Chord</span>
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div> -->
                 <button id="confirm-btn" class="button">Confirm Changes</button>
             </div>
         </div>
@@ -176,9 +170,9 @@
         <div id="popup" class="popup">
             <div class="popup-content">
                 <h2>Enter song's title and composer</h2>
-                <label for="title">Title:</label>
+                <label class="popup-text" for="title">Title:</label>
                 <input type="text" id="title" name="title" required>
-                <label for="composer">Composer:</label>
+                <label class="popup-text" for="composer">Composer:</label>
                 <input type="text" id="composer" name="composer" required>
                 <button id="submit">Submit</button>
                 <button id="cancel">Cancel</button>

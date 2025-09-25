@@ -46,8 +46,8 @@ public class MeasureService {
         mr.addMeasureToRepo(new Measure(chords), compositionId, measureIndex + 1, true); // goes 1 after current measure
     }
 
-    public void deleteMeasure(int measureId) {
-        mr.deleteMeasure(measureId);
+    public void deleteMeasure(int compositionId, int measureId) {
+        mr.deleteMeasure(compositionId, measureId);
     }
 
 }

@@ -13,6 +13,8 @@ public class User {
     @Column(unique = true)
     private String username;
     private String password;
+    private String name;
+    private String email;
     private String role;
 
     public User() {}
@@ -21,6 +23,13 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+    public User(String username, String password, String role, String email, String name) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.email = email;
+        this.name = name;
     }
 
     public Long getId() {
@@ -47,6 +56,14 @@ public class User {
         this.password = password;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getRole() {
         return role;
     }
@@ -54,4 +71,14 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    
 }

@@ -38,7 +38,7 @@
                     </a>
                 </li>
                 <li th:if="${!loggedIn}" style="color: #c00; font-weight: bold;">
-                    Log in to make your own songs
+                    Log in to make and edit your own songs
                 </li>
             </ul>
         </div>
@@ -46,7 +46,7 @@
         <div>
             <h2>All Songs</h2>
             <ul>
-                <li th:each="composition : ${allCompositions}">
+                <li th:if="${!noCompositions}" th:each="composition : ${allCompositions}">
                     <a 
                         th:href="@{'/song?compositionId=' + ${composition.id}}" 
                         th:text="${composition.title}"
@@ -54,7 +54,11 @@
                         Composition Name
                     </a>
                 </li>
+                <li th:if="${noCompositions}" style="color: #c00; font-weight: bold;">
+                    No songs exist yet
+                </li>
             </ul>
+            
         </div>
 
         

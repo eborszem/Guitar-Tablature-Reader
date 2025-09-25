@@ -31,8 +31,8 @@ public class MeasureController {
     UserRepository ur;
 
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteMeasure(@RequestParam("measureId") int measureId) {
-        ms.deleteMeasure(measureId);
+    public ResponseEntity<String> deleteMeasure(@RequestParam("compositionId") int compositionId, @RequestParam("measureId") int measureId) {
+        ms.deleteMeasure(compositionId, measureId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 

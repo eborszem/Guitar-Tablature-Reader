@@ -81,7 +81,10 @@ public class MeasureRepository {
         jdbcTemplate.update(sql, compositionId, measureIndex);
     }
 
-    public void deleteMeasure(int measureId) {
+    public void deleteMeasure(int compositionId, int measureId) {
+        String countSql = "SELECT COUNT(*) FROM Measures WHERE composition_id = ?";
+        Integer count = jdbcTemplate.queryForObject(countSql, Integer.class, compositionId);
+        if (count == null || count <= 1) return;
         String sql = "DELETE FROM Measures WHERE id = ?";
         chr.deleteChordsInMeasure(measureId);
         jdbcTemplate.update(sql, measureId);

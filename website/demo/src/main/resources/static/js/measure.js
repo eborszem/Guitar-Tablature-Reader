@@ -48,6 +48,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 success: function(response) {
                     // console.log("Measure deleted successfully:" + response);
                     location.reload();
+                },
+                error: function() {
+                    alert("Error: Last measure in a song cannot be deleted.");
                 }
             });
         });
