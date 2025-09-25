@@ -35,7 +35,7 @@ public class HomeController {
         {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D"},
         {"E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A"},
     };
-  
+
     @GetMapping("/")
     public String getHomePage(Model model, @CookieValue(value = "jwt", required = false) String token) {
         List<Composition> allCompositions = cs.getAllCompositions();
