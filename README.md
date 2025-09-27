@@ -34,23 +34,29 @@ This is an E major chord, which is played like this:
 This project allows users to seamlessly create and play guitar tablature. Songs are stored in a MySQL database, persist across sessions, and can be browsed or searched directly from the homepage.
 
 When you hover over a measure (the box with lines), you are given 3 options:
--Delete
--Add a new empty measure immediately after the current one
--Duplicate measure and add it immediately after the current one
-![Measure options](images/measure-options.png)
+- Delete
+- Add a new empty measure immediately after the current one
+- Duplicate measure and add it immediately after the current one
+
+<p><em>Measure Options</em></p>
+<img src="images/measure-options.png" width="25%" /> 
 
 When you hover over a chord (the stack of numbers), you are given 6 options:
--Shift left
--Shift right
--Play
--Delete
--Add a new empty chord immediately after the current one
--Duplicate chord and add it immediately after the current one
-![Chord options](images/chord-options.png)
+- Shift left
+- Shift right
+- Play
+- Delete
+- Add a new empty chord immediately after the current one
+- Duplicate chord and add it immediately after the current one
+
+<p><em>Chord Options</em></p>
+<img src="images/chord-options.png" width="25%" /> 
 
 When you click on a chord, you are shown a fretboard. The fretboard has the notes of the selected chord prefilled on all six guitar strings just as they would appear if you were physically playing a guitar. You can modify the chord's notes by clicking anywhere on the fretboard, as well as adjust the chord's duration. A chord can easily turn into a rest by deselecting every note in the chord.
-![The Virtual Fretboard](images/fretboard-ui.png)
 
+<p><em>Fretboard UI</em></p>
+<img src="images/fretboard-ui.png" width="75%" />
+  
 ## Running locally
 
 1. **Clone the repository:**
