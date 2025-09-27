@@ -45,7 +45,14 @@ h1 {
     width: max-content + 10px;
     display: flex;
     justify-content: center;
-    margin: 5px;
+}
+
+.title-and-composer .author {
+    color: #2c3e50;
+    font-size: 15px;
+    width: max-content + 10px;
+    display: flex;
+    justify-content: center;
 }
 
 .timestamp {
