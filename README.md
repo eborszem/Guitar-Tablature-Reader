@@ -39,7 +39,7 @@ When you hover over a measure (the box with lines), you are given 3 options:
 - Duplicate measure and add it immediately after the current one
 
 <p><em>Measure Options</em></p>
-<img src="images/measure-options.png" width="25%" /> 
+<img src="images/measure-options.png" width="40%" /> 
 
 When you hover over a chord (the stack of numbers), you are given 6 options:
 - Shift left
@@ -50,12 +50,12 @@ When you hover over a chord (the stack of numbers), you are given 6 options:
 - Duplicate chord and add it immediately after the current one
 
 <p><em>Chord Options</em></p>
-<img src="images/chord-options.png" width="25%" /> 
+<img src="images/chord-options.png" width="40%" /> 
 
 When you click on a chord, you are shown a fretboard. The fretboard has the notes of the selected chord prefilled on all six guitar strings just as they would appear if you were physically playing a guitar. You can modify the chord's notes by clicking anywhere on the fretboard, as well as adjust the chord's duration. A chord can easily turn into a rest by deselecting every note in the chord.
 
 <p><em>Fretboard UI</em></p>
-<img src="images/fretboard-ui.png" width="75%" />
+<img src="images/fretboard-ui.png" width="85%" />
   
 ## Running locally
 
