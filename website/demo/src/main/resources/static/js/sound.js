@@ -27,7 +27,7 @@ import Soundfont from 'https://esm.sh/soundfont-player';
 
     window.player = await Soundfont.instrument(ac, 'acoustic_guitar_nylon', { destination: gainNode });
 
-    let curBpm = parseInt(localStorage.getItem('bpm') || 60, 10);
+    let curBpm = parseInt(localStorage.getItem('bpm') || 120, 10);
     const bpmSlider = document.getElementById('bpm');
     bpmSlider.value = curBpm;
 
@@ -144,7 +144,7 @@ import Soundfont from 'https://esm.sh/soundfont-player';
     // for playing individual chord
     var playChordBtn = document.querySelectorAll(".play-chord");
     playChordBtn.forEach(function(btn) {
-        btn.addEventListener("click", function(event) {
+        btn.addEventListener("click", async function(event) {
             let chordBox = btn.closest('.chord-box');
             let duration = chordBox.getAttribute('data-duration');
             let notes = Array.from(chordBox.querySelectorAll('.note')).map(note => {
@@ -159,6 +159,8 @@ import Soundfont from 'https://esm.sh/soundfont-player';
 
             const durMap = { WHOLE: 4, HALF: 2, QUARTER: 1, EIGHTH: 0.5, SIXTEENTH: 0.25 };
             let durSeconds = (durMap[duration] || 1) * (60 / curBpm);
+
+            await ac.resume();
 
             notes.forEach(note => {
                 player.play(note, ac.currentTime, durSeconds);

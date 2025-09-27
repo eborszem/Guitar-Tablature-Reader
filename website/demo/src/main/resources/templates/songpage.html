@@ -105,7 +105,6 @@
                                         th:attr="data-duration=${chord1.duration.name()},
                                         data-fret-number=${note1.fretNumber},
                                         data-string-number=${note1.stringNumber}"
-
                                     >
                                         <!-- if not rest -->
                                         <span th:if="${note1.fretNumber == -1 or note1.fretNumber == -2}">X</span>
