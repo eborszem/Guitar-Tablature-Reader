@@ -110,25 +110,17 @@
     background-color: rgb(183, 183, 183);
 }
 
-.tablature-number-row > :first-child {
-    /* margin-right: 50px; space between first and second */
-}
-
 .tablature-number-row {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
 }
 
 .tablature-number {
-    font-size: 15px;
-    width: 20px;
-    /* font-weight: bold; */
-    /* margin-right: 43px; */
-    margin-left: 20px;
-    margin-right: 20px;
+    flex: 1;
+    text-align: center;
     color: #2c3e50;
 }
 
