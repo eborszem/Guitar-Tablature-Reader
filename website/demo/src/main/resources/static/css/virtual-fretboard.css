@@ -14,7 +14,7 @@
 }
 
 .modal-content {
-    background-color: rgb(25, 25, 25);
+    background-color:rgb(244, 244, 244);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -22,30 +22,30 @@
     margin: 0 auto;
     padding: 20px;
     width: 70%;
-    height: 60%;
+    height: 50%;
     display: flex;
     flex-direction: column;
     align-items: center; /* Centers the items horizontally */
     justify-content: center; /* Centers the items vertically */
-    border-radius: 20px;
-    border: 2px solid rgb(0, 0, 0);
+    border-radius: 2px;
+    /* border: 1px solid rgb(0, 0, 0); */
+    box-shadow: 0 0 0 1.5px #000000;
     /* background-color: rgb(244, 244, 244); */
 }
 
 
 .close {
     position: absolute;
-    top: -16px;
+    top: -10px;
     right: 3px;
-    color: rgb(244, 244, 244);
+    color: #2c3e50;
     float: right;
-    font-size: 50px;
-    font-weight: bold;
+    font-size: 40px;
 }
 
 .close:hover,
 .close:focus {
-    color: rgb(64, 64, 64);
+    color: #17212b;
     text-decoration: none;
     cursor: pointer;
 }
@@ -61,28 +61,16 @@
     align-items: center; /* centers rows horizontally */
 }
 
-/* .string-rows div {
-    display: flex;
-    padding: 2px;
-    border: solid;
-} */
-
-.string-row {
-    /* padding: 0;
-    gap: 0;
-    margin: 0; */
-}
-
 .string-col {
     padding: 0;
     gap: 0;
     margin: 0;
-    border: .5px solid red;
+    /* border: .5px solid rgb(0, 0, 0); */
 }
 
 /* the "modal-content" div is the actual fretboard. this div is just the text above it */
 .virtual-fretboard {
-    color: rgb(244, 244, 244);
+    color: #2c3e50;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -93,14 +81,18 @@
 
 .note-btn {
     font-family: 'Ubuntu';
-    background-color: rgb(255, 250, 239);
+    background-color: rgb(233, 233, 233);
     height: 30px;
     width: 50px;
-    border: 0px;
+    border: .1px solid black;
+    /* border: none; */
     cursor: pointer;
     margin: 0;
     padding: 0;
     font-size: 20px;
+}
+.note-btn-div > :first-child {
+    margin-right: 5px; /* space between first and second */
 }
 
 .note-btn-div {
@@ -110,36 +102,43 @@
 }
 
 .note-btn.pressed {
-    background-color: rgb(178, 174, 165);
+    background-color: rgb(113, 113, 113);
     font-weight: bold;
 }
 
 .note-btn:not(.pressed):hover {
-    background-color: rgb(223, 219, 209);
+    background-color: rgb(183, 183, 183);
 }
 
-.tablature-wrapper {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+.tablature-number-row > :first-child {
+    /* margin-right: 50px; space between first and second */
 }
 
 .tablature-number-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     width: 100%;
 }
 
 .tablature-number {
     font-size: 15px;
-    font-weight: bold;
-    color: rgb(244, 244, 244);
+    width: 20px;
+    /* font-weight: bold; */
+    /* margin-right: 43px; */
+    margin-left: 20px;
+    margin-right: 20px;
+    color: #2c3e50;
 }
 
 #notesDisplay {
-    color: rgb(244, 244, 244);
+    color: #2c3e50;
 }
 
 /* Duration modal styling */
 .duration-wrapper .duration-types {
+    color: #2c3e50;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -158,22 +157,22 @@
     align-items: flex-start;
     justify-content: flex-start;
     gap: 5px;
-    color: rgb(244, 244, 244);
-    background-color: rgb(25, 25, 25);
+    background-color: rgb(244, 244, 244);;
     padding: 10px;
-    border: 2px solid rgb(0, 0, 0);
-    border-radius: 20px;
+    /* border: 1px solid rgb(0, 0, 0); */
+    box-shadow: 0 0 0 1.5px #000000;
+    border-radius: 2px;
 }
 
 .modal-content .duration-wrapper button {
-    color: black;
+    color: #2c3e50;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
     border: 1px solid black;
-    border-radius: 10px;
+    border-radius: 2px;
     cursor: pointer;
 }
 
@@ -196,17 +195,18 @@
 }
 
 .modal-content #confirm-btn {
-    color: black;
+    color: #2c3e50;
     font-family: 'Ubuntu';
     font-size: 20px;
     font-weight: bold;
     justify-content: center;
-    width: 100%;
+    width: 20%;
     display: flex;
     align-items: center;
-    padding: 10px;
-    border: 1px solid black;
-    border-radius: 10px;
+    padding: 7px;
+    border: none;
+    box-shadow: 0 0 0 1.5px #000000;
+    border-radius: 2px;
     cursor: pointer;
 }
 
