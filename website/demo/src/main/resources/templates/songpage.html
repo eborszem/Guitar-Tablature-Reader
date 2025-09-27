@@ -32,6 +32,7 @@
             <div class="title-and-composer">
                 <span class="title" th:text="${composition.title}"></span>
                 <span class="composer" th:text="${composition.composer}"></span>
+                <span class="author" th:text="'@' + ${author.username}"></span>
             </div>
         </div>
 
@@ -89,6 +90,7 @@
                                     <div class="swap-buttons">
                                         <button class="swap-chord" th:attr="data-direction='LEFT'"><b>&lt;</b></button>
                                         <button class="swap-chord" th:attr="data-direction='RIGHT'"><b>&gt;</b></button>
+                                        <button class="play-chord" th:attr="data-direction='RIGHT'"><b><i class="fa-solid fa-play"></i></b></button>
                                     </div>
     
                                     <div class="edit-buttons">
@@ -101,7 +103,9 @@
                                 <div th:each="note1 : ${chord1.notes}">
                                     <p class="note"
                                         th:attr="data-duration=${chord1.duration.name()},
-                                        data-fret-number=${note1.fretNumber}"
+                                        data-fret-number=${note1.fretNumber},
+                                        data-string-number=${note1.stringNumber}"
+
                                     >
                                         <!-- if not rest -->
                                         <span th:if="${note1.fretNumber == -1 or note1.fretNumber == -2}">X</span>

@@ -77,6 +77,8 @@ public class HomeController {
             model.addAttribute("loggedIn", false);
             model.addAttribute("isOwner", false);
         }
+        Optional<User> user = ur.findById(comp.getUserId());
+        model.addAttribute("author", user.get());
         return "songpage";
     }
 

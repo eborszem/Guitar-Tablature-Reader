@@ -43,7 +43,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // If the user does not confirm changes, the values will back to UNCHANGED.
     let updatedStrings = [];
     window.chordClicked = function(chordElement, compId, mId, cId) {
-        
+        if (event.target.closest(".chord-buttons")) {
+        return;
+    }
         console.log("chordClicked called with compId=" + compId + ", mId=" + mId + ", cId=" + cId);
         const duration = chordElement.getAttribute('data-duration'); 
         newDur = duration;

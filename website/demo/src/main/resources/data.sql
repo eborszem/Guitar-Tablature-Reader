@@ -1,20 +1,20 @@
 -- Demo song
-INSERT INTO users (id, email, name, username, password, role)
+INSERT IGNORE INTO users (id, email, name, username, password, role)
 VALUES (1, 'demo@example.com', 'Demo User', 'demo', 'password', 'USER');
 
-INSERT INTO compositions (id, title, composer, time, user_id)
+INSERT IGNORE INTO compositions (id, title, composer, time, user_id)
 VALUES (26, 'Smells Like Teen Spirit', 'Nirvana', '2025-01-02 21:36:46', 1);
 
-INSERT INTO measures (id, composition_id, measure_number) VALUES
+INSERT IGNORE INTO measures (id, composition_id, measure_number) VALUES
 (198, 26, 27),(199, 26, 21),(201, 26, 28),(204, 26, 29),(205, 26, 30),
 (206, 26, 31),(207, 26, 32),(209, 26, 34),(210, 26, 35),(211, 26, 33),
 (212, 26, 36),(213, 26, 37),(214, 26, 39),(215, 26, 38),(216, 26, 24),
 (220, 26, 40),(223, 26, 41),(224, 26, 42),(225, 26, 43),(226, 26, 44),
 (228, 26, 45),(229, 26, 46),(230, 26, 47),(231, 26, 48),(232, 26, 50),
-(233, 26, 51),(266, 26, 53),(267, 26, 55),(270, 26, 54),(332, 26, 20),
+(233, 26, 51),(270, 26, 54),(332, 26, 20),
 (333, 26, 12);
 
-INSERT INTO chords (id, measure_id, low_e_string, a_string, d_string, g_string, b_string, high_e_string, chord_number, duration) VALUES
+INSERT IGNORE INTO chords (id, measure_id, low_e_string, a_string, d_string, g_string, b_string, high_e_string, chord_number, duration) VALUES
 (482,198,-1,-1,-1,5,-1,-1,0,'QUARTER'),
 (483,198,-1,-1,-1,8,-1,-1,1,'QUARTER'),
 (484,198,-1,-1,-1,-1,6,-1,2,'HALF'),

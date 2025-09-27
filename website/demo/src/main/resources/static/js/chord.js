@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
             let chordBox = btn.closest('.chord-box');
             let measureId = chordBox.getAttribute('data-measure-id');
             let chordId = chordBox.getAttribute('data-chord-id');
-            let direction = btn.getAttribute('data-direction')
+            let direction = btn.getAttribute('data-direction');
             $.ajax({
                 type: "POST",
                 url: "/chord/swap",

@@ -65,11 +65,11 @@ import Soundfont from 'https://esm.sh/soundfont-player';
             let t = 0;
             composition.measures.forEach(measure => {
                 measure.chords.forEach(chord => {
-                const durMap = { WHOLE: 4, HALF: 2, QUARTER: 1, EIGHTH: 0.5, SIXTEENTH: 0.25 };
-                const durInteger = (durMap[chord.duration] || 1) * (60 / curBpm);
-                const chordArray = chord.notes.map(n => FRETBOARD[n.stringNumber][n.fretNumber]);
-                array.push({ time: t, chord: chordArray, duration: durInteger });
-                t += durInteger;
+                    const durMap = { WHOLE: 4, HALF: 2, QUARTER: 1, EIGHTH: 0.5, SIXTEENTH: 0.25 };
+                    const durInteger = (durMap[chord.duration] || 1) * (60 / curBpm);
+                    const chordArray = chord.notes.map(n => FRETBOARD[n.stringNumber][n.fretNumber]);
+                    array.push({ time: t, chord: chordArray, duration: durInteger });
+                    t += durInteger;
                 });
             });
             resolve(array);
@@ -140,4 +140,29 @@ import Soundfont from 'https://esm.sh/soundfont-player';
         restartBtn.style.display = 'none';
         restartBtnToggled = false;
     }
+
+    // for playing individual chord
+    var playChordBtn = document.querySelectorAll(".play-chord");
+    playChordBtn.forEach(function(btn) {
+        btn.addEventListener("click", function(event) {
+            let chordBox = btn.closest('.chord-box');
+            let duration = chordBox.getAttribute('data-duration');
+            let notes = Array.from(chordBox.querySelectorAll('.note')).map(note => {
+                let fret = parseInt(note.getAttribute('data-fret-number'), 10);
+                let string = parseInt(note.getAttribute('data-string-number'), 10);
+
+                // no rests
+                if (fret < 0) return null;
+
+                return FRETBOARD[string][fret];
+            }).filter(n => n !== null);
+
+            const durMap = { WHOLE: 4, HALF: 2, QUARTER: 1, EIGHTH: 0.5, SIXTEENTH: 0.25 };
+            let durSeconds = (durMap[duration] || 1) * (60 / curBpm);
+
+            notes.forEach(note => {
+                player.play(note, ac.currentTime, durSeconds);
+            });
+        });
+    });
 });
