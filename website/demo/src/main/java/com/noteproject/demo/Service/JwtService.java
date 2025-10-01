@@ -24,15 +24,7 @@ public class JwtService {
 
     @PostConstruct
     public void init() {
-        if (secret == null || secret.isEmpty()) {
-            SecretKey generatedKey = Keys.hmacShaKeyFor(
-                ("defaultSuperLongSecureTextThatWillBePaddedOrRepeatedTo64BytesOrMore" +
-                "ExtraPaddingToEnsure512BitsMinimum").getBytes(StandardCharsets.UTF_8)
-            );
-            key = generatedKey;
-        } else {
-            key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        }
+        key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public Key getKey() {
