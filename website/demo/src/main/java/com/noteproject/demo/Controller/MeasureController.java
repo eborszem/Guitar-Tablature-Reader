@@ -37,9 +37,7 @@ public class MeasureController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Map<String, String>> addMeasure(
-        @RequestBody Map<String, String> payload,
-        @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<Map<String, String>> addMeasure(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
         System.out.println("reached create new measure post mapping");
         System.out.println("AUTH HEADER="+authHeader);
         String token = authHeader.substring(7); // remove "Bearer "
@@ -59,6 +57,22 @@ public class MeasureController {
     public ResponseEntity<String> duplicateMeasure(@RequestParam("compositionId") int compositionId, @RequestParam("measureId") int measureId) {
         ms.duplicateMeasure(measureId, compositionId);
         return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @PostMapping("/swap")
+    public ResponseEntity<Map<String, String>> swapMeasure(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7); // remove "Bearer "
+        System.out.println("TOKEN="+token);
+        String username = jwtService.extractUsername(token);
+        Optional<User> user = ur.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new IllegalStateException("User not found");
+        }
+        int measureId = Integer.valueOf(payload.get("measureId"));
+        int compositionId = Integer.valueOf(payload.get("compositionId"));
+        String direction = (String) payload.get("direction"); // left or right
+        ms.swapMeasure(measureId, compositionId, direction);
+        return ResponseEntity.ok(Map.of("status", "OK"));
     }
 
 }

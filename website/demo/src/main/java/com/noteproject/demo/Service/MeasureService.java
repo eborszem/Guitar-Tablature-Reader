@@ -50,4 +50,11 @@ public class MeasureService {
         mr.deleteMeasure(compositionId, measureId);
     }
 
+    public void swapMeasure(int measureId, int compositionId, String direction) {
+        Measure cur = mr.findMeasureById(measureId);
+        Measure swap = mr.findMeasureNeighbor(measureId, compositionId, direction);
+        if (cur == null || swap == null) return;
+        mr.swapMeasure(cur, swap);
+    }
+
 }

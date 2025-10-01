@@ -83,29 +83,30 @@ import Soundfont from 'https://esm.sh/soundfont-player';
     playBtn.addEventListener("click", async () => {
         compositionId = playBtn.getAttribute('data-composition-id');
         if (!playing) {
-        await loadChordsToPlay(compositionId);
-        await ac.resume(); // only resume on user gesture
-        audioStartTime = ac.currentTime - elapsed;
+            await loadChordsToPlay(compositionId);
+            await ac.resume(); // only resume on user gesture
+            audioStartTime = ac.currentTime - elapsed;
 
-        array.forEach(val => {
-            if (elapsed > val.time) return; // skip already played
-            const relativeTime = val.time - elapsed;
-            val.chord.forEach(note => {
-            const playingNote = player.play(note, ac.currentTime + relativeTime, val.duration);
-            if (playingNote) playingNotes.push(playingNote);
+            array.forEach(val => {
+                if (elapsed > val.time) return; // skip already played
+                const relativeTime = val.time - elapsed;
+                val.chord.forEach(note => {
+                    const playingNote = player.play(note, ac.currentTime + relativeTime, val.duration);
+                    if (playingNote)
+                        playingNotes.push(playingNote);
+                });
             });
-        });
 
         if (!restartBtnToggled) toggleRestartBtn();
-        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-        playing = true;
+            playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            playing = true;
         } else {
-        elapsed = ac.currentTime - audioStartTime;
-        await ac.suspend();
-        playingNotes.forEach(note => { if (note) note.stop(); });
-        playingNotes = [];
-        playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-        playing = false;
+            elapsed = ac.currentTime - audioStartTime;
+            await ac.suspend();
+            playingNotes.forEach(note => { if (note) note.stop(); });
+            playingNotes = [];
+            playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            playing = false;
         }
     });
 
@@ -119,7 +120,8 @@ import Soundfont from 'https://esm.sh/soundfont-player';
     restartBtn.addEventListener("click", async () => restart());
 
     async function killAudioContext() {
-        if (window.ac) await window.ac.close();
+        if (window.ac)
+            await window.ac.close();
         window.ac = new AudioContext();
         const gainNode = ac.createGain();
         gainNode.connect(ac.destination);
@@ -150,10 +152,9 @@ import Soundfont from 'https://esm.sh/soundfont-player';
             let notes = Array.from(chordBox.querySelectorAll('.note')).map(note => {
                 let fret = parseInt(note.getAttribute('data-fret-number'), 10);
                 let string = parseInt(note.getAttribute('data-string-number'), 10);
-
                 // no rests
-                if (fret < 0) return null;
-
+                if (fret < 0)
+                    return null;
                 return FRETBOARD[string][fret];
             }).filter(n => n !== null);
 

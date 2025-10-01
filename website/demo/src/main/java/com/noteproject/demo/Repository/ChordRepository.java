@@ -179,18 +179,7 @@ public class ChordRepository {
         int curIdx = cur.getIndex();
         int swapIdx = swap.getIndex();
         int measureId = cur.getMeasureId();
-        String sql =    "UPDATE Chords " +
-                        "SET chord_number = CASE " +
-                            "WHEN id = ? THEN ? " +
-                            "WHEN id = ? THEN ? " +
-                        "END " +
-                        "WHERE measure_id = ? " +
-                        "AND id IN (?, ?)";
-        jdbcTemplate.update(sql,
-            cur.getId(), swapIdx,
-            swap.getId(), curIdx,
-            measureId,
-            cur.getId(), swap.getId()
-        );
+        jdbcTemplate.update("UPDATE Chords SET chord_number = ? WHERE id = ? AND measure_id = ?", swapIdx, cur.getId(), measureId);
+        jdbcTemplate.update("UPDATE Chords SET chord_number = ? WHERE id = ? AND measure_id = ?", curIdx, swap.getId(), measureId);
     }
 }

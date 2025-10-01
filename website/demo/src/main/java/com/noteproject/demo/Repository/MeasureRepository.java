@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 import com.noteproject.demo.Model.Note;
 import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Chord.ChordDuration;
+import com.noteproject.demo.Model.Composition;
 import com.noteproject.demo.Model.Measure;
 
 @Repository
@@ -131,5 +133,51 @@ public class MeasureRepository {
             jdbcTemplate.update(sql, measureId, low_e_string.getFretNumber(), a_string.getFretNumber(), d_string.getFretNumber(), g_string.getFretNumber(), b_string.getFretNumber(), high_e_string.getFretNumber(), duration.name(), i++);
             System.out.println(duration + ": " + low_e_string.getFretNumber() + " " + a_string.getFretNumber() + " " + d_string.getFretNumber() + " " + g_string.getFretNumber() + " " + b_string.getFretNumber() + " " + high_e_string.getFretNumber());
         }
+    }
+
+    public Measure findMeasureById(int measureId) {
+        String sql = "SELECT * FROM Measures WHERE id = ?";
+        Measure measure =  jdbcTemplate.queryForObject(
+                sql,
+                (rs, rowNum) -> new Measure(
+                    rs.getInt("id"),
+                    rs.getInt("measure_number"),
+                    rs.getInt("composition_id")
+                ),
+                measureId
+        );
+        return measure;
+    }
+
+    public Measure findMeasureNeighbor(int measureId, int compositionId, String direction) {
+        String sql = direction.equals("LEFT")
+            ? "SELECT * FROM Measures " +
+            "WHERE composition_id = ? AND measure_number < (SELECT measure_number FROM Measures WHERE id = ?) " +
+            "ORDER BY measure_number DESC LIMIT 1"
+            : "SELECT * FROM Measures " +
+            "WHERE composition_id = ? AND measure_number > (SELECT measure_number FROM Measures WHERE id = ?) " +
+            "ORDER BY measure_number LIMIT 1";
+        try {
+            Measure measure =  jdbcTemplate.queryForObject(
+                sql,
+                (rs, rowNum) -> new Measure(
+                    rs.getInt("id"),
+                    rs.getInt("measure_number"),
+                    compositionId
+                ),
+                compositionId, measureId
+            );
+            return measure;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    public void swapMeasure(Measure cur, Measure swap) {
+        int curIdx = cur.getIndex();
+        int swapIdx = swap.getIndex();
+        int compositionId = swap.getCompositionId();
+        jdbcTemplate.update("UPDATE Measures SET measure_number = ? WHERE id = ? AND composition_id = ?", swapIdx, cur.getId(), compositionId);
+        jdbcTemplate.update("UPDATE Measures SET measure_number = ? WHERE id = ? AND composition_id = ?", curIdx, swap.getId(), compositionId);
     }
 }

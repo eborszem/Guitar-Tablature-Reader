@@ -116,9 +116,11 @@
                         </div>
 
                     <div th:if="${isOwner}"  class="measure-buttons">
+                        <button class="swap-measure" th:attr="data-direction='LEFT'"><b>&lt;</b></button>
                         <button class="delete-measure"><i class="fa-solid fa-trash"></i></button>
                         <button class="add-measure"><i class="fa-solid fa-plus"></i></button>
                         <button class="duplicate-measure"><i class="fa-solid fa-copy"></i></button>
+                        <button class="swap-measure" th:attr="data-direction='RIGHT'"><b>&gt;</b></button>
                     </div>
                 </div>
             </div>

@@ -36,21 +36,13 @@
     position: relative;
 }
 
-.measure-box .measure-buttons .delete-measure,
-.measure-box .measure-buttons .add-measure,
-.measure-box .measure-buttons .duplicate-measure {
+.measure-box .measure-buttons button {
     opacity: 0;
     cursor: pointer;
     transition: opacity 0.1s ease;
 }
 
-.measure-box:hover .measure-buttons .delete-measure,
-.measure-box:hover .measure-buttons .add-measure,
-.measure-box:hover .measure-buttons .duplicate-measure {
-    opacity: 1;
-}
-
-.measure-box:hover .duplicate-measure {
+.measure-box:hover .measure-buttons button {
     opacity: 1;
 }
 
@@ -116,19 +108,13 @@
     z-index: 10;
 }
 
-.chord-box .chord-buttons .delete-chord,
-.chord-box .chord-buttons .add-chord,
-.chord-box .chord-buttons .duplicate-chord,
-.chord-box .chord-buttons .swap-chord {
+.chord-box .chord-buttons button {
     opacity: 0;
     cursor: pointer;
     transition: opacity 0.1s ease;
 }
 
-.chord-box:hover .chord-buttons .delete-chord,
-.chord-box:hover .chord-buttons .add-chord,
-.chord-box:hover .chord-buttons .duplicate-chord,
-.chord-box:hover .chord-buttons .swap-chord {
+.chord-box:hover .chord-buttons button {
     opacity: 1;
 }
 

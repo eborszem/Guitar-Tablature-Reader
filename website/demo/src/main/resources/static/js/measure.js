@@ -79,4 +79,32 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
+
+    /* SWAP MEASURES */
+    var swapMeasureBtns = document.querySelectorAll(".swap-measure");
+    swapMeasureBtns.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
+            let measureId = chordBox.getAttribute('data-measure-id');
+            let compositionId = chordBox.getAttribute('data-composition-id');
+            let direction = btn.getAttribute('data-direction');
+            $.ajax({
+                type: "POST",
+                url: "/measure/swap",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    compositionId: compositionId,
+                    measureId: measureId,
+                    direction: direction,
+                }),
+                success: function(response) {
+                    location.reload();
+                },
+            });
+        });
+    });
 });
