@@ -27,7 +27,7 @@ public class ChordRepository {
     private final int REST = -1;
     
     public List<Chord> findChordsByMeasureId(int measureId) {
-        String sql = "SELECT * FROM Chords WHERE measure_id = ?";
+        String sql = "SELECT * FROM Chords WHERE measure_id = ? ORDER BY chord_number";
         
         List<Chord> chords = jdbcTemplate.query(
             sql,
