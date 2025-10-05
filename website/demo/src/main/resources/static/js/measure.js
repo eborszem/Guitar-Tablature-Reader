@@ -38,8 +38,8 @@ document.addEventListener("DOMContentLoaded", function() {
             let compositionId = chordBox.getAttribute('data-composition-id');
             // console.log("Deleting measure with id:", deleteMeasureId);
             $.ajax({
-                type: "POST",
-                url: "/measure/delete",
+                type: "DELETE",
+                url: "/measure",
                 data: {
                     measureId: deleteMeasureId,
                     compositionId: compositionId

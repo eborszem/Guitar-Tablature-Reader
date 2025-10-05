@@ -40,8 +40,8 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("deleting chord after chord with id:", chordId);
             console.log("Token ->", token);
             $.ajax({
-                type: "POST",
-                url: "/chord/delete",
+                type: "DELETE",
+                url: "/chord",
                 headers: {
                     "Authorization": "Bearer " + token
                 },

@@ -1,6 +1,7 @@
 package com.noteproject.demo.Controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -102,7 +103,7 @@ public class ChordController {
         return ResponseEntity.ok(chs.duplicateChord(measureId, chordId));
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping()
     public ResponseEntity<Map<String, String>> deleteChord(@RequestBody Map<String, Object> payload, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         String username = jwtService.extractUsername(token);
