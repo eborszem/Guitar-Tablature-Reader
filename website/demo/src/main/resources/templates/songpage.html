@@ -83,9 +83,10 @@
                                 data-chord-id=${chord1.id},
                                 data-chord-index=${chord1.index},
                                 data-composition-id=${composition.id}"
-                                th:id="'measure' + ${measure1.index} + 'chord' + ${chord1.index}"
+                                th:id="${chord1.id}"
                                 th:onclick="'chordClicked(this,' + ${composition.id} + ',' + ${measure1.id} + ',' + ${chord1.id} + ')'"
                             >
+                            <!-- th:id="'measure' + ${measure1.index} + 'chord' + ${chord1.index}" -->
                                 <div th:if="${isOwner}" class="chord-buttons">
                                     <div class="swap-buttons">
                                         <button class="swap-chord" th:attr="data-direction='LEFT'"><b>&lt;</b></button>

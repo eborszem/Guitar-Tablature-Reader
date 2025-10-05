@@ -181,3 +181,8 @@
 .string:nth-child(4) { top: 51.408px; z-index: 0; }
 .string:nth-child(5) { top: 64.26px; z-index: 0; }
 .string:nth-child(6) { top: 77.112px; z-index: 0; }
+
+.chord-box.highlight {
+    background-color: rgba(255, 215, 0, 0.3); /* gold flash */
+    transition: background-color 0.3s ease;
+}

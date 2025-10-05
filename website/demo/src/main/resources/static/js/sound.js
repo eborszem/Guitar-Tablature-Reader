@@ -40,50 +40,64 @@ import Soundfont from 'https://esm.sh/soundfont-player';
         restart();
     });
 
-    let curVolume = parseInt(localStorage.getItem('volume') || 50, 10);
-    gainNode.gain.value = curVolume / 100;
+    let curVolume = Number(localStorage.getItem('volume') || 50);
+    gainNode.gain.setValueAtTime(curVolume / 100, ac.currentTime);
     const volumeSlider = document.getElementById('volume');
     const volumeValue = document.getElementById('volumeValue');
     volumeSlider.value = curVolume;
     volumeValue.textContent = curVolume;
 
+    // add slider listener
     volumeSlider.addEventListener('input', (event) => {
-        const vol = parseInt(event.target.value, 10);
-        gainNode.gain.value = vol / 100;
+        const vol = Number(event.target.value);
+        gainNode.gain.setValueAtTime(vol / 100, ac.currentTime);
         volumeValue.textContent = vol;
         localStorage.setItem('volume', vol);
     });
 
+    let scrollTimers = [];
+
     async function loadChordsToPlay(compositionId) {
-        array = [];
         return new Promise((resolve, reject) => {
-        $.ajax({
-            url: '/play',
-            data: { compositionId },
-            method: 'GET',
-            success: (composition) => {
-            let t = 0;
-            composition.measures.forEach(measure => {
-                measure.chords.forEach(chord => {
-                    const durMap = { WHOLE: 4, HALF: 2, QUARTER: 1, EIGHTH: 0.5, SIXTEENTH: 0.25 };
-                    const durInteger = (durMap[chord.duration] || 1) * (60 / curBpm);
-                    const chordArray = chord.notes.map(n => FRETBOARD[n.stringNumber][n.fretNumber]);
-                    array.push({ time: t, chord: chordArray, duration: durInteger });
-                    t += durInteger;
+            array.length = 0;
+            $.ajax({
+                url: '/play',
+                data: { compositionId },
+                method: 'GET',
+                success: (composition) => {
+                let t = 0;
+                composition.measures.forEach(measure => {
+                    measure.chords.forEach(chord => {
+                        const durMap = { WHOLE: 4, HALF: 2, QUARTER: 1, EIGHTH: 0.5, SIXTEENTH: 0.25 };
+                        const durInteger = (durMap[chord.duration] || 1) * (60 / curBpm);
+                        const chordArray = chord.notes.map(n => FRETBOARD[n.stringNumber][n.fretNumber]);
+                        array.push({
+                            time: t,
+                            chord: chordArray,
+                            duration: durInteger,
+                            element: document.getElementById(chord.id)
+                        });
+                        t += durInteger;
+                        console.log("arr="+chordArray + " " + t);
+                    });
                 });
+                resolve(array);
+                },
+                error: (err) => reject(err)
             });
-            resolve(array);
-            },
-            error: (err) => reject(err)
-        });
         });
     }
 
     const playBtn = document.getElementById("play-btn");
     playBtn.addEventListener("click", async () => {
+        playBtn.disabled = true;
+        playBtn.style.opacity = '1';
+        playBtn.style.color = 'black'
+
         compositionId = playBtn.getAttribute('data-composition-id');
+        array = [];
+        await loadChordsToPlay(compositionId);
         if (!playing) {
-            await loadChordsToPlay(compositionId);
             await ac.resume(); // only resume on user gesture
             audioStartTime = ac.currentTime - elapsed;
 
@@ -95,6 +109,14 @@ import Soundfont from 'https://esm.sh/soundfont-player';
                     if (playingNote)
                         playingNotes.push(playingNote);
                 });
+                // const timerId = setTimeout(() => {
+                //     if (val.element) {
+                //         val.element.scrollIntoView({ behavior: "smooth", block: "center" });
+                //         val.element.classList.add("highlight");
+                //         setTimeout(() => val.element.classList.remove("highlight"), 500);
+                //     }
+                // }, relativeTime * 1000);
+                // scrollTimers.push(timerId);
             });
 
         if (!restartBtnToggled) toggleRestartBtn();
@@ -105,20 +127,28 @@ import Soundfont from 'https://esm.sh/soundfont-player';
             await ac.suspend();
             playingNotes.forEach(note => { if (note) note.stop(); });
             playingNotes = [];
+            // clearScrollTimers();
             playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
             playing = false;
         }
+        setTimeout(() => {
+            playBtn.disabled = false;
+        }, 250);
     });
+
+    // function clearScrollTimers() {
+    //     scrollTimers.forEach(id => clearTimeout(id));
+    //     scrollTimers = [];
+    // }
 
     function toggleRestartBtn() {
         const restartBtn = document.getElementById('restart-btn');
-        restartBtn.style.display = "block";
+        restartBtn.style.display = 'block';
         restartBtnToggled = true;
     }
 
-    const restartBtn = document.getElementById("restart-btn");
-    restartBtn.addEventListener("click", async () => restart());
-
+    const restartBtn = document.getElementById('restart-btn');
+    
     async function killAudioContext() {
         if (window.ac)
             await window.ac.close();
@@ -129,20 +159,29 @@ import Soundfont from 'https://esm.sh/soundfont-player';
         window.player = await Soundfont.instrument(ac, 'acoustic_guitar_nylon', { destination: gainNode });
     }
 
+    
     async function restart() {
         playingNotes.forEach(note => { if (note) note.stop(); });
         playingNotes = [];
         elapsed = 0;
         playing = false;
-
+        // clearScrollTimers();
+        
         await killAudioContext();
         await loadChordsToPlay(compositionId);
-
+        
         playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
         restartBtn.style.display = 'none';
         restartBtnToggled = false;
     }
-
+    
+    restartBtn.addEventListener("click", async () => {
+        playBtn.style.display = 'none';
+        restartBtn.style.display = 'none';
+        await restart();
+        playBtn.style.display = 'block';
+    });
+    
     // for playing individual chord
     var playChordBtn = document.querySelectorAll(".play-chord");
     playChordBtn.forEach(function(btn) {
