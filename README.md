@@ -2,6 +2,9 @@
 
 An interactive web application that allows users to create, edit, and play guitar tablature, with persistent song storage and a virtual fretboard for chord editing.
 
+<p><em>The User Interface</em></p>
+<img src="images/ui.png" width="70%" /> 
+
 ## Table of Contents
 
 - [What is tablature?](#what-is-tablature)

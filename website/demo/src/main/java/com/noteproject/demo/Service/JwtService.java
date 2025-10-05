@@ -12,24 +12,18 @@ import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
-import javax.crypto.SecretKey;
-
 @Service
 public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
-    
+
     private Key key;
     private final long EXPIRATION = 1000 * 60 * 60 * 24; // 1 day
 
     @PostConstruct
-    public void init() {
-        key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-    }
+    public void init() { key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); }
 
-    public Key getKey() {
-        return key;
-    }
+    public Key getKey() { return key; }
 
     public String generateToken(String username) {
         return Jwts.builder()
@@ -40,26 +34,31 @@ public class JwtService {
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        try {
-            return extractClaim(token, Claims::getSubject);
-        } catch (ExpiredJwtException e) {
-            // Token expired, return null or handle accordingly
-            return null;
-        }
-    }
-
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         return claimsResolver.apply(
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody()
         );
     }
 
-    public boolean isTokenValid(String token, String username) {
-        return username.equals(extractUsername(token)) && !isTokenExpired(token);
+    public String extractUsername(String token) {
+        try {
+            return extractClaim(token, Claims::getSubject);
+        } catch (ExpiredJwtException e) {
+            return null;
+        }
     }
 
     private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
+
+    public String getValidUsername(String token) {
+        String username = extractUsername(token);
+        return (username != null && !isTokenExpired(token)) ? username : null;
+    }
+
+    public boolean isTokenValid(String token, String username) {
+        return username.equals(extractUsername(token)) && !isTokenExpired(token);
+    }
+
 }

@@ -12,8 +12,11 @@ import com.noteproject.demo.Model.Measure;
 import com.noteproject.demo.Model.Chord;
 import com.noteproject.demo.Model.Chord.ChordDuration;
 
+import jakarta.transaction.Transactional;
+
 import java.sql.Timestamp;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -143,6 +146,25 @@ public class CompositionRepository {
         String sql = "SELECT COUNT(*) FROM Compositions WHERE id = ? AND user_id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, compositionId, userId);
         return !(count == null || count == 0);
+    }
+
+    @Transactional
+    public int deleteComposition(int id) {
+        String getMeasuresSql = "SELECT id FROM Measures WHERE composition_id = ?";
+        String deleteChordsSql = "DELETE FROM Chords WHERE measure_id = ?";
+        String deleteMeasuresSql = "DELETE FROM Measures WHERE composition_id = ?";
+        String deleteCompSql = "DELETE FROM Compositions WHERE id = ?";
+        List<Integer> measureIds = jdbcTemplate.queryForList(
+                getMeasuresSql,
+                Integer.class,
+                id
+        );
+        for (int mId : measureIds) {
+            jdbcTemplate.update(deleteChordsSql, mId);
+        }
+        jdbcTemplate.update(deleteMeasuresSql, id);
+        jdbcTemplate.update(deleteCompSql, id);
+        return id;
     }
     
     

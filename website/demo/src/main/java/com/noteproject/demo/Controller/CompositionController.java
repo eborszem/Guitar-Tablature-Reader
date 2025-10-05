@@ -6,8 +6,11 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,41 +35,35 @@ public class CompositionController {
     @Autowired
     JwtService jwtService;
 
-    @PostMapping("/change")
+    @PutMapping()
     @ResponseBody
-    public ResponseEntity<Composition> changeComposition (
-        @RequestBody Map<String, String> payload, 
-        @RequestHeader("Authorization") String authHeader,
-        @RequestParam(name = "compositionId") Integer compositionId
-    ) {
-        // int compositionId = Integer.valueOf(payload.get("selectedId"));
-        String token = authHeader.substring(7); // remove "Bearer "
-        String username = jwtService.extractUsername(token);
-        Optional<User> user = ur.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new IllegalStateException("User not found");
+    public ResponseEntity<Map<String, ?>> newComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String username = jwtService.getValidUsername(token);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid or expired token"));
         }
-
-        Composition comp = cs.getCompositionById(compositionId);
-        return ResponseEntity.ok(comp);
-    }
-
-    @PostMapping("/new")
-    @ResponseBody
-    public ResponseEntity<Map<String, Integer>> newComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
         String title = payload.get("title");
         String composer = payload.get("composer");
-        System.out.println("NEW COMP BEING ADDED");
-        System.out.println("AUTH HEADER="+authHeader);
-        String token = authHeader.substring(7); // remove "Bearer "
-        System.out.println("TOKEN="+token);
-        String username = jwtService.extractUsername(token);
         Optional<User> user = ur.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new IllegalStateException("User not found");
-        }
         Long userId = user.get().getId();
-        int compositionId = cs.addNewComposition(title, composer, userId); // adds new comp and measure to tables
-        return ResponseEntity.ok(Map.of("compositionId", compositionId));
+        return ResponseEntity.ok(Map.of("compositionId", cs.addNewComposition(title, composer, userId)));
+    }
+
+    @DeleteMapping()
+    @ResponseBody
+    public ResponseEntity<Map<String, ?>> deleteComposition(@RequestBody Map<String, String> payload, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        String username = jwtService.getValidUsername(token);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid or expired token"));
+        }
+        int id = Integer.valueOf(payload.get("id"));
+        Optional<User> user = ur.findByUsername(username);
+        Long userId = user.get().getId();
+        if (!cs.isOwner(userId, id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Cannot delete other users' compositions"));
+        };
+        return ResponseEntity.ok(Map.of("compositionId", cs.deleteComposition(id)));
     }
 }

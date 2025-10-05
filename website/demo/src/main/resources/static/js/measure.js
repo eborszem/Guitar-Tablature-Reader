@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const token = localStorage.getItem("jwt");
+    
     var addMeasureBtns = document.querySelectorAll(".add-measure");
     addMeasureBtns.forEach(function(btn) {
         btn.addEventListener("click", function() {
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("Token ->", token);
             $.ajax({
                 type: "POST",
-                url: "/measure/add",
+                url: "/measure",
                 headers: {
                     "Authorization": "Bearer " + token
                 },
@@ -29,34 +30,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    /* DELETING MEASURE FROM COMPOSITION */
-    var deleteMeasureBtns = document.querySelectorAll(".delete-measure");
-    deleteMeasureBtns.forEach(function(btn) {
-        btn.addEventListener("click", function() {
-            let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
-            let deleteMeasureId = chordBox.getAttribute('data-measure-id');
-            let compositionId = chordBox.getAttribute('data-composition-id');
-            // console.log("Deleting measure with id:", deleteMeasureId);
-            $.ajax({
-                type: "DELETE",
-                url: "/measure",
-                data: {
-                    measureId: deleteMeasureId,
-                    compositionId: compositionId
-                },
-                timeout: 5000,
-                success: function(response) {
-                    // console.log("Measure deleted successfully:" + response);
-                    location.reload();
-                },
-                error: function() {
-                    alert("Error: Last measure in a song cannot be deleted.");
-                }
-            });
-        });
-    });
-
-    /* DUPLICATING MEASURE */
     var dupeMeasureBtns = document.querySelectorAll(".duplicate-measure");
     dupeMeasureBtns.forEach(function(btn) {
         btn.addEventListener("click", function() {
@@ -67,6 +40,9 @@ document.addEventListener("DOMContentLoaded", function() {
             $.ajax({
                 type: "POST",
                 url: "/measure/duplicate",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
                 data: {
                     compositionId: compositionId,
                     measureId: dupeMeasureId
@@ -80,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    /* SWAP MEASURES */
     var swapMeasureBtns = document.querySelectorAll(".swap-measure");
     swapMeasureBtns.forEach(function(btn) {
         btn.addEventListener("click", function() {
@@ -89,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
             let compositionId = chordBox.getAttribute('data-composition-id');
             let direction = btn.getAttribute('data-direction');
             $.ajax({
-                type: "POST",
+                type: "PUT",
                 url: "/measure/swap",
                 headers: {
                     "Authorization": "Bearer " + token
@@ -104,6 +79,35 @@ document.addEventListener("DOMContentLoaded", function() {
                 success: function(response) {
                     location.reload();
                 },
+            });
+        });
+    });
+
+    var deleteMeasureBtns = document.querySelectorAll(".delete-measure");
+    deleteMeasureBtns.forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            let chordBox = btn.closest('.measure-box').querySelector('.chord-box');
+            let deleteMeasureId = chordBox.getAttribute('data-measure-id');
+            let compositionId = chordBox.getAttribute('data-composition-id');
+            // console.log("Deleting measure with id:", deleteMeasureId);
+            $.ajax({
+                type: "DELETE",
+                url: "/measure",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                data: {
+                    measureId: deleteMeasureId,
+                    compositionId: compositionId
+                },
+                timeout: 5000,
+                success: function(response) {
+                    // console.log("Measure deleted successfully:" + response);
+                    location.reload();
+                },
+                error: function() {
+                    alert("Error: Last measure in a song cannot be deleted.");
+                }
             });
         });
     });

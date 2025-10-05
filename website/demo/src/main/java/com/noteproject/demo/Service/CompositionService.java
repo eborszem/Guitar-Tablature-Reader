@@ -53,8 +53,12 @@ public class CompositionService {
         return cr.getCompositionById(id);
     }
 
-    public boolean isOwner(long userId, int compositionId) {
-        return cr.checkCompositionOwnership(userId, compositionId);
+    public boolean isOwner(long userId, int id) {
+        return cr.checkCompositionOwnership(userId, id);
+    }
+
+    public int deleteComposition(int id) {
+        return cr.deleteComposition(id);
     }
     
 }

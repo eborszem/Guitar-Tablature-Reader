@@ -23,8 +23,8 @@ document.addEventListener("DOMContentLoaded", function() {
             alert("Invalid composer");
         } else {
             $.ajax({
-                type: "POST",
-                url: "/composition/new",
+                type: "PUT",
+                url: "/composition",
                 headers: {
                     "Authorization": "Bearer " + token
                 },

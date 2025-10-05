@@ -172,8 +172,8 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(newDur + " dur was selected.")
         console.log("notes array in confirm ="+notes);
         $.ajax({
-            type: "POST",
-            url: "/chord/update",
+            type: "PUT",
+            url: "/chord",
             headers: {
                 "Authorization": "Bearer " + token
             },
