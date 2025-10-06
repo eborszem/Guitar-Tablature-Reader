@@ -71,16 +71,31 @@ cd Guitar-Tablature-Reader
 
 2. **Configure the database:**
 
-- Update your credentials in `application.properties` (located in website/demo/src/main/resources).
-
-3. **Run the backend:**
+- Go to project folder
 
 ```bash
 cd website/demo
-./mvnw spring-boot:run
 ```
+
+- Copy the example .env file and fill in your MySQL credentials:
+
+```bash
+cp .env.example .env
+# Then edit .env and set DB_USER and DB_PASS
+```
+
+3. **Run the backend:**
+
+- Make sure you are in the `demo` folder
+
+```bash
+docker-compose up --build
+```
+
+- This will build the Docker image and start the Spring Boot app.
 
 4. **Access the app:**
 
 - Open your browser at `http://localhost:8080/`.
 - Accounts can be created locally within the app.
+- A demo song is preloaded.

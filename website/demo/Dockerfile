@@ -1,23 +1,13 @@
-FROM maven:3.9.9-eclipse-temurin-21 AS builder
+FROM eclipse-temurin:21-jdk
 
-WORKDIR /app
+# set build arg for jar
+ARG JAR_FILE=target/demo-0.0.1-SNAPSHOT.jar
 
-COPY pom.xml .
-COPY .mvn .mvn
-COPY mvnw mvnw
+# copy compiled jar into container
+COPY ${JAR_FILE} app.jar
 
-RUN ./mvnw dependency:go-offline
-
-COPY src src
-
-RUN ./mvnw clean package -DskipTests
-
-FROM eclipse-temurin:21-jre
-
-WORKDIR /app
-
-COPY --from=builder /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
-
+# expose port
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# command to run the app
+ENTRYPOINT ["java", "-jar", "/app.jar"]

@@ -34,3 +34,5 @@ build/
 
 # db password file
 src/main/resources/db-password.properties
+
+.env
