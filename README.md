@@ -17,7 +17,7 @@ Guitar tablature is how guitar music is read, like sheet music for a piano. Ther
 
 For example:
 
-```
+```bash
 E | 0 (This is an E note)
 B | 0 (B)
 G | 1 (G#)
@@ -36,7 +36,9 @@ This is an E major chord, which is played like this:
 
 This project allows users to seamlessly create and play guitar tablature. Songs are stored in a MySQL database, persist across sessions, and can be browsed or searched directly from the homepage.
 
-When you hover over a measure (the box with lines), you are given 3 options:
+When you hover over a measure (the box with lines), you are given 5 options:
+- Shift left
+- Shift right
 - Delete
 - Add a new empty measure immediately after the current one
 - Duplicate measure and add it immediately after the current one
@@ -71,7 +73,7 @@ cd Guitar-Tablature-Reader
 
 2. **Configure the database:**
 
-- Go to project folder
+- Go to project folder.
 
 ```bash
 cd website/demo
@@ -86,7 +88,7 @@ cp .env.example .env
 
 3. **Run the backend:**
 
-- Make sure you are in the `demo` folder
+- Make sure you are in the `demo` folder.
 
 ```bash
 docker-compose up --build
