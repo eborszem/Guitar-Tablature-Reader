@@ -71,7 +71,7 @@ git clone https://github.com/eborszem/Guitar-Tablature-Reader.git
 cd Guitar-Tablature-Reader
 ```
 
-#### 2. Configure the database
+#### 2. Configure the database and run the backend
 
 ##### Docker steps:
 
