@@ -81,13 +81,10 @@ cd website/demo
 
 - Copy `.env.example` to `.env`, and fill in your MySQL credentials: `DB_USER`, `DB_PASS`
 
-```bash
-cp .env.example .env
-```
-
 - Run backend
 
 ```bash
+cp .env.example .env
 docker-compose up --build
 ```
 
