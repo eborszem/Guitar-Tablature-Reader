@@ -73,7 +73,7 @@ cd Guitar-Tablature-Reader
 
 #### 2. Configure the database and run the backend
 
-##### Docker steps:
+##### If you're using Docker:
 
 ```bash
 cd website/demo
@@ -89,7 +89,7 @@ docker-compose up --build
 ```
 
 
-##### Maven Wrapper steps:
+##### If you're using Maven Wrapper:
 
 ```bash
 cd website/demo/src/main/resources/
