@@ -43,7 +43,7 @@ When you hover over a measure (the box with lines), you are given 5 options:
 - Add a new empty measure immediately after the current one
 - Duplicate measure and add it immediately after the current one
 
-<p><em>Measure Options</em></p>
+#### Measure Options
 <img src="images/measure-options.png" width="40%" /> 
 
 When you hover over a chord (the stack of numbers), you are given 6 options:
@@ -54,49 +54,60 @@ When you hover over a chord (the stack of numbers), you are given 6 options:
 - Add a new empty chord immediately after the current one
 - Duplicate chord and add it immediately after the current one
 
-<p><em>Chord Options</em></p>
+#### Chord Options
 <img src="images/chord-options.png" width="40%" /> 
 
 When you click on a chord, you are shown a fretboard. The fretboard has the notes of the selected chord prefilled on all six guitar strings just as they would appear if you were physically playing a guitar. You can modify the chord's notes by clicking anywhere on the fretboard, as well as adjust the chord's duration. A chord can easily turn into a rest by deselecting every note in the chord.
 
-<p><em>Fretboard UI</em></p>
+#### Fretboard UI
 <img src="images/fretboard-ui.png" width="85%" />
   
 ## Running locally
 
-1. **Clone the repository:**
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/eborszem/Guitar-Tablature-Reader.git
 cd Guitar-Tablature-Reader
 ```
 
-2. **Configure the database:**
+#### 2. Configure the database
 
-- Go to project folder.
+##### Docker steps:
 
 ```bash
 cd website/demo
 ```
 
-- Copy the example .env file and fill in your MySQL credentials:
+- Copy `.env.example` to `.env`, and fill in your MySQL credentials: `DB_USER`, `DB_PASS`
 
 ```bash
 cp .env.example .env
-# Then edit .env and set DB_USER and DB_PASS
 ```
 
-3. **Run the backend:**
-
-- Make sure you are in the `demo` folder.
+- Run backend
 
 ```bash
 docker-compose up --build
 ```
 
-- This will build the Docker image and start the Spring Boot app.
 
-4. **Access the app:**
+##### Maven Wrapper steps:
+
+```bash
+cd website/demo/src/main/resources/
+```
+
+- Within `application.properties`, fill in your MySQL credentials: `spring.datasource.username`, `spring.datasource.password`
+
+- Run backend
+
+```bash
+cd ../../../
+./mvnw spring-boot:run
+```
+
+#### 3. **Access the app:**
 
 - Open your browser at `http://localhost:8080/`.
 - Accounts can be created locally within the app.
